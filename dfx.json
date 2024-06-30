@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "AstroApe_backend": {
+      "main": "src/AstroApe_backend/main.mo",
+      "type": "motoko"
+    },
+    "AstroApe_frontend": {
+      "dependencies": [
+        "AstroApe_backend"
+      ],
+      "source": [
+        "src/AstroApe_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "AstroApe_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
