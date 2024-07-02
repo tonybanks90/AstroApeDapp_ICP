@@ -14,5 +14,8 @@
   "type": "module",
   "workspaces": [
     "src/AstroApe_frontend"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
 }
