@@ -1,4 +1,6 @@
 import brainwave from "./brainwave.svg";
+import AstroBanner from "./AstroBanner.png";
+import AstroLogo from "./AstroApe5.png";
 import TwitterLogo from "./TwitterLogo.png";
 import DiscordLogo from "./DiscordLogo.png";
 import OpenChatLogo from "./OpenChatLogo.png";
@@ -83,6 +85,8 @@ import twitter from "./socials/twitter.svg";
 
 export {
   brainwave,
+  AstroBanner,
+  AstroLogo,
   OpenChatLogo,
   TwitterLogo,
   DiscordLogo,

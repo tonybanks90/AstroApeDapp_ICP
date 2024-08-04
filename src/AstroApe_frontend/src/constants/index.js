@@ -43,36 +43,46 @@ import {
   export const navigation = [
     {
       id: "0",
-      title: "Features",
-      url: "#features",
+      title: "New Pairs",
+      url: "/Token/1",
+      path: "/Token/3",
     },
     {
       id: "1",
-      title: "RoadMap",
-      url: "#pricing",
+      title: "Deploy Token",
+      url: "/Token/2",
+      path: "/Token/2",
     },
     {
       id: "2",
-      title: "How it works",
-      url: "#how-to-use",
+      title: "Profile",
+      url: "/Token/3",
     },
     {
       id: "3",
-      title: "Roadmap",
-      url: "#roadmap",
+      title: "Referrals",
+      url: "/Token/4",
     },
     {
       id: "4",
-      title: "WhitePaper",
-      url: "#signup",
+      title: "Governance",
+      url: "/Token/5",
       onlyMobile: true,
     },
-    {
-      id: "5",
-      title: "Blogs",
-      url: "#login",
-      onlyMobile: true,
-    },
+    
+  ];
+
+  export const leaderboardData = [
+    { name: "TopUser1", volume: "123.45 ICP", rank: 1 },
+    { name: "TopUser2", volume: "98.76 ICP", rank: 2 },
+    { name: "TopUser3", volume: "87.65 ICP", rank: 3 },
+    { name: "User4", volume: "56.34 ICP" },
+    { name: "User5", volume: "45.23 ICP" },
+    { name: "User6", volume: "38.12 ICP" },
+    { name: "User7", volume: "29.99 ICP" },
+    { name: "User8", volume: "25.87 ICP" },
+    { name: "User9", volume: "20.75 ICP" },
+    { name: "User10", volume: "15.64 ICP" },
   ];
   
   export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
@@ -230,6 +240,17 @@ import {
         "An advanced AI chatbot that can understand complex queries",
         "An analytics dashboard to track your conversations",
         "Priority support to solve issues quickly",
+      ],
+    },
+    {
+      id: "2",
+      title: "Enterprise",
+      description: "Custom AI chatbot, advanced analytics, dedicated account",
+      price: null,
+      features: [
+        "An AI chatbot that can understand your queries",
+        "Personalized recommendations based on your preferences",
+        "Ability to explore the app and its features without any cost",
       ],
     },
     {

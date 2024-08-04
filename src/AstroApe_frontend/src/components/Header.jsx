@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 
 
-import { ApeLogo } from "../assets";
+import { ApeLogo,AstroLogo } from "../assets";
 import { navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
@@ -39,9 +39,13 @@ const Header = () => {
       }`}
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a className="block w-[12rem] xl:mr-8" href="#hero">
-          <img src={ApeLogo} width={190} height={40} alt="AstroApe" />
-        </a>
+      <a
+  className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
+  href="#hero"
+>
+  ASTROAPE
+</a>
+
 
         <nav
           className={`${
