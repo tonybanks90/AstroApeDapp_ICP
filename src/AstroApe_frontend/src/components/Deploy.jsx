@@ -29,6 +29,7 @@ const ImageUpload = ({ label, id, onImageChange, imageSrc, className = "" }) => 
 const CreatePage = () => {
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
+  const [deployNetwork, setDeployNetwork] = useState(""); // Track selected network
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -50,6 +51,10 @@ const CreatePage = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleNetworkChange = (e) => {
+    setDeployNetwork(e.target.value);
   };
 
   return (
@@ -118,14 +123,31 @@ const CreatePage = () => {
             id="deployTo"
             name="deployTo"
             className="w-full px-4 py-2 border border-n-6 rounded-md text-n-1 bg-n-8 focus:outline-none focus:ring-2 focus:ring-color-1 transition duration-150 ease-in-out"
+            value={deployNetwork} // Bind the selected value to state
+            onChange={handleNetworkChange} // Handle change event
             required
           >
             <option value="">Select Network</option>
             <option value="ETH">Ethereum</option>
             <option value="ICP">ICP</option>
-            {/* Add more options as needed */}
           </select>
         </div>
+
+        {/* Snipe Amount */}
+        {deployNetwork && (
+          <div>
+            <label htmlFor="snipeAmount" className="block text-lg font-medium text-n-1 mb-2">
+              Snipe Amount ({deployNetwork === "ETH" ? "ckETH" : "ICP"})
+            </label>
+            <Input
+              id="snipeAmount"
+              name="snipeAmount"
+              type="number"
+              placeholder={`Enter Snipe Amount in ${deployNetwork === "ETH" ? "ckETH" : "ICP"}`}
+              required
+            />
+          </div>
+        )}
 
         {/* Social Media Links */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

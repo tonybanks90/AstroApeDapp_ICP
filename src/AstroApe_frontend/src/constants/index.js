@@ -72,6 +72,38 @@ import {
     
   ];
 
+  export const navigation2 = [
+    {
+      id: "0",
+      title: "Features",
+      url: "/roadmap",
+      path: "/Token/3",
+    },
+    {
+      id: "1",
+      title: "Tokenomics",
+      url: "/tokenomics",
+      path: "/Token/2",
+    },
+    {
+      id: "2",
+      title: "Roadmap",
+      url: "/roadmap",
+    },
+    {
+      id: "3",
+      title: "Referrals",
+      url: "/Token/4",
+    },
+    {
+      id: "4",
+      title: "Governance",
+      url: "/Token/5",
+      onlyMobile: true,
+    },
+    
+  ];
+
   export const leaderboardData = [
     { name: "TopUser1", volume: "123.45 ICP", rank: 1 },
     { name: "TopUser2", volume: "98.76 ICP", rank: 2 },
@@ -105,58 +137,31 @@ import {
     sliders04,
   ];
   
-  export const roadmap = [
-    {
-      id: "0",
-      title: "Voice recognition",
-      text: "Enable the chatbot to understand and respond to voice commands, making it easier for users to interact with the app hands-free.",
-      date: "May 2023",
-      status: "done",
-      imageUrl: roadmap1,
-      colorful: true,
-    },
-    {
-      id: "1",
-      title: "Gamification",
-      text: "Add game-like elements, such as badges or leaderboards, to incentivize users to engage with the chatbot more frequently.",
-      date: "May 2023",
-      status: "progress",
-      imageUrl: roadmap2,
-    },
-    {
-      id: "2",
-      title: "Chatbot customization",
-      text: "Allow users to customize the chatbot's appearance and behavior, making it more engaging and fun to interact with.",
-      date: "May 2023",
-      status: "done",
-      imageUrl: roadmap3,
-    },
-    {
-      id: "3",
-      title: "Integration with APIs",
-      text: "Allow the chatbot to access external data sources, such as weather APIs or news APIs, to provide more relevant recommendations.",
-      date: "May 2023",
-      status: "progress",
-      imageUrl: roadmap4,
-    },
-  ];
+
   
   export const collabText =
-    "With smart automation and top-notch security, it's the perfect solution for teams looking to work smarter.";
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
   
   export const collabContent = [
     {
       id: "0",
-      title: "Seamless Integration",
+      title: "Transaction Fees",
       text: collabText,
     },
     {
       id: "1",
-      title: "Smart Automation",
+      title: "Governance",
+      text: collabText,
     },
     {
       id: "2",
-      title: "Top-notch Security",
+      title: "Staking and Rewards",
+      text: collabText,
+    },
+    {
+      id: "3",
+      title: "Exclusive Features",
+      text: collabText,
     },
   ];
   
@@ -222,8 +227,8 @@ import {
   export const pricing = [
     {
       id: "0",
-      title: "Basic",
-      description: "AI chatbot, personalized recommendations",
+      title: "Development and Launch",
+      description: ",,,,,,",
       price: "0",
       features: [
         "An AI chatbot that can understand your queries",
@@ -233,8 +238,8 @@ import {
     },
     {
       id: "1",
-      title: "Premium",
-      description: "Advanced AI chatbot, priority support, analytics dashboard",
+      title: "Test and audit",
+      description: ",,,,,,",
       price: "9.99",
       features: [
         "An advanced AI chatbot that can understand complex queries",
@@ -244,8 +249,8 @@ import {
     },
     {
       id: "2",
-      title: "Enterprise",
-      description: "Custom AI chatbot, advanced analytics, dedicated account",
+      title: "Mainnet Launch",
+      description: ",,,,",
       price: null,
       features: [
         "An AI chatbot that can understand your queries",
@@ -255,8 +260,8 @@ import {
     },
     {
       id: "2",
-      title: "Enterprise",
-      description: "Custom AI chatbot, advanced analytics, dedicated account",
+      title: "Airdrop and Funding Rounds",
+      description: ",,,,,",
       price: null,
       features: [
         "An AI chatbot that can understand your queries",
@@ -269,16 +274,16 @@ import {
   export const benefits = [
     {
       id: "0",
-      title: "Ask anything",
-      text: "Lets users quickly find answers to their questions without having to search through multiple sources.",
+      title: "Launch a Memecoin",
+      text: "Deploy your memecoin to ICP and Ethereum Network",
       backgroundUrl: "assets/benefits/card-1.svg",
       iconUrl: benefitIcon1,
       imageUrl: benefitImage2,
     },
     {
       id: "1",
-      title: "Improve everyday",
-      text: "The app uses natural language processing to understand user queries and provide accurate and relevant responses.",
+      title: "Trade Memecoins",
+      text: "Buy Meme coins when they launch, Sell to cash in profits or cut down Losses",
       backgroundUrl: "assets/benefits/card-2.svg",
       iconUrl: benefitIcon2,
       imageUrl: benefitImage2,
@@ -286,16 +291,16 @@ import {
     },
     {
       id: "2",
-      title: "Connect everywhere",
-      text: "Connect with the AI chatbot from anywhere, on any device, making it more accessible and convenient.",
+      title: "Multichain Governance",
+      text: "Vote for or Against new implementations on the DApp, be ",
       backgroundUrl: "assets/benefits/card-3.svg",
       iconUrl: benefitIcon3,
       imageUrl: benefitImage2,
     },
     {
       id: "3",
-      title: "Fast responding",
-      text: "Lets users quickly find answers to their questions without having to search through multiple sources.",
+      title: "Authentication",
+      text: ",,,,",
       backgroundUrl: "assets/benefits/card-4.svg",
       iconUrl: benefitIcon4,
       imageUrl: benefitImage2,
@@ -303,16 +308,16 @@ import {
     },
     {
       id: "4",
-      title: "Ask anything",
-      text: "Lets users quickly find answers to their questions without having to search through multiple sources.",
+      title: "Intergration with DEXs",
+      text: ",,,,",
       backgroundUrl: "assets/benefits/card-5.svg",
       iconUrl: benefitIcon1,
       imageUrl: benefitImage2,
     },
     {
       id: "5",
-      title: "Improve everyday",
-      text: "The app uses natural language processing to understand user queries and provide accurate and relevant responses.",
+      title: "Bonding Curve",
+      text: ",,,,",
       backgroundUrl: "assets/benefits/card-6.svg",
       iconUrl: benefitIcon2,
       imageUrl: benefitImage2,
