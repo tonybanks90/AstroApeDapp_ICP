@@ -5,7 +5,6 @@ import Profile from './components/Profile';
 
 
 import Header from './components/Header';
-import Work from './components/Work';
 
 
 import './index.css';
@@ -18,7 +17,12 @@ import Roadmap from './components/Roadmap';
 import NewPairs from './components/NewPairs';
 import Referral from './components/Referral';
 import Governance from './components/Governance';
-
+import SwapCard from './components/SwapCard';
+import ConnectWallet from './components/ConnectWallet';
+import Work from './components/Work';
+import ChatAndTrades from './components/ChatAndTrades';
+import TradingChart from './components/TradingChart';
+import TradingViewChart from './components/TradingViewChart';
 
 
 
@@ -54,6 +58,19 @@ const router = createBrowserRouter([
         path: '/Token/5',
         element: <Governance />,
       },
+      {
+        path: '/Token/6',
+        element: <SwapCard />,
+      },
+      {
+        path: '/Token/7',
+        element: <ConnectWallet />,
+      },
+      {
+        path: '/Token/8',
+        element: <TradingViewChart />,
+      },
+
     ]
   },
   

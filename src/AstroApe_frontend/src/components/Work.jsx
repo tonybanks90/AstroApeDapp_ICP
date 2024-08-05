@@ -1,11 +1,9 @@
 import React from 'react'
 
-const work = () => {
+const Work = () => {
   return (
-    <div>
-      <h1>Work on ICP</h1>
-    </div>
+    <div>Work</div>
   )
 }
 
-export default work
+export default Work

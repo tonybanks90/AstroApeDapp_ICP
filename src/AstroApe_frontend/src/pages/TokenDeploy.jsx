@@ -1,4 +1,4 @@
-import Header from "../components/Header";
+import DAppHeader from "../components/DAppHeader";
 import ButtonGradient from "../assets/svg/ButtonGradient";
 import AppHeader from "../components/AppHeader";
 import Sidebar from "../components/Sidebar";
@@ -12,7 +12,7 @@ const TokenDeploy = () => {
     return (
         <>
         <div className='flex h-screen'>
-        <Header/>
+        <DAppHeader />
         <Sidebar />
             
             <div className="flex-grow p-4">
