@@ -1,9 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 
 
 import { ApeLogo,AstroLogo } from "../assets";
-import { navigation, navigation2 } from "../constants/index";
+import {  navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
 import { HamburgerMenu } from "../design/Header";
@@ -53,8 +53,8 @@ const Header = () => {
           } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}
         >
           <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
-            {navigation2.map((item) => (
-              <a
+            {navigation.map((item) => (
+              <Link
                 key={item.id}
                 href={item.url}
                 onClick={handleClick}
@@ -67,17 +67,14 @@ const Header = () => {
                 } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
               >
                 {item.title}
-              </a>
+              </Link>
             ))}
           </div>
 
           <HamburgerMenu />
         </nav>
 
-        
-        <Button className="hidden lg:flex" href="#login">
-          Connect
-        </Button>
+     
 
         <Button
           className="ml-auto lg:hidden"

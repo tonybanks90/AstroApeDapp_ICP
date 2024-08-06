@@ -11,6 +11,7 @@ import Generating from "./Generating";
 import Notification from "./Notification";
 import SocialSection from "./SocialSection";
 import { AstroApe1 } from "../assets";
+import { AstroBanner } from "../assets";
 
 const Hero = () => {
     const parallaxRef = useRef(null);
@@ -42,9 +43,9 @@ const Hero = () => {
             </h1>
             <p className="body-1 max-w-3xl mx-auto mb-6
              text-n-2 lg:mb-8">Unleash the power of Chain Fusion
-             On Internet computer Protocol
+             On Internet computer Protocols
             </p>
-            <Button href="/pricing" white>
+            <Button href="/Token/2" white>
                 Launch App
             </Button>
         </div>
@@ -59,7 +60,7 @@ const Hero = () => {
                     overflow-hidden md:aspect-[688/490]
                     lg:aspect-[1024/490]">
                         <img
-                        src={AstroApe1}
+                        src={AstroBanner}
                         className="w-full scale-[1.7]
                         translate-y-[8%] md:scale-[1]
                         md:-translate-y-[10%] lg:-translate-y-23%"

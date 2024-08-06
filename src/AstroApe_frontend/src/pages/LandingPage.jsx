@@ -3,6 +3,8 @@ import Button from '../components/Button';
 import Features from '../components/Features';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
+import Roadmap from '../components/Roadmap';
+import Tokenomics from '../components/Tokenomics';
 
 
 const LandingPage = () => {
@@ -12,6 +14,8 @@ const LandingPage = () => {
             <Header />
             <Hero />
             <Features />
+            <Tokenomics />
+            <Roadmap />
         
         </div>
 
