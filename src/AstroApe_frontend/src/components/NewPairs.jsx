@@ -1,6 +1,7 @@
 import React from "react";
 import Input from "./Input"; // Assuming you have an Input component
 import Button from "./Button"; // Assuming you have a Button component
+import PairCard from "./PairCard"; // Import the new PairCard component
 
 const NewPairs = () => {
   return (
@@ -27,18 +28,13 @@ const NewPairs = () => {
 
       {/* Pairs Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Example Pair Cards */}n
+        {/* Example Pair Cards */}
         {Array.from({ length: 8 }).map((_, index) => (
-          <div
+          <PairCard
             key={index}
-            className="bg-n-8 border border-n-6 rounded-lg shadow-md overflow-hidden"
-          >
-            <div className="p-4">
-              <h2 className="text-xl font-semibold text-n-1 mb-2">Pair {index + 1}</h2>
-              <p className="text-n-2 mb-4">Details about the pair, including its performance and statistics.</p>
-              <Button className="w-full">View Details</Button>
-            </div>
-          </div>
+            title={`Pair ${index + 1}`}
+            details="Details about the pair, including its performance and statistics."
+          />
         ))}
       </div>
     </div>

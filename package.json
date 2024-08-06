@@ -19,6 +19,9 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@dfinity/agent": "^2.0.0",
+    "@dfinity/auth-client": "^2.0.0",
+    "@dfinity/candid": "^2.0.0",
     "axios": "^1.7.3",
     "chart.js": "^4.4.3",
     "chartjs-adapter-date-fns": "^3.0.0",

@@ -1,34 +1,24 @@
-import ICRC2 "your/icrc2/library"; // Import the ICRC-2 library
+import Nat "mo:base/Nat";
+import lib "lib.mo"; // Adjust the path according to your project structure
 
-actor TokenDeployer {
+actor Token {
+  // Token metadata
+  let metadata: lib.TokenMetadata = lib.createMetadata(
+    "MyToken",   // Name
+    "MTK",       // Symbol
+    18,          // Decimals
+    ?("https://example.com/logo.png") // Logo URL (optional)
+  );
 
-    public type TokenParams = {
-        name: Text;
-        ticker: Text;
-        logo: ?Text;
-        owner: Principal;
-    };
+  // Function to get token metadata
+  public query func getMetadata(): async lib.TokenMetadata {
+    return metadata;
+  };
 
-    public type TokenDetails = {
-        name: Text;
-        ticker: Text;
-        logo: ?Text;
-        decimals: Nat8;
-        totalSupply: Nat;
-        owner: Principal;
-    };
+  // Example function for testing
+  public query func getSupply(): async Nat {
+    return 1000000000; // 1 billion tokens
+  };
 
-    public func deployToken(params: TokenParams) : async Principal {
-        let newToken = ICRC2.Token({
-            name = params.name;
-            ticker = params.ticker;
-            logo = params.logo;
-            decimals = 18;
-            totalSupply = 1_000_000_000 * pow(10, 18); // 1 Billion with 18 decimals
-            owner = params.owner;
-        });
-
-        let canisterId = await ICRC2.deploy(newToken); // Assuming you have a function to deploy a new canister
-        return canisterId;
-    }
-}
+  // Additional token functionalities can be added here
+};
