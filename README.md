@@ -23,6 +23,8 @@ dfx canister --help
 
 If you want to test your project locally, you can use the following commands:
 
+npm install
+
 ```bash
 # Starts the replica, running in the background
 dfx start --background

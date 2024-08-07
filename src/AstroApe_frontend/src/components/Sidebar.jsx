@@ -5,11 +5,15 @@ import { navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
 import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component
+import { useAuth } from "../auth/AuthContext"; // Import useAuth for wallet address and logout
 
 const Sidebar = () => {
   const pathname = useLocation().pathname; // Get current pathname from useLocation
   const [openNavigation, setOpenNavigation] = useState(false);
   const [showConnectWallet, setShowConnectWallet] = useState(false); // State to show/hide ConnectWallet
+  const [showAddressCard, setShowAddressCard] = useState(false); // State to show/hide address card
+
+  const { walletAddress, logout } = useAuth(); // Get walletAddress and logout from useAuth
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -30,6 +34,17 @@ const Sidebar = () => {
 
   const toggleConnectWallet = () => {
     setShowConnectWallet(!showConnectWallet); // Toggle the ConnectWallet card
+  };
+
+  const toggleAddressCard = () => {
+    setShowAddressCard(!showAddressCard); // Toggle the address card
+  };
+
+  const formatAddress = (address) => {
+    if (address.length > 12) {
+      return `${address.slice(0, 4)}.....${address.slice(-4)}`;
+    }
+    return address;
   };
 
   return (
@@ -67,7 +82,24 @@ const Sidebar = () => {
           </nav>
 
           <div className="mt-auto flex flex-col items-center pb-6">
-            <Button onClick={toggleConnectWallet}>Connect</Button>
+            {walletAddress ? (
+              <>
+                <Button onClick={toggleAddressCard} className="mb-4">
+                  {formatAddress(walletAddress)}
+                </Button>
+                {showAddressCard && (
+                  <div className="bg-n-8 border border-n-6 rounded-lg p-4 shadow-lg mt-4">
+                    <p className="text-lg font-semibold text-n-1">Wallet Address</p>
+                    <p className="text-base text-n-2">{walletAddress}</p>
+                    <Button onClick={logout} className="mt-4">
+                      Logout
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <Button onClick={toggleConnectWallet}>Connect</Button>
+            )}
           </div>
         </div>
       </div>
