@@ -1,5 +1,5 @@
 import Nat "mo:base/Nat";
-import lib "lib.mo"; // Adjust the path according to your project structure
+import lib "./"; 
 
 actor Token {
   // Token metadata
@@ -7,7 +7,7 @@ actor Token {
     "MyToken",   // Name
     "MTK",       // Symbol
     18,          // Decimals
-    ?("https://example.com/logo.png") // Logo URL (optional)
+    ?("https://example.com/logo.png") // Logo URL 
   );
 
   // Function to get token metadata
@@ -15,10 +15,10 @@ actor Token {
     return metadata;
   };
 
-  // Example function for testing
+  // function for testing
   public query func getSupply(): async Nat {
     return 1000000000; // 1 billion tokens
   };
 
-  // Additional token functionalities can be added here
+  // Additional token functionalities
 };

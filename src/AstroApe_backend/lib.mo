@@ -7,7 +7,7 @@ module lib {
     logo: ?Text; // Optional logo URL
   };
 
-  // Example utility function (can be extended)
+  // utility function 
   public func createMetadata(name: Text, symbol: Text, decimals: Nat8, logo: ?Text) : TokenMetadata {
     return {
       name = name;
