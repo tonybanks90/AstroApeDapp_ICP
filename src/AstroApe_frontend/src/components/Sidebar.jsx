@@ -6,6 +6,7 @@ import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
 import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component
 import { useAuth } from "../auth/AuthContext"; // Import useAuth for wallet address and logout
+import Socials from "./Socials"; // Import SocialSection
 
 const Sidebar = () => {
   const pathname = useLocation().pathname; // Get current pathname from useLocation
@@ -100,6 +101,9 @@ const Sidebar = () => {
             ) : (
               <Button onClick={toggleConnectWallet}>Connect</Button>
             )}
+
+            {/* Add SocialSection below the connect button */}
+            <Socials className="hidden relative z-10 mt-4 lg:block"/>
           </div>
         </div>
       </div>
