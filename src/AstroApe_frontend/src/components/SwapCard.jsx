@@ -4,7 +4,6 @@ import TokenDistributionCard from "./TokenDistributionCard";
 import TradingViewChart from "./TradingViewChart";
 import SwapComponent from "./SwapComponent"; // Import SwapComponent
 import CoinDetails from "./CoinDetails"; // Import CoinDetails
-import WrapCoin from "./WrapCoin"; // Import WrapCoin
 import WrapCoinContainer from "./WrapCoinContainer";
 
 const SwapAndDistribution = () => {

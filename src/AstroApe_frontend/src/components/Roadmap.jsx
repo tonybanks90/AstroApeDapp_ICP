@@ -3,6 +3,7 @@ import Heading from "./Heading";
 import RoadmapList from "./RoadmapList";
 import Section from "./Section";
 import { LeftLine, RightLine } from '../design/Pricing';
+import Button from './Button'
 
 const Roadmap = () => {
   return (
@@ -33,6 +34,9 @@ const Roadmap = () => {
                 <RightLine />
 
             </div>
+            <Button href="/Token/2" white>
+                Launch App
+            </Button>
         </div>
     </Section>
   )

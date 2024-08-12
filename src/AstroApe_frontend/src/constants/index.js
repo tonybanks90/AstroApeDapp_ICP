@@ -242,9 +242,7 @@ import {
       description: ",,,,,,",
       price: "9.99",
       features: [
-        "An advanced AI chatbot that can understand complex queries",
-        "An analytics dashboard to track your conversations",
-        "Priority support to solve issues quickly",
+        ",,,,,",
       ],
     },
     {
@@ -253,9 +251,7 @@ import {
       description: ",,,,",
       price: null,
       features: [
-        "An AI chatbot that can understand your queries",
-        "Personalized recommendations based on your preferences",
-        "Ability to explore the app and its features without any cost",
+        ",,,,,,,,,,",
       ],
     },
     {
@@ -264,9 +260,7 @@ import {
       description: ",,,,,",
       price: null,
       features: [
-        "An AI chatbot that can understand your queries",
-        "Personalized recommendations based on your preferences",
-        "Ability to explore the app and its features without any cost",
+        ",,,,,,",
       ],
     },
   ];
@@ -324,35 +318,31 @@ import {
     },
   ];
   
-  export const socials = [
+  export const socialsData = [
     {
       id: "0",
-      title: "Discord",
+      title: "OpenChat",
       iconUrl: discordBlack,
-      url: "#",
+      url: "https://oc.app/group/htzn6-ayaaa-aaaar-bf6lq-cai/?ref=ewnwv-5qaaa-aaaar-bf6aa-cai&code=91706620c34ec1ca",
     },
     {
       id: "1",
       title: "Twitter",
       iconUrl: twitter,
-      url: "#",
+      url: "https://x.com/AstroApe_",
     },
+    
     {
       id: "2",
-      title: "Instagram",
-      iconUrl: instagram,
-      url: "#",
+      title: "Telegram",
+      iconUrl: telegram,
+      url: "https://t.me/+g7W5Phsre6w1ZjQ0",
     },
     {
       id: "3",
       title: "Telegram",
       iconUrl: telegram,
-      url: "#",
+      url: "https://oc.app/group/htzn6-ayaaa-aaaar-bf6lq-cai/?ref=ewnwv-5qaaa-aaaar-bf6aa-cai&code=91706620c34ec1ca",
     },
-    {
-      id: "4",
-      title: "Facebook",
-      iconUrl: facebook,
-      url: "#",
-    },
+    
   ];

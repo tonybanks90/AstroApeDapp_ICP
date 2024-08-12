@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Roadmap from '../components/Roadmap';
 import Tokenomics from '../components/Tokenomics';
+import Footer from '../components/Footer';
 
 
 const LandingPage = () => {
@@ -16,6 +17,7 @@ const LandingPage = () => {
             <Features />
             <Tokenomics />
             <Roadmap />
+            <Footer />
         
         </div>
 

@@ -45,7 +45,7 @@ const Hero = () => {
              text-n-2 lg:mb-8">Unleash the power of Chain Fusion
              On Internet computer Protocols
             </p>
-            <Button href="/Token/2" white>
+            <Button href="/Token/1" white>
                 Launch App
             </Button>
         </div>
@@ -115,7 +115,7 @@ const Hero = () => {
             <BackgroundCircles />
 
         </div>
-        <SocialSection className="hidden relative z-10
+        <SocialSection className="relative z-10
         mt-20 lg:block"/>
 
     </div>
