@@ -76,45 +76,34 @@ import {
     {
       id: "0",
       title: "Features",
-      url: "/roadmap",
-      path: "/Token/3",
+      url: "#features",
     },
     {
       id: "1",
       title: "Tokenomics",
-      url: "/tokenomics",
-      path: "/Token/2",
+      url: "#tokenomics",
     },
     {
       id: "2",
       title: "Roadmap",
-      url: "/roadmap",
+      url: "#roadmap",
     },
-    {
-      id: "3",
-      title: "Referrals",
-      url: "/Token/4",
-    },
-    {
-      id: "4",
-      title: "Governance",
-      url: "/Token/5",
-      onlyMobile: true,
-    },
+   
+
     
   ];
 
   export const leaderboardData = [
-    { name: "TopUser1", volume: "123.45 ICP", rank: 1 },
-    { name: "TopUser2", volume: "98.76 ICP", rank: 2 },
-    { name: "TopUser3", volume: "87.65 ICP", rank: 3 },
-    { name: "User4", volume: "56.34 ICP" },
-    { name: "User5", volume: "45.23 ICP" },
-    { name: "User6", volume: "38.12 ICP" },
-    { name: "User7", volume: "29.99 ICP" },
-    { name: "User8", volume: "25.87 ICP" },
-    { name: "User9", volume: "20.75 ICP" },
-    { name: "User10", volume: "15.64 ICP" },
+    { name: "TopUser1", volume: "12.45 ICP", rank: 1 },
+    { name: "TopUser2", volume: "9.76 ICP", rank: 2 },
+    { name: "TopUser3", volume: "8.65 ICP", rank: 3 },
+    { name: "User4", volume: "5.34 ICP" },
+    { name: "User5", volume: "4.23 ICP" },
+    { name: "User6", volume: "3.12 ICP" },
+    { name: "User7", volume: "2.99 ICP" },
+    { name: "User8", volume: "2.87 ICP" },
+    { name: "User9", volume: "2.75 ICP" },
+    { name: "User10", volume: "1.64 ICP" },
   ];
   
   export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
@@ -139,8 +128,13 @@ import {
   
 
   
-  export const collabText =
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+  export const collabText = {
+    "0": "AstroApe charges a minimal one percent fee on all transactions. These fees not only support the platform's operations but also provide continuous value to token holders through the token economy.",
+    "1": "Our governance model empowers token holders to have a say in the platform's future. Users can vote on key decisions, upgrades, and changes, ensuring the community plays a crucial role in AstroApe's development.",
+    "2": "We offer attractive incentives for users who stake their tokens. Stakers earn rewards, contributing to network security and decentralization while benefiting from their participation.",
+    "3": "Holding AstroApe tokens unlocks access to premium features, such as advanced trading bots and special community events, enhancing the overall user experience.",
+  };
+  
   
   export const collabContent = [
     {
@@ -224,52 +218,66 @@ import {
     },
   ];
   
-  export const pricing = [
+  export const roadmap = [
     {
       id: "0",
-      title: "Development and Launch",
-      description: ",,,,,,",
-      price: "0",
+      title: "Q3 2024: Platform Development",
+      description: "Complete the development of the AstroApe platform, integrating multi-chain token deployment capabilities and bonding curve mechanisms.",
       features: [
-        "An AI chatbot that can understand your queries",
-        "Personalized recommendations based on your preferences",
-        "Ability to explore the app and its features without any cost",
+        "Multi-chain token deployer",
+        "Bonding curve integration",
+        "Cross-chain compatibility with ICP and Ethereum"
       ],
     },
     {
       id: "1",
-      title: "Test and audit",
-      description: ",,,,,,",
-      price: "9.99",
+      title: "Q4 2024: Beta Testing & Security Audits",
+      description: "Initiate beta testing with select users and conduct rigorous security audits to ensure platform reliability and safety.",
       features: [
-        ",,,,,",
+        "Beta testing phase with early adopters",
+        "Security audits by leading blockchain security firms",
+        "Bug fixes and performance enhancements"
       ],
     },
     {
       id: "2",
-      title: "Mainnet Launch",
-      description: ",,,,",
-      price: null,
+      title: "Q1 2025: Mainnet Launch & Airdrop",
+      description: "Launch the platform on the mainnet, conduct an airdrop of the native utility token to early supporters, and initiate the first funding round.",
       features: [
-        ",,,,,,,,,,",
+        "Mainnet launch with full feature set",
+        "Airdrop of utility tokens",
+        "First funding round"
       ],
     },
     {
-      id: "2",
-      title: "Airdrop and Funding Rounds",
-      description: ",,,,,",
-      price: null,
+      id: "3",
+      title: "Q2 2025: Ecosystem Expansion",
+      description: "Expand the AstroApe ecosystem by integrating with additional blockchains and launching governance features for token holders.",
       features: [
-        ",,,,,,",
+        "Integration with Solana and Bitcoin",
+        "Introduction of multi-chain governance",
+        "Partnerships with other DeFi platforms"
+      ],
+    },
+    {
+      id: "4",
+      title: "Q3 2025: DEX Integration & Staking",
+      description: "Integrate with decentralized exchanges (DEXs) for seamless trading and introduce staking features for platform tokens.",
+      features: [
+        "DEX integration for token trading",
+        "Staking mechanisms for yield generation",
+        "Enhanced liquidity management"
       ],
     },
   ];
   
+  
+  
   export const benefits = [
     {
       id: "0",
-      title: "Launch a Memecoin",
-      text: "Deploy your memecoin to ICP and Ethereum Network",
+      title: "Create a Memecoin",
+      text: "Deploy an ICRC-2 Token on ICP, Ethereum, EVM chains and soon Solana for Under $2",
       backgroundUrl: "assets/benefits/card-1.svg",
       iconUrl: benefitIcon1,
       imageUrl: benefitImage2,
@@ -286,7 +294,7 @@ import {
     {
       id: "2",
       title: "Multichain Governance",
-      text: "Vote for or Against new implementations on the DApp, be ",
+      text: " AstroApe empowers users from various blockchain networks to participate in shaping the future of the platform, ensuring that it remains community-driven and adaptable to the needs of its diverse user base.",
       backgroundUrl: "assets/benefits/card-3.svg",
       iconUrl: benefitIcon3,
       imageUrl: benefitImage2,
@@ -294,7 +302,7 @@ import {
     {
       id: "3",
       title: "Authentication",
-      text: ",,,,",
+      text: "Users can Sign In with,Internet Identity, Ethereum (SIWE), Sign In with Solana (SIWS), enabling users from various blockchains to securely sign in, deploy, and trade tokens on the platform.",
       backgroundUrl: "assets/benefits/card-4.svg",
       iconUrl: benefitIcon4,
       imageUrl: benefitImage2,
@@ -302,8 +310,8 @@ import {
     },
     {
       id: "4",
-      title: "Intergration with DEXs",
-      text: ",,,,",
+      title: "Simply Easy UI to Use",
+      text: "Our DApp has simple UI/UX ensures that launching tokens, trading, participating in referral programs, and engaging in governance are all accessible, efficient, and user-friendly experiences.",
       backgroundUrl: "assets/benefits/card-5.svg",
       iconUrl: benefitIcon1,
       imageUrl: benefitImage2,
@@ -311,7 +319,7 @@ import {
     {
       id: "5",
       title: "Bonding Curve",
-      text: ",,,,",
+      text: "Our unique bonding curve allows users to launch memecoins without initial liquidity, ensuring fair and stable pricing. As demand increases, prices adjust automatically, and once the curve is complete, liquidity is added to a DEX and burned, securing long-term market integrity and sustainable trading.",
       backgroundUrl: "assets/benefits/card-6.svg",
       iconUrl: benefitIcon2,
       imageUrl: benefitImage2,

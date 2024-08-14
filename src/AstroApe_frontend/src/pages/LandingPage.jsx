@@ -6,6 +6,7 @@ import Hero from '../components/Hero';
 import Roadmap from '../components/Roadmap';
 import Tokenomics from '../components/Tokenomics';
 import Footer from '../components/Footer';
+import { ParallaxProvider } from 'react-scroll-parallax';
 
 
 const LandingPage = () => {
@@ -16,7 +17,10 @@ const LandingPage = () => {
             <Hero />
             <Features />
             <Tokenomics />
-            <Roadmap />
+            <ParallaxProvider>
+                <Roadmap />
+            </ParallaxProvider>
+            
             <Footer />
         
         </div>

@@ -1,4 +1,6 @@
-import brainwave from "./brainwave.svg";
+import phoneFrame from "./phoneFrame.jpg";
+import tabletFrame from "./tabletFrame.jpg";
+import laptopFrame from "./laptopFrame.jpg";
 import AstroBanner from "./AstroBanner.png";
 import AstroLogo from "./AstroApe5.png";
 import TwitterLogo from "./TwitterLogo.png";
@@ -84,7 +86,9 @@ import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
 
 export {
-  brainwave,
+  tabletFrame,
+  laptopFrame,
+  phoneFrame,
   AstroBanner,
   AstroLogo,
   OpenChatLogo,
