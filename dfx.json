@@ -1,0 +1,34 @@
+{
+  "canisters": {
+    "AstroApe_backend": {
+      "main": "src/AstroApe_backend/main.mo",
+      "type": "motoko"
+    },
+    "AstroApe_frontend": {
+      "dependencies": [
+        "AstroApe_backend"
+      ],
+      "source": [
+        "src/AstroApe_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "AstroApe_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "networks": {
+    "ic": {
+      "providers": [
+        "https://ic0.app"
+      ],
+      "type": "persistent"
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
