@@ -104,6 +104,9 @@ const Sidebar = () => {
 
             {/* Add SocialSection below the connect button */}
             <Socials className="hidden relative z-10 mt-4 lg:block"/>
+
+            {/* Place ThemeBtn below Socials */}
+           
           </div>
         </div>
       </div>

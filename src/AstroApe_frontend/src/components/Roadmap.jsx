@@ -35,8 +35,8 @@ const Roadmap = () => {
         </Parallax>
 
         <div className="text-center mt-12">
-          <Button href="/Token/2" white>
-            Launch App
+          <Button href="" white>
+            Coming Soon
           </Button>
         </div>
       </div>

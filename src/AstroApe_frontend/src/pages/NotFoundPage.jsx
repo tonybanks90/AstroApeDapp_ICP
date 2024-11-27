@@ -3,10 +3,12 @@ import { Link } from "react-router-dom"
 
 const NotFoundPage = () => {
   return (
-    <div className='flex flex-col gap-2'>
+    <>
+    <div className='flex flex-col gap-2 p-20'>
       404 Not Found
       <Link to="/">Home</Link>
     </div>
+    </>
   )
 }
 

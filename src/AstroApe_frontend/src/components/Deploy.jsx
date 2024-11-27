@@ -147,13 +147,22 @@ const CreatePage = () => {
             <label className="block text-lg font-medium text-n-1 mb-2">Select DEX</label>
             <div className="flex space-x-4">
               {deployNetwork === "ICP" && (
-                <button
-                  type="button"
-                  className={`px-4 py-2 border rounded-md ${selectedDex === "ICPEX" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-                  onClick={() => handleDexClick("ICPEX")}
-                >
-                  ICPEX
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className={`px-4 py-2 border rounded-md ${selectedDex === "ICPEX" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
+                    onClick={() => handleDexClick("ICPEX")}
+                  >
+                    KongSwap
+                  </button>
+                  <button
+                    type="button"
+                    className={`px-4 py-2 border rounded-md ${selectedDex === "KongSwap" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
+                    onClick={() => handleDexClick("KongSwap")}
+                  >
+                    ICPEX
+                  </button>
+                </>
               )}
               {deployNetwork === "ETH" && (
                 <button

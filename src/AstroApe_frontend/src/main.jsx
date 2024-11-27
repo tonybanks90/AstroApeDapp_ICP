@@ -3,11 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import Profile from './components/Profile';
 import { AuthProvider } from "./auth/AuthContext";
-
-
 import Header from './components/Header';
-
-
 import './index.css';
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NotFoundPage from './pages/NotFoundPage';
@@ -24,7 +20,7 @@ import Work from './components/Work';
 import ChatAndTrades from './components/ChatAndTrades';
 import TradingChart from './components/TradingChart';
 import TradingViewChart from './components/TradingViewChart';
-
+import Blog from './pages/Blog';
 
 
 
@@ -35,6 +31,25 @@ const router = createBrowserRouter([
     element: <Header />,
     errorElement: <NotFoundPage />,
   },
+
+  {
+    path: '/Blog',
+    element: <Blog />,
+    errorElement: <NotFoundPage />,
+  },
+
+  {
+    path: '/Whitepaper',
+    element: <Header />,
+    errorElement: <NotFoundPage />,
+  },
+  
+  {
+    path: '/FAQS',
+    element: <Header />,
+    errorElement: <NotFoundPage />,
+  },
+  
   {
     path: '/Token',
     element: <TokenDeploy />,
@@ -89,7 +104,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
+   
     <RouterProvider router={router} />
+    
     </AuthProvider>
   </React.StrictMode>,
 );
