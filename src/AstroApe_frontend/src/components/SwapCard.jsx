@@ -5,6 +5,7 @@ import TradingViewChart from "./TradingViewChart";
 import SwapComponent from "./SwapComponent"; // Import SwapComponent
 import CoinDetails from "./CoinDetails"; // Import CoinDetails
 import WrapCoinContainer from "./WrapCoinContainer";
+import CandlestickChart from "./CandlestickChart";
 
 const SwapAndDistribution = () => {
   return (
@@ -22,7 +23,7 @@ const SwapAndDistribution = () => {
 
         {/* TradingView Chart - Below CoinDetails */}
         <div className="lg:col-span-2 bg-n-8 border border-n-6 rounded-lg p-4 h-full">
-          <TradingViewChart />
+          <CandlestickChart />
         </div>
 
         {/* Swap Component - Below WrapCoin */}

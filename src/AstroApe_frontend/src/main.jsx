@@ -21,6 +21,7 @@ import ChatAndTrades from './components/ChatAndTrades';
 import TradingChart from './components/TradingChart';
 import TradingViewChart from './components/TradingViewChart';
 import Blog from './pages/Blog';
+import CandlestickChart from './components/CandlestickChart';
 
 
 
@@ -84,7 +85,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/Token/8',
-        element: <TradingViewChart />,
+        element: <CandlestickChart />,
       },
 
     ]
