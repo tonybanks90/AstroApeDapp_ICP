@@ -4,6 +4,7 @@ import Input from "./Input";  // Assuming you have an Input component
 import Leaderboard from "./Leaderboard"; // Importing the Leaderboard component
 import { FaCopy, FaCog } from "react-icons/fa"; // For icons
 import { leaderboardData } from "../constants/index";
+import EditProfile from "./EditProfile";
 
 const Profile = () => {
   const [cryptoAddress] = useState("0x1234...abcd");
@@ -11,8 +12,10 @@ const Profile = () => {
   const [ethBalance] = useState("1.25 ETH");
   const [solBalance] = useState("10.5 SOL");
   const [icpBalance] = useState("5.0 ICP");
-
-  
+  const [username, setUsername] = useState("Username");
+  const [tags, setTags] = useState("Some cool tags");
+  const [profilePic, setProfilePic] = useState("/path/to/profile-pic.jpg");
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(cryptoAddress);
@@ -24,15 +27,18 @@ const Profile = () => {
       <section className="flex flex-col lg:flex-row items-center mb-8">
         <div className="flex items-center mb-4 lg:mb-0 lg:mr-8">
           <img
-            src="/path/to/profile-pic.jpg"
+            src={profilePic}
             alt="Profile Pic"
             className="w-24 h-24 rounded-full mr-4"
           />
           <div>
-            <h1 className="text-3xl font-bold text-n-1">Username</h1>
-            <p className="text-n-2">Some cool tags</p>
+            <h1 className="text-3xl font-bold text-n-1">{username}</h1>
+            <p className="text-n-2">{tags}</p>
           </div>
-          <button className="ml-4 text-n-2 hover:text-n-1" onClick={() => alert('Edit profile coming soon!')}>
+          <button
+            className="ml-4 text-n-2 hover:text-n-1"
+            onClick={() => setIsEditing(true)}
+          >
             <FaCog size={24} />
           </button>
         </div>
@@ -52,7 +58,7 @@ const Profile = () => {
         <div className="bg-n-8 border border-n-6 rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-2 text-n-1">Rewards Balance</h2>
           <p className="text-4xl font-bold text-green-400 mb-4">{rewardsBalance}</p>
-          <Button onClick={() => alert('Claiming rewards...')}>Claim</Button>
+          <Button onClick={() => alert("Claiming rewards...")}>Claim</Button>
         </div>
 
         {/* Wallet Balance Card */}
@@ -68,6 +74,19 @@ const Profile = () => {
 
       {/* Referral Leaderboard */}
       <Leaderboard data={leaderboardData} />
+
+      {/* Edit Profile Modal */}
+      {isEditing && (
+        <EditProfile
+          username={username}
+          setUsername={setUsername}
+          tags={tags}
+          setTags={setTags}
+          profilePic={profilePic}
+          setProfilePic={setProfilePic}
+          onClose={() => setIsEditing(false)}
+        />
+      )}
     </div>
   );
 };

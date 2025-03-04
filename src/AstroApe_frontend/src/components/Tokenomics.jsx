@@ -1,4 +1,3 @@
-// Tokenomics.jsx
 import React from 'react';
 import Section from "./Section";
 import { check } from "../assets";
@@ -35,16 +34,11 @@ const pieChartData = {
       '#4BC0C0', // Team
       '#F3A8C9'  // Reserve
     ],
-    borderWidth: 0,
+    borderWidth: 0, // Remove border for cleaner look
   }]
 };
 
 const Tokenomics = () => {
-  // Handler to open the whitepaper link
-  const handleLearnMoreClick = () => {
-    window.open('https://astroape.gitbook.io/whitepaper', '_blank');
-  };
-
   return (
     <Section crosses className="overflow-hidden" id="tokenomics">
       <div className="container lg:flex">
@@ -67,8 +61,7 @@ const Tokenomics = () => {
             ))}
           </ul>
 
-          {/* Updated Button with click handler */}
-          <Button onClick={handleLearnMoreClick}>Learn More</Button>
+          <Button>Learn More</Button>
         </div>
 
         <div className="lg:ml-auto xl:w-[38rem] mt-4">
@@ -81,7 +74,7 @@ const Tokenomics = () => {
               responsive: true,
               plugins: {
                 legend: {
-                  display: false,
+                  display: false, // Hide the legend if not needed
                 },
                 tooltip: {
                   callbacks: {

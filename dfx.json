@@ -1,41 +1,23 @@
 {
   "canisters": {
     "AstroApe_backend": {
-      "main": "src/AstroApe_backend/Token.mo",
+      "main": "src/AstroApe_backend/src/token_factory/main.mo",
       "type": "motoko"
     },
-      "ic-siwe_provider": {
+      "ic_siwe_provider": {
       "type": "custom",
       "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.did",
       "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.wasm.gz"
 
     },
     "icrc1_ledger_canister": {
-      "main": "src/AstroApe_backend/Token.mo",
+      "main": "src/AstroApe_backend/src/token_factory/main.mo",
       "type": "custom",
       "candid": "icrc1_ledger.did",
       "wasm" : "icrc1_ledger.wasm.gz"
     },
-    "cketh_ledger": {
-      "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/master/rs/rosetta-api/icrc1/ledger/ledger.did",
-      "wasm": "https://download.dfinity.systems/ic/7e4d4c9f00e7c3b97cb9c1e9b6722f9b0b8cd5fe/canisters/ic-icrc1-ledger.wasm.gz",
-      "remote": {
-        "id": {
-          "ic": "ss2fx-dyaaa-aaaar-qacoq-cai"
-        }
-      }
-    },
-    "cketh_minter": {
-      "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/master/rs/ethereum/cketh/minter/cketh_minter.did",
-      "wasm": "https://download.dfinity.systems/ic/7e4d4c9f00e7c3b97cb9c1e9b6722f9b0b8cd5fe/canisters/cketh-minter.wasm.gz",
-      "remote": {
-        "id": {
-          "ic": "sv3dd-oaaaa-aaaar-qacoa-cai"
-        }
-      }
-    },
+    
+
     
     "AstroApe_frontend": {
       "dependencies": [

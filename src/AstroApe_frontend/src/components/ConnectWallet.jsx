@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "./Button"; // Assuming you have a Button component
 import { useAuth } from "../auth/AuthContext"; // Importing useAuth hook
+import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import RainbowKit ConnectButton
 
 const ConnectWallet = () => {
     const [selectedChain, setSelectedChain] = useState(null);
@@ -21,7 +22,6 @@ const ConnectWallet = () => {
 
     const handleConnectWallet = async (wallet) => {
         if (wallet === "MetaMask") {
-            // Connect to MetaMask
             if (window.ethereum) {
                 try {
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -33,16 +33,14 @@ const ConnectWallet = () => {
                 alert("MetaMask not installed!");
             }
         } else if (wallet === "WalletConnect") {
-            // Connect to WalletConnect (assuming you have the integration)
             alert("WalletConnect integration not implemented yet.");
         } else if (wallet === "Plug Wallet") {
-            // Connect to Plug Wallet
             if (window.ic && window.ic.plug) {
                 try {
                     const connected = await window.ic.plug.requestConnect();
                     if (connected) {
                         const principalId = await window.ic.plug.getPrincipal();
-                        setWalletAddress(principalId.toText()); // Update state with Plug Wallet address
+                        setWalletAddress(principalId.toText());
                     } else {
                         alert("Plug Wallet connection failed.");
                     }
@@ -53,13 +51,12 @@ const ConnectWallet = () => {
                 alert("Plug Wallet not installed!");
             }
         } else if (wallet === "NFID") {
-            // Connect to NFID
             if (window.nfid) {
                 try {
-                    const nfidClient = window.nfid; // Initialize NFID client
-                    await nfidClient.authenticate(); // Request authentication
-                    const userId = nfidClient.getUser(); // Get user ID
-                    setWalletAddress(userId); // Update state with NFID user ID
+                    const nfidClient = window.nfid;
+                    await nfidClient.authenticate();
+                    const userId = nfidClient.getUser();
+                    setWalletAddress(userId);
                 } catch (error) {
                     alert("Error connecting to NFID: " + error.message);
                 }
@@ -67,25 +64,19 @@ const ConnectWallet = () => {
                 alert("NFID SDK not loaded!");
             }
         } else if (wallet === "Internet Identity") {
-            // Trigger Internet Identity login
             login();
-            // Handle setting wallet address after successful login if applicable
         }
     };
 
     const handleLogout = () => {
-        // Clear wallet address
         setWalletAddress("");
-        // Call auth logout if applicable
         authLogout();
-        // Additional logout logic can be added here if needed
     };
 
     return (
         <div className="bg-n-8 border border-n-6 rounded-lg p-6 shadow-lg mt-8">
             <h2 className="text-2xl font-bold text-n-1 mb-4">Connect Wallet</h2>
-
-            {/* Show or hide the connect wallet card */}
+            <ConnectButton /> {/* RainbowKit Connect Button */}
             {isCardVisible && (
                 <div>
                     {selectedChain ? (
@@ -112,8 +103,6 @@ const ConnectWallet = () => {
                     )}
                 </div>
             )}
-
-            {/* Always show the connected wallet address and logout button */}
             {walletAddress && (
                 <div className="mt-4">
                     <p className="text-lg font-semibold text-n-1">Connected Wallet Address:</p>

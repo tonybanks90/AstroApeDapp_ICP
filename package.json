@@ -16,7 +16,8 @@
     "src/AstroApe_frontend"
   ],
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^6.2.0"
   },
   "dependencies": {
     "@dfinity/agent": "^2.2.0",
@@ -24,6 +25,10 @@
     "@dfinity/candid": "^2.2.0",
     "@dfinity/identity": "^2.2.0",
     "@dfinity/use-auth-client": "^2.0.0",
+    "@rainbow-me/rainbowkit": "^2.2.4",
+    "@tanstack/react-query": "^5.67.1",
+    "@wagmi/connectors": "^5.7.8",
+    "@wagmi/core": "^2.16.5",
     "axios": "^1.7.3",
     "chart.js": "^4.4.3",
     "chartjs-adapter-date-fns": "^3.0.0",
@@ -35,7 +40,7 @@
     "react-just-parallax": "^3.1.16",
     "react-scroll-parallax": "^3.4.5",
     "scroll-lock": "^2.1.5",
-    "viem": "^2.22.14",
-    "wagmi": "^2.14.9"
+    "viem": "^2.23.6",
+    "wagmi": "^2.14.12"
   }
 }
