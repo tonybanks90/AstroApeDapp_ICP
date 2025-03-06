@@ -24,59 +24,109 @@ import Blog from './pages/Blog';
 import CandlestickChart from './components/CandlestickChart';
 import { ThemeProvider } from './contexts/theme';
 
+
+
 import '@rainbow-me/rainbowkit/styles.css';
-import { createConfig, configureChains, WagmiProvider } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import { publicProvider } from "wagmi/providers";
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import {mainnet} from 'wagmi/chains';
+import {
+  QueryClientProvider,
+  QueryClient,
+} from "@tanstack/react-query";
 
-
-
-
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-
-// 1️⃣ Configure chains & providers
-const { chains, publicClient } = configureChains([mainnet], [publicProvider()]);
-
-// 2️⃣ Create Wagmi config
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  publicClient,
+const config = getDefaultConfig({
+  appName: 'My RainbowKit App',
+  projectId: 'YOUR_PROJECT_ID',
+  chains: [mainnet],
+  ssr: true, // If your dApp uses server side rendering (SSR)
 });
 
-// 3️⃣ Create Query Client
 const queryClient = new QueryClient();
-
-// 4️⃣ Define Routes
 const router = createBrowserRouter([
-  { path: '/3', element: <Header />, errorElement: <NotFoundPage /> },
-  { path: '/Blog', element: <Blog />, errorElement: <NotFoundPage /> },
-  { path: '/Whitepaper', element: <Header />, errorElement: <NotFoundPage /> },
-  { path: '/FAQS', element: <Header />, errorElement: <NotFoundPage /> },
+  {
+    path: '/3',
+    element: <Header />,
+    errorElement: <NotFoundPage />,
+  },
+
+  {
+    path: '/Blog',
+    element: <Blog />,
+    errorElement: <NotFoundPage />,
+  },
+
+  {
+    path: '/Whitepaper',
+    element: <Header />,
+    errorElement: <NotFoundPage />,
+  },
+  
+  {
+    path: '/FAQS',
+    element: <Header />,
+    errorElement: <NotFoundPage />,
+  },
+  
   {
     path: '/Token',
     element: <TokenDeploy />,
     children: [
-      { path: '/Token/1', element: <NewPairs /> },
-      { path: '/Token/2', element: <Deploy /> },
-      { path: '/Token/3', element: <Profile /> },
-      { path: '/Token/4', element: <Referral /> },
-      { path: '/Token/5', element: <Governance /> },
-      { path: '/Token/6', element: <SwapCard /> },
-      { path: '/Token/7', element: <ConnectWallet /> },
-      { path: '/Token/8', element: <CandlestickChart /> },
+      {
+        path: '/Token/1',
+        element: <NewPairs />,
+      },
+      {
+        path: '/Token/2',
+        element: <Deploy />,
+      },
+      {
+        path: '/Token/3',
+        element: <Profile />
+      },
+      {
+        path: '/Token/4',
+        element: <Referral />,
+      },
+      {
+        path: '/Token/5',
+        element: <Governance />,
+      },
+      {
+        path: '/Token/6',
+        element: <SwapCard />,
+      },
+      {
+        path: '/Token/7',
+        element: <ConnectWallet />,
+      },
+      {
+        path: '/Token/8',
+        element: <CandlestickChart />,
+      },
+
     ]
   },
-  { path: '/2', element: <Work /> },
-  { path: '/', element: <LandingPage /> },
+  
+  {
+    path: '/2',
+    element: <Work/>
+  },
+  {
+    path: '/',
+    element: <LandingPage />
+  },
+  
 ]);
 
-// 5️⃣ Render Application
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>
-        <RainbowKitProvider chains={chains}>
+    <QueryClientProvider client={queryClient}> {/* Move this to the top */}
+      <WagmiProvider config={config}>
+        <RainbowKitProvider>
           <AuthProvider>
             <ThemeProvider>
               <RouterProvider router={router} />
@@ -87,3 +137,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </QueryClientProvider>
   </React.StrictMode>,
 );
+
+
+

@@ -22,3 +22,4 @@ actor Token {
 
   // Additional token functionalities
 };
+
