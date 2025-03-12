@@ -5,17 +5,11 @@ import { ApeLogo, AstroLogo } from "../assets";
 import { navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
-import { useAuth } from "../auth/AuthContext"; // Import useAuth for wallet address and logout
-import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component
 import Socials from "./Socials"; // Import SocialSection
 
 const Header = () => {
   const pathname = useLocation().pathname;
   const [openNavigation, setOpenNavigation] = useState(false);
-  const [showConnectWallet, setShowConnectWallet] = useState(false); // State to show/hide ConnectWallet
-  const [showAddressCard, setShowAddressCard] = useState(false); // State to show/hide address card
-
-  const { walletAddress, logout } = useAuth(); // Get walletAddress and logout from useAuth
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -29,29 +23,13 @@ const Header = () => {
 
   const handleClick = () => {
     if (!openNavigation) return;
-
     enablePageScroll();
     setOpenNavigation(false);
   };
 
-  const toggleConnectWallet = () => {
-    setShowConnectWallet(!showConnectWallet); // Toggle the ConnectWallet card
-  };
-
-  const toggleAddressCard = () => {
-    setShowAddressCard(!showAddressCard); // Toggle the address card
-  };
-
-  const formatAddress = (address) => {
-    if (address.length > 12) {
-      return `${address.slice(0, 4)}.....${address.slice(-4)}`;
-    }
-    return address;
-  };
-
   return (
     <div
-      className={`fixed top-0 left-0 w-full z-50  border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
+      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
         openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
       }`}
     >
@@ -90,40 +68,11 @@ const Header = () => {
               {item.title}
             </Link>
           ))}
-          
-          {walletAddress ? (
-            <>
-              <Button onClick={toggleAddressCard} className="mb-4">
-                {formatAddress(walletAddress)}
-              </Button>
-              {showAddressCard && (
-                <div className="bg-n-8 border border-n-6 rounded-lg p-4 shadow-lg mt-4">
-                  <p className="text-lg font-semibold text-n-1">Wallet Address</p>
-                  <p className="text-base text-n-2">{walletAddress}</p>
-                  <Button onClick={logout} className="mt-4">
-                    Logout
-                  </Button>
-                </div>
-              )}
-            </>
-          ) : (
-            <Button onClick={toggleConnectWallet}>Connect</Button>
-          )}
 
-          {/* Add SocialSection below the connect button */}
-          <Socials className="relative z-10 mt-4"/>
+          {/* Add SocialSection below the menu */}
+          <Socials className="relative z-10 mt-4" />
         </div>
       </nav>
-
-      {/* Render the ConnectWallet card when showConnectWallet is true */}
-      {showConnectWallet && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <ConnectWallet />
-            <Button onClick={toggleConnectWallet} className="mt-4">Close</Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

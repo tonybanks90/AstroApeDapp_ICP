@@ -59,13 +59,7 @@ const CandlestickChart = () => {
   }, []);
 
   return (
-    <div className="mt-20 p-6 lg:p-8">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-white">Candlestick Chart</h1>
-        <p className="text-lg text-gray-400">
-          Visualize market data with our dynamic candlestick chart.
-        </p>
-      </header>
+    <div className="p-6 lg:p-8">
       <div ref={chartContainerRef} style={{ width: '100%', height: '400px' }} />
     </div>
   );

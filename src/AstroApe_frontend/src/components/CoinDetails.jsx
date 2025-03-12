@@ -1,52 +1,100 @@
-import React from 'react';
-import { companyLogos } from '../constants';
+import React from "react";
+import { coininfo } from "../constants";
 
 const CoinDetails = () => {
   return (
     <div className="bg-n-8 border border-n-6 rounded-lg p-4">
-      {/* Banner */}
-      <div className="relative bg-blue-500 text-white rounded-lg overflow-hidden">
-        <img src="path-to-your-banner-image" alt="Banner" className="w-full h-32 object-cover" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <img src="path-to-your-logo" alt="Logo" className="w-24 h-24 rounded-full" />
-        </div>
-      </div>
-
       {/* Coin Information */}
-      <div className="mt-4">
-        <h2 className="text-xl font-bold text-n-1">APE TOKEN (APE)</h2>
-        <div className="mt-2">
-          <p className="text-n-1">Dev: [dev wallet address]</p>
-          <p className="text-n-1">Dex: UNISWAP</p>
-          <p className="text-n-1">Address: [Token address]</p>
+      <div className="border border-n-6 rounded-lg p-4 flex items-center space-x-4">
+        <img src={coininfo.logo} alt="Logo" className="w-16 h-16 border border-n-6 rounded-lg" />
+        <div>
+          <h2 className="text-xl font-bold text-n-1">{coininfo.name}</h2>
+          <p className="text-n-3">{coininfo.tagline}</p>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mt-4">
-        <p className="text-n-1">Progress: 100%</p>
-        <div className="relative w-full bg-n-7 rounded-full h-4">
-          <div
-            className="absolute top-0 left-0 h-full bg-purple-500 rounded-full"
-            style={{ width: '100%' }}
-          ></div>
+      {/* Social Icons */}
+<div className="mt-4 flex space-x-4 justify-center">
+  <a href={coininfo.twitterlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+    <img src={coininfo.twittericon} alt="Twitter" className="w-6 h-6" />
+  </a>
+  <a href={coininfo.telegramlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+    <img src={coininfo.telegramicon} alt="Telegram" className="w-6 h-6" />
+  </a>
+  <a href={coininfo.websitelink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+    <img src={coininfo.websiteicon} alt="Website" className="w-6 h-6" />
+  </a>
+</div>
+
+
+      {/* Prices */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Price USD</p>
+          <p className="font-bold">{coininfo.priceUSD}</p>
+        </div>
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Price</p>
+          <p className="font-bold">{coininfo.priceSats}</p>
         </div>
       </div>
 
-      {/* Flex Details */}
-      <div className="mt-4 flex justify-between text-n-1">
-        <div>
-          <p>Market Cap: $69K</p>
+      {/* Price Changes */}
+      <div className="mt-4 grid grid-cols-4 gap-4">
+        {Object.entries(coininfo.changes).map(([time, change]) => (
+          <div key={time} className="border border-n-6 rounded-lg p-4 text-center">
+            <p className="text-n-3">{time.toUpperCase()}</p>
+            <p className={`font-bold ${change.includes("-") ? "text-red-500" : "text-green-500"}`}>
+              {change}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Market Stats */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Market Cap</p>
+          <p className="font-bold">{coininfo.marketCap.btc} ({coininfo.marketCap.usd})</p>
         </div>
-        <div>
-          <p>Virtual LP: $21K</p>
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Volume</p>
+          <p className="font-bold">{coininfo.volume.btc} ({coininfo.volume.usd})</p>
         </div>
-        <div>
-          <p>Progress: 100%</p>
+      </div>
+
+      {/* Transactions */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">TXNS</p>
+          <p className="font-bold">{coininfo.transactions.total}</p>
         </div>
-        <div>
-          <p>Volume: $45K</p>
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Buys / Sells</p>
+          <p className="font-bold text-green-500">{coininfo.transactions.buys}</p> / 
+          <p className="font-bold text-red-500">{coininfo.transactions.sells}</p>
         </div>
+      </div>
+
+      {/* Other Details */}
+      <div className="mt-4 grid grid-cols-3 gap-4">
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Holders</p>
+          <p className="font-bold">{coininfo.holders}</p>
+        </div>
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Supply</p>
+          <p className="font-bold">{coininfo.supply}</p>
+        </div>
+        <div className="border border-n-6 rounded-lg p-4 text-center">
+          <p className="text-n-3">Created</p>
+          <p className="font-bold">{coininfo.created}</p>
+        </div>
+      </div>
+
+      {/* Dev */}
+      <div className="mt-4 text-center text-green-500 font-bold border border-n-6 rounded-lg p-4">
+        Dev: {coininfo.dev}
       </div>
     </div>
   );

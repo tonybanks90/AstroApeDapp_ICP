@@ -84,9 +84,13 @@ import facebook from "./socials/facebook.svg";
 import instagram from "./socials/instagram.svg";
 import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
+import logo9 from "./logo9.jpg";
+import websiteicon from "./websiteicon.jpg";
 
 export {
   tabletFrame,
+  websiteicon,
+  logo9,
   laptopFrame,
   phoneFrame,
   AstroBanner,

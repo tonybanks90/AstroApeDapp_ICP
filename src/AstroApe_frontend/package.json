@@ -18,8 +18,11 @@
     "@tanstack/react-query": "^5.67.1",
     "@wagmi/connectors": "^5.7.8",
     "@wagmi/core": "^2.16.5",
+    "buffer": "^6.0.3",
+    "ic-siwe-js": "^0.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.5.2",
     "react-router-dom": "^6.24.1",
     "viem": "^2.23.6",
     "wagmi": "^2.14.12"

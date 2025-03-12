@@ -18,6 +18,9 @@ export default defineConfig({
     },
   },
   server: {
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       "/api": {
         target: "http://127.0.0.1:4943",
@@ -33,11 +36,15 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        buffer: "buffer", // Polyfill buffer module
         find: "declarations",
         replacement: fileURLToPath(
           new URL("../declarations", import.meta.url)
         ),
       },
     ],
+  },
+  define: {
+    global: "window", // Some packages expect `global`
   },
 });

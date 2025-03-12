@@ -4,9 +4,12 @@ import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import { navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
-import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component
-import { useAuth } from "../auth/AuthContext"; // Import useAuth for wallet address and logout
+import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component 
 import Socials from "./Socials"; // Import SocialSection
+import QuickBuy from "./QuickBuy"; // Import QuickBuy component
+import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import RainbowKit ConnectButton
+import LoginButton from "./login-button"; // Import LoginButton
+import identity from "./identity"; // Import identiy
 
 const Sidebar = () => {
   const pathname = useLocation().pathname; // Get current pathname from useLocation
@@ -14,7 +17,7 @@ const Sidebar = () => {
   const [showConnectWallet, setShowConnectWallet] = useState(false); // State to show/hide ConnectWallet
   const [showAddressCard, setShowAddressCard] = useState(false); // State to show/hide address card
 
-  const { walletAddress, logout } = useAuth(); // Get walletAddress and logout from useAuth
+
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -83,30 +86,18 @@ const Sidebar = () => {
           </nav>
 
           <div className="mt-auto flex flex-col items-center pb-6">
-            {walletAddress ? (
-              <>
-                <Button onClick={toggleAddressCard} className="mb-4">
-                  {formatAddress(walletAddress)}
-                </Button>
-                {showAddressCard && (
-                  <div className="bg-n-8 border border-n-6 rounded-lg p-4 shadow-lg mt-4">
-                    <p className="text-lg font-semibold text-n-1">Wallet Address</p>
-                    <p className="text-base text-n-2">{walletAddress}</p>
-                    <Button onClick={logout} className="mt-4">
-                      Logout
-                    </Button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <Button onClick={toggleConnectWallet}>Connect</Button>
-            )}
+            {/* QuickBuy Component Above Connect Button */}
+            <QuickBuy />
+            
+      
+              
+
+              <ConnectButton />
+
+            
 
             {/* Add SocialSection below the connect button */}
             <Socials className="hidden relative z-10 mt-4 lg:block"/>
-
-            {/* Place ThemeBtn below Socials */}
-           
           </div>
         </div>
       </div>
@@ -120,6 +111,8 @@ const Sidebar = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 shadow-lg">
               <ConnectWallet />
+              <LoginButton />
+              <identity />
               <Button onClick={toggleConnectWallet} className="mt-4">Close</Button>
             </div>
           </div>

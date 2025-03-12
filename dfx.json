@@ -4,24 +4,25 @@
       "main": "src/AstroApe_backend/src/token_factory/main.mo",
       "type": "motoko"
     },
-      "ic_siwe_provider": {
+    "UserStorage": {
+      "main": "src/AstroApe_backend/src/user/UserStorage.mo",
+      "type": "motoko"
+    },
+    "ic_siwe_provider": {
       "type": "custom",
       "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.did",
       "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.wasm.gz"
-
     },
     "icrc1_ledger_canister": {
       "main": "src/AstroApe_backend/src/token_factory/main.mo",
       "type": "custom",
       "candid": "icrc1_ledger.did",
-      "wasm" : "icrc1_ledger.wasm.gz"
+      "wasm": "icrc1_ledger.wasm.gz"
     },
-    
-
-    
     "AstroApe_frontend": {
       "dependencies": [
-        "AstroApe_backend"
+        "AstroApe_backend",
+        "UserStorage"
       ],
       "source": [
         "src/AstroApe_frontend/dist"

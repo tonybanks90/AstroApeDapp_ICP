@@ -1,18 +1,23 @@
 import React, { useState } from "react";
+import { useSiweIdentity } from "ic-use-siwe-identity";
 import Button from "./Button"; // Assuming you have a Button component
-import Input from "./Input";  // Assuming you have an Input component
 import Leaderboard from "./Leaderboard"; // Importing the Leaderboard component
-import { FaCopy, FaCog } from "react-icons/fa"; // For icons
+import { FaCopy, FaCog } from "react-icons/fa"; // Icons for actions
 import { leaderboardData } from "../constants/index";
 import EditProfile from "./EditProfile";
 
 const Profile = () => {
+  const { identity } = useSiweIdentity();
   const [cryptoAddress] = useState("0x1234...abcd");
   const [rewardsBalance] = useState("12.34 ICP");
   const [ethBalance] = useState("1.25 ETH");
   const [solBalance] = useState("10.5 SOL");
   const [icpBalance] = useState("5.0 ICP");
-  const [username, setUsername] = useState("Username");
+
+  // Use SIWE identity as username if available
+  const [username, setUsername] = useState(
+    identity ? identity.getPrincipal().toString().split("-").slice(0, 2).join("-") : "Not signed in"
+  );
   const [tags, setTags] = useState("Some cool tags");
   const [profilePic, setProfilePic] = useState("/path/to/profile-pic.jpg");
   const [isEditing, setIsEditing] = useState(false);

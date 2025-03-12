@@ -1,5 +1,6 @@
 import {
     benefitIcon1,
+    logo9,
     DiscordLogo,
     TwitterLogo,
     OpenChatLogo,
@@ -35,10 +36,52 @@ import {
     searchMd,
     slack,
     sliders04,
+    websiteicon,
     telegram,
     twitter,
     yourlogo,
   } from "../../src/assets";
+
+
+export const coininfo = {
+  name: "Dudin the Duck",
+  ticker: "DUCK",
+  logo: logo9,
+  websitelink: "https://dudintheduck.com",
+  telegramlink: "https://t.me/DudinTheDuck",
+  twitterlink: "https://twitter.com/DudinTheDuck",
+  tagline: "Put some respect on Dudin's name.",
+  ascended: "This rune is being etched...",
+  priceUSD: "$0.01",
+  priceSats: "5.99 sats",
+  changes: {
+    "5m": "1.1%",
+    "1h": "-22.9%",
+    "6h": "-21.7%",
+    "24h": "-22.1%",
+  },
+  marketCap: {
+    btc: "1.26 BTC",
+    usd: "$115K",
+  },
+  volume: {
+    btc: "11.6 BTC",
+    usd: "$1.1M",
+  },
+  transactions: {
+    total: 10445,
+    buys: 8857,
+    sells: 1588,
+  },
+  holders: 317,
+  supply: "21M",
+  created: "2d",
+  dev: "011010101011",
+  twittericon: twitter,
+  websiteicon: websiteicon,
+  telegramicon: telegram,
+};
+
   
   export const navigation = [
     {

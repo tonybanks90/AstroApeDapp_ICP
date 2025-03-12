@@ -1,19 +1,35 @@
 import React from 'react';
+import tradeData from '../data/tradeData';
 
-const Trades = ({ trades }) => {
+const Trades = () => {
   return (
-    <div className="flex-1 bg-gray-900 p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-4">Recent Trades</h2>
-      <div className="space-y-2">
-        {trades.map((trade) => (
-          <div key={trade.id} className="flex justify-between p-2 border border-gray-700 rounded-lg">
-            <span>{trade.time}</span>
-            <span>{trade.type}</span>
-            <span>{trade.amount}</span>
-            <span>{trade.price}</span>
-          </div>
-        ))}
-      </div>
+    <div className="overflow-x-auto p-2">
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          <tr className="text-gray-300 text-left border-b border-gray-700">
+            <th className="p-3">Date</th>
+            <th className="p-3">Type</th>
+            <th className="p-3">BTC</th>
+            <th className="p-3">USD</th>
+            <th className="p-3">AMT</th>
+            <th className="p-3">Price</th>
+            <th className="p-3">Maker</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tradeData.map((trade, index) => (
+            <tr key={index} className="border-b border-gray-700 text-gray-400 hover:bg-gray-800 transition-all">
+              <td className="p-3 text-xs">{trade.time}</td>
+              <td className={`p-3 font-bold text-xs ${trade.type === 'Buy' ? 'text-green-400' : 'text-red-400'}`}>{trade.type}</td>
+              <td className="p-3 text-xs">{trade.btc}</td>
+              <td className="p-3 text-xs">{trade.usd}</td>
+              <td className="p-3 text-xs">{trade.amt}</td>
+              <td className="p-3 text-xs">{trade.price}</td>
+              <td className="p-3 text-xs text-blue-400">{trade.maker}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -1,105 +1,101 @@
 import React, { useState } from "react";
-import Input from "./Input";
-import Button from "./Button";
+import  Input  from "./Input";
+import  Button  from "./Button";
+import { Card, CardContent } from "./Card";
 
 const SwapComponent = () => {
-  const [isBuying, setIsBuying] = useState(true); // State to toggle between Buy and Sell
+  const [isBuying, setIsBuying] = useState(true);
   const [amount, setAmount] = useState("");
-  const [percentage, setPercentage] = useState(0); // State to manage selected percentage
+  const [percentage, setPercentage] = useState(0);
 
-  // Toggles between Buy and Sell modes
   const selectBuy = () => setIsBuying(true);
   const selectSell = () => setIsBuying(false);
 
-  // Handles the swap action
   const handleAction = () => {
     const action = isBuying ? "Buying" : "Selling";
-    const fromToken = isBuying ? "ckETH" : "APE"; // Default tokens, can be extended
+    const fromToken = isBuying ? "ckETH" : "APE";
     const toToken = isBuying ? "APE" : "ckETH";
     alert(`${action} ${amount} ${fromToken} for ${toToken}`);
   };
 
-  // Function to handle percentage selection
   const handlePercentage = (value) => {
     setPercentage(value);
-    // Example logic for setting amount based on balance (assuming 1000 as the current balance for demonstration)
-    const balance = isBuying ? 1000 : 500; // Mock balance values; replace with real data
+    const balance = isBuying ? 1000 : 500;
     setAmount((balance * value) / 100);
   };
 
-  // Resets the amount and percentage
   const resetAmount = () => {
     setAmount("");
     setPercentage(0);
   };
 
   return (
-    <div className="bg-n-8 border border-n-6 rounded-lg p-6 h-full">
-      {/* Buy and Sell Toggle Buttons */}
-      <div className="flex justify-center mb-6">
-        <button
-          onClick={selectBuy}
-          className={`px-4 py-2 rounded-l-lg text-lg font-medium ${
-            isBuying ? "bg-blue-500 text-white" : "bg-n-7 text-n-1"
-          }`}
-        >
-          Buy
-        </button>
-        <button
-          onClick={selectSell}
-          className={`px-4 py-2 rounded-r-lg text-lg font-medium ${
-            !isBuying ? "bg-blue-500 text-white" : "bg-n-7 text-n-1"
-          }`}
-        >
-          Sell
-        </button>
-      </div>
-
-      {/* Amount Input */}
-      <div className="mb-4">
-        <label className="block text-n-1 text-lg font-medium mb-2" htmlFor="amount">
-          {isBuying ? "Buy APE" : "Sell APE"}
-        </label>
-        <Input
-          id="amount"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full p-2 border border-n-6 rounded bg-n-9 text-n-1"
-          placeholder={`Enter amount of ${isBuying ? "ckETH" : "APE"}`}
-          min="0"
-        />
-      </div>
-
-      {/* Percentage Buttons - Responsive Design */}
-      <div className="flex flex-wrap justify-center gap-2 lg:flex-nowrap lg:space-x-2 mb-4">
-        {/* Reset Button */}
-        <button
-          onClick={resetAmount}
-          className="px-2 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
-        >
-          Reset
-        </button>
-
-        {/* Percentage Buttons */}
-        {[25, 50, 75, 100].map((percent) => (
-          <button
-            key={percent}
-            onClick={() => handlePercentage(percent)}
-            className={`px-2 py-1 text-sm rounded transition-colors ${
-              percentage === percent ? "bg-blue-500 text-white" : "bg-gray-600 text-white hover:bg-gray-700"
+    <Card className="w-full bg-n-8 border border-n-6 shadow-xl rounded-2xl p-6">
+      <CardContent className="space-y-6">
+        {/* Buy/Sell Toggle */}
+        <div className="flex justify-center bg-n-7 p-1 rounded-lg">
+          <Button
+            variant={isBuying ? "default" : "ghost"}
+            className={`w-1/2 rounded-lg transition-all ${
+              isBuying ? "bg-purple-600 text-white" : "text-gray-400"
             }`}
+            onClick={selectBuy}
           >
-            {percent}%
-          </button>
-        ))}
-      </div>
+            Buy
+          </Button>
+          <Button
+            variant={!isBuying ? "default" : "ghost"}
+            className={`w-1/2 rounded-lg transition-all ${
+              !isBuying ? "bg-purple-600 text-white" : "text-gray-400"
+            }`}
+            onClick={selectSell}
+          >
+            Sell
+          </Button>
+        </div>
 
-      {/* Place Order Button */}
-      <Button onClick={handleAction} className="bg-blue-500 text-white py-2 px-4 rounded w-full">
-        Place Order
-      </Button>
-    </div>
+        {/* Amount Input */}
+        <div>
+          <label className="block text-gray-300 text-lg font-semibold mb-2">
+            {isBuying ? "Buy APE" : "Sell APE"}
+          </label>
+          <Input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-500"
+            placeholder={`Enter amount of ${isBuying ? "ckETH" : "APE"}`}
+            min="0"
+          />
+        </div>
+
+        {/* Percentage Selection */}
+        <div className="flex items-center justify-between space-x-2">
+          {[25, 50, 75, 100].map((percent) => (
+            <Button
+              key={percent}
+              variant="ghost"
+              className={`w-full py-2 text-sm rounded-lg transition-all ${
+                percentage === percent ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
+              }`}
+              onClick={() => handlePercentage(percent)}
+            >
+              {percent}%
+            </Button>
+          ))}
+        </div>
+
+        {/* Reset & Swap Buttons */}
+        <div className="flex justify-between">
+          <Button variant="ghost" className="text-gray-400 hover:text-white" onClick={resetAmount}>
+            Reset
+          </Button>
+          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg" onClick={handleAction}>
+            Place Order
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

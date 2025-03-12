@@ -1,65 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import Input from './Input';
-import Button from './Button';
-import { AstroApe_backend } from '../../../../src/declarations/AstroApe_backend'; // Adjust this path if necessary
+import React, { useState } from 'react';
+import chatData from '../data/chatData';
 
 const Chat = () => {
-  const [message, setMessage] = useState('');
-  const [gifUrl, setGifUrl] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
+  const [comments, setComments] = useState(chatData);
+  const [newComment, setNewComment] = useState('');
 
-  const actor = AstroApe_backend; // This should be the correct actor instance for your canister
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      const fetchedComments = await actor.getComments();
-      setChatMessages(fetchedComments);
-    };
-    fetchComments();
-  }, []);
-
-  const handleSendMessage = async () => {
-    if (message.trim() || gifUrl.trim()) {
-      await actor.addComment(message, gifUrl || null);
-      setMessage('');
-      setGifUrl('');
-      const updatedComments = await actor.getComments();
-      setChatMessages(updatedComments);
+  const handlePostComment = () => {
+    if (newComment.trim()) {
+      const newChat = {
+        username: 'You', // Placeholder for the current user
+        time: new Date().toLocaleTimeString(),
+        message: newComment,
+      };
+      setComments([newChat, ...comments]);
+      setNewComment('');
     }
   };
 
   return (
-    <div className="flex-1 bg-gray-900 p-4 rounded-lg">
-      <div className="h-64 overflow-y-auto mb-4">
-        {chatMessages.map((msg, index) => (
-          <div key={index} className="mb-2">
-            <strong>{msg.user || 'Anonymous'}: </strong>{msg.content}
-            {msg.gif_url && <img src={msg.gif_url} alt="GIF" className="mt-2" />}
-            <div className="text-sm text-gray-500">
-              {new Date(Number(msg.timestamp)).toLocaleString()}
-            </div>
+    <div className="space-y-4 p-2">
+      {/* Input Section */}
+      <div className="p-2 flex items-center gap-2 border-b border-gray-700">
+        <input
+          type="text"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Type a comment..."
+          className="flex-1 p-2 bg-gray-800 text-white rounded-lg focus:outline-none"
+        />
+        <button
+          onClick={handlePostComment}
+          className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+        >
+          Post Comment
+        </button>
+      </div>
+      
+      {comments.map((chat, index) => (
+        <div key={index} className="p-3 rounded-lg border border-gray-700 shadow-md flex items-start gap-3">
+          <span className="w-8 h-8 bg-blue-500 rounded-full"></span>
+          <div>
+            <p className="text-sm font-medium text-blue-400 flex items-center gap-2">
+              {chat.username} <span className="text-gray-500 text-xs">{chat.time}</span>
+            </p>
+            <p className="text-white text-sm mt-1">{chat.message}</p>
           </div>
-        ))}
-      </div>
-      <div className="flex">
-        <Input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 rounded-l-lg"
-        />
-        <Input
-          type="text"
-          value={gifUrl}
-          onChange={(e) => setGifUrl(e.target.value)}
-          placeholder="Paste GIF URL (optional)"
-          className="ml-2 flex-1"
-        />
-        <Button onClick={handleSendMessage} className="rounded-r-lg">
-          Send
-        </Button>
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

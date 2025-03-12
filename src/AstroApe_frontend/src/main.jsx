@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Profile from './components/Profile';
-import { AuthProvider } from "./auth/AuthContext";
 import Header from './components/Header';
 import './index.css';
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -23,6 +22,11 @@ import TradingViewChart from './components/TradingViewChart';
 import Blog from './pages/Blog';
 import CandlestickChart from './components/CandlestickChart';
 import { ThemeProvider } from './contexts/theme';
+import DepositWithdraw from './components/Deposit&Withdraw';
+
+import { Buffer } from "buffer";
+window.Buffer = Buffer;
+
 
 
 
@@ -37,6 +41,12 @@ import {
   QueryClientProvider,
   QueryClient,
 } from "@tanstack/react-query";
+
+import { useActor } from '../src/ic/Actors';
+
+import { SiweIdentityProvider } from 'ic-use-siwe-identity';
+
+import { canisterId, idlFactory } from "../../declarations/ic_siwe_provider/index.js";
 
 const config = getDefaultConfig({
   appName: 'My RainbowKit App',
@@ -105,7 +115,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/Token/8',
-        element: <CandlestickChart />,
+        element: <DepositWithdraw />,
       },
 
     ]
@@ -127,11 +137,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}> {/* Move this to the top */}
       <WagmiProvider config={config}>
         <RainbowKitProvider>
-          <AuthProvider>
+          <SiweIdentityProvider
+            canisterId={canisterId}
+            idlFactory={idlFactory}
+          >
+            <useActor>
+         
             <ThemeProvider>
               <RouterProvider router={router} />
             </ThemeProvider>
-          </AuthProvider>
+            </useActor>
+          </SiweIdentityProvider>
         </RainbowKitProvider>
       </WagmiProvider>
     </QueryClientProvider>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Button from "./Button"; // Assuming you have a Button component
-import { useAuth } from "../auth/AuthContext"; // Importing useAuth hook
 import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import RainbowKit ConnectButton
 
 const ConnectWallet = () => {

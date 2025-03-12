@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { AstroApe_backend } from 'declarations/AstroApe_backend';
 
 
 function App() {

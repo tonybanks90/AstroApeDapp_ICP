@@ -25,7 +25,7 @@ const Hero = () => {
                 <div className="relative z-1 max-w-[62rem]
                     mx-auto text-center mb-[4rem] md:mb-20 lg:mb-[6rem]">
                     <h1 className="h1 mb-6">
-                        Launch!!% Cross-Chain Memecoins
+                        Launch!! Cross-Chain Memecoins
                         For $1 on
                         <span className="inline-block relative">
                             AstroApe{" "}

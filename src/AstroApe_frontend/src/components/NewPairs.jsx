@@ -2,12 +2,16 @@ import React from "react";
 import Input from "./Input"; // Assuming you have an Input component
 import Button from "./Button"; // Assuming you have a Button component
 import PairCard from "./PairCard"; // Import the new PairCard component
+import LoginButton from "./login-button";
 
 const NewPairs = () => {
   return (
     <div className="mt-15 p-6 lg:p-8">
       {/* Page Header */}
       <header className="mb-8">
+        <LoginButton />
+        <identity />
+        
         <h1 className="text-3xl font-bold text-n-1">New Pairs</h1>
         <p className="text-lg text-n-2 mt-2">
           Discover and add new pairs to your collection. Explore the latest tokens and their details.
