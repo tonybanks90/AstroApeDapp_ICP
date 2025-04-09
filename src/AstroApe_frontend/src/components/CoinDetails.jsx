@@ -1,7 +1,13 @@
 import React from "react";
-import { coininfo } from "../constants";
+import tokenData from "../data/dataToken";
 
-const CoinDetails = () => {
+const CoinDetails = ({ tokenId }) => {
+  const coininfo = tokenData.find((token) => token.id === Number(tokenId));
+
+  if (!coininfo) {
+    return <div className="text-red-500 text-center">Token not found</div>;
+  }
+
   return (
     <div className="bg-n-8 border border-n-6 rounded-lg p-4">
       {/* Coin Information */}
@@ -14,18 +20,21 @@ const CoinDetails = () => {
       </div>
 
       {/* Social Icons */}
-<div className="mt-4 flex space-x-4 justify-center">
-  <a href={coininfo.twitterlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-    <img src={coininfo.twittericon} alt="Twitter" className="w-6 h-6" />
-  </a>
-  <a href={coininfo.telegramlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-    <img src={coininfo.telegramicon} alt="Telegram" className="w-6 h-6" />
-  </a>
-  <a href={coininfo.websitelink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-    <img src={coininfo.websiteicon} alt="Website" className="w-6 h-6" />
-  </a>
-</div>
-
+      <div className="mt-4 flex space-x-4 justify-center">
+        {coininfo.icons && (
+          <>
+            <a href={coininfo.twitterlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+              <img src={coininfo.icons.twitter} alt="Twitter" className="w-6 h-6" />
+            </a>
+            <a href={coininfo.telegramlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+              <img src={coininfo.icons.telegram} alt="Telegram" className="w-6 h-6" />
+            </a>
+            <a href={coininfo.websitelink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
+              <img src={coininfo.icons.website} alt="Website" className="w-6 h-6" />
+            </a>
+          </>
+        )}
+      </div>
 
       {/* Prices */}
       <div className="mt-4 grid grid-cols-2 gap-4">
@@ -44,9 +53,7 @@ const CoinDetails = () => {
         {Object.entries(coininfo.changes).map(([time, change]) => (
           <div key={time} className="border border-n-6 rounded-lg p-4 text-center">
             <p className="text-n-3">{time.toUpperCase()}</p>
-            <p className={`font-bold ${change.includes("-") ? "text-red-500" : "text-green-500"}`}>
-              {change}
-            </p>
+            <p className={`font-bold ${change.includes("-") ? "text-red-500" : "text-green-500"}`}>{change}</p>
           </div>
         ))}
       </div>

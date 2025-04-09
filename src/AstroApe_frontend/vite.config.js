@@ -1,10 +1,10 @@
-import { fileURLToPath, URL } from 'url';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-import environment from 'vite-plugin-environment';
-import dotenv from 'dotenv';
+import { fileURLToPath, URL } from "url";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import environment from "vite-plugin-environment";
+import dotenv from "dotenv";
 
-dotenv.config({ path: '../../.env' });
+dotenv.config({ path: "../../.env" });
 
 export default defineConfig({
   build: {
@@ -23,8 +23,9 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:4943",
+        target: "http://127.0.0.1:4943", // Proxy backend calls to local DFX
         changeOrigin: true,
+        secure: false,
       },
     },
   },
@@ -34,17 +35,12 @@ export default defineConfig({
     environment("all", { prefix: "DFX_" }),
   ],
   resolve: {
-    alias: [
-      {
-        buffer: "buffer", // Polyfill buffer module
-        find: "declarations",
-        replacement: fileURLToPath(
-          new URL("../declarations", import.meta.url)
-        ),
-      },
-    ],
+    alias: {
+      buffer: "buffer", // Polyfill for Buffer
+      declarations: fileURLToPath(new URL("../declarations", import.meta.url)),
+    },
   },
   define: {
-    global: "window", // Some packages expect `global`
+    global: "window", // Ensure compatibility with libraries expecting global
   },
 });

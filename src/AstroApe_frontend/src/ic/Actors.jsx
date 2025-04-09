@@ -6,7 +6,6 @@ import {
   createUseActorHook,
 } from "ic-use-actor";
 import { canisterId, idlFactory } from "../../../declarations/AstroApe_backend/index.js";
-
 import { useSiwe } from "ic-siwe-js/react";
 import toast from "react-hot-toast";
 import React from "react";

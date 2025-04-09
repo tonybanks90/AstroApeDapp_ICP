@@ -1,51 +1,34 @@
+import { useParams } from "react-router-dom"; // Import useParams
 import React, { useState } from "react";
 import ChatAndTrades from "./ChatAndTrades";
 import TokenDistributionCard from "./TokenDistributionCard";
-import TradingViewChart from "./TradingViewChart";
 import SwapComponent from "./SwapComponent";
 import CoinDetails from "./CoinDetails";
 import CandlestickChart from "./CandlestickChart";
-import MenuBar from "../components/MenuBar";
+import MenuBar from "./MenuBar";
 
 const SwapAndDistribution = () => {
+
+
+  const { tokenId } = useParams(); // Get tokenId from URL
   const [showSwap, setShowSwap] = useState(false);
-  const [activeTab, setActiveTab] = useState("info"); // "info" or "charts"
+  console.log("Token ID from useParams:", tokenId);
 
   return (
     <>
       <div className="mt-10 w-full mx-auto px-4 lg:px-8 pb-20">
-        {/* Small Screen Toggle */}
-        <div className="lg:hidden flex justify-center space-x-4 mb-4">
-          <button
-            className={`px-4 py-2 rounded-md text-sm ${
-              activeTab === "info" ? "bg-purple-600 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setActiveTab("info")}
-          >
-            Info
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md text-sm ${
-              activeTab === "charts" ? "bg-purple-600 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setActiveTab("charts")}
-          >
-            Charts
-          </button>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Left Side */}
+          {/* Left Side - Large Screen Layout */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {activeTab === "charts" && <CandlestickChart />}
-            {(activeTab === "info" || window.innerWidth >= 1024) && <CoinDetails />}
-            <ChatAndTrades />
+            <CandlestickChart tokenId={tokenId}/> {/* Chart on top-left */}
+            <ChatAndTrades /> {/* Chat and Trades below Chart */}
           </div>
 
-          {/* Right Side */}
+          {/* Right Side - Large Screen Layout */}
           <div className="flex flex-col gap-4">
-            <TokenDistributionCard />
-            {window.innerWidth >= 1024 && <SwapComponent />}
+            <CoinDetails tokenId={tokenId} /> {/* CoinDetails on top-right */}
+            <SwapComponent tokenId={tokenId} />
+            <TokenDistributionCard tokenId={tokenId} />
           </div>
         </div>
       </div>
@@ -76,7 +59,7 @@ const SwapAndDistribution = () => {
 
         {/* SwapComponent Content */}
         <div className="flex-1 overflow-y-auto p-4">
-          <SwapComponent />
+          <SwapComponent tokenId={tokenId} />
         </div>
       </div>
 

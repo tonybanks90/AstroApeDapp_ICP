@@ -99,7 +99,7 @@ export const coininfo = {
     {
       id: "2",
       title: "Profile",
-      url: "/Token/3",
+      url: "/Token/profile",
     },
     {
       id: "3",
@@ -108,8 +108,8 @@ export const coininfo = {
     },
     {
       id: "4",
-      title: "Governance",
-      url: "/Token/5",
+      title: "Wallet",
+      url: "/Token/8",
       onlyMobile: true,
     },
     

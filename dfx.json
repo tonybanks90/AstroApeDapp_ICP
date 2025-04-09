@@ -1,28 +1,33 @@
 {
   "canisters": {
-    "AstroApe_backend": {
-      "main": "src/AstroApe_backend/src/token_factory/main.mo",
+   
+    "TokenFactory": {
+      "main": "src/AstroApe_backend/src/TokenFactory/TokenFactory.mo",
       "type": "motoko"
     },
-    "UserStorage": {
-      "main": "src/AstroApe_backend/src/user/UserStorage.mo",
+    
+    "Comments": {
+      "main": "src/AstroApe_backend/src/comments/comment.mo",
       "type": "motoko"
     },
+
+    "Profile": {
+      "main": "src/AstroApe_backend/src/Profile/Profile.mo",
+      "type": "motoko"
+    },
+
+
     "ic_siwe_provider": {
       "type": "custom",
       "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.did",
       "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.wasm.gz"
     },
-    "icrc1_ledger_canister": {
-      "main": "src/AstroApe_backend/src/token_factory/main.mo",
-      "type": "custom",
-      "candid": "icrc1_ledger.did",
-      "wasm": "icrc1_ledger.wasm.gz"
-    },
+  
     "AstroApe_frontend": {
       "dependencies": [
-        "AstroApe_backend",
-        "UserStorage"
+        "TokenFactory",
+        "Comments",
+        "Profile"
       ],
       "source": [
         "src/AstroApe_frontend/dist"
@@ -34,7 +39,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": ""
+      "packtool": "mops sources"
     }
   },
   "networks": {

@@ -86,10 +86,23 @@ import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
 import logo9 from "./logo9.jpg";
 import websiteicon from "./websiteicon.jpg";
+import Dog from "./Dog.jpg";
+import kingkus from "./kingkus.gif";
+import aidog from "./aidog.png";
+import cyber from "./cyber.jpg";
+import egg from "./egg.jpg";
+import pepe from "./pepe.jpg";
+
 
 export {
   tabletFrame,
   websiteicon,
+  Dog,
+  kingkus,
+  aidog,
+  egg,
+  pepe,
+  cyber,
   logo9,
   laptopFrame,
   phoneFrame,

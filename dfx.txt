@@ -1,0 +1,52 @@
+{
+  "canisters": {
+    "BondingCurve": {
+      "main": "src/AstroApe_backend/src/BondingCurve/bonding_curve.mo",
+      "type": "motoko"
+    },
+    "TokenFactory": {
+      "main": "src/AstroApe_backend/src/TokenFactory/TokenFactory.mo",
+      "type": "motoko"
+    },
+    
+    "Comments": {
+      "main": "src/AstroApe_backend/src/comments/comment.mo",
+      "type": "motoko"
+    },
+
+    "ic_siwe_provider": {
+      "type": "custom",
+      "candid": "src/AstroApe_backend/src/ic_siwe_provider/ic_siwe_provider.did",
+      "wasm": "src/AstroApe_backend/src/ic_siwe_provider/ic_siwe_provider.wasm.gz"
+    },
+  
+   
+    "AstroApe_frontend": {
+      "dependencies": [
+        "ic_siwe_provider",
+        "Comments"
+      ],
+      "source": [
+        "src/AstroApe_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "AstroApe_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": "mops sources"
+    }
+  },
+  "networks": {
+    "ic": {
+      "providers": [
+        "https://ic0.app"
+      ],
+      "type": "persistent"
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

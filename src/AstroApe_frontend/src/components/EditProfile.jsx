@@ -1,17 +1,58 @@
-import React, { useState } from "react";
+// EditProfile.jsx (Updated for Profile.mo and useSiweIdentity)
+import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import Input from "./Input";
+import { useSiweIdentity } from "ic-use-siwe-identity";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { idlFactory, canisterId } from "../../../declarations/Profile";
 
-const EditProfile = ({ username, setUsername, tags, setTags, profilePic, setProfilePic, onClose }) => {
+const EditProfile = ({ username, bio, profilePic, onClose }) => {
+  const { identity } = useSiweIdentity();
   const [newUsername, setNewUsername] = useState(username);
-  const [newTags, setNewTags] = useState(tags);
+  const [newBio, setNewBio] = useState(bio);
   const [newProfilePic, setNewProfilePic] = useState(profilePic);
+  const [backend, setBackend] = useState(null);
 
-  const handleSave = () => {
-    setUsername(newUsername);
-    setTags(newTags);
-    setProfilePic(newProfilePic);
-    onClose();
+  useEffect(() => {
+    const initializeActor = async () => {
+      if (identity) {
+        const agent = new HttpAgent({
+          host:
+            process.env.DFX_NETWORK === "local"
+              ? "http://127.0.0.1:4943"
+              : "https://ic0.app",
+        });
+
+        if (process.env.DFX_NETWORK === "local") {
+          await agent.fetchRootKey();
+        }
+
+        const backendActor = Actor.createActor(idlFactory, {
+          agent,
+          canisterId,
+        });
+        setBackend(backendActor);
+      }
+    };
+
+    initializeActor();
+  }, [identity]);
+
+  const handleSave = async () => {
+    if (identity && backend) {
+      try {
+        await backend.createUserProfile(
+          identity.getPrincipal(),
+          newUsername,
+          newProfilePic,
+          newBio
+        );
+        console.log("Profile updated successfully.");
+        onClose(); // Close the modal after saving
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -24,18 +65,21 @@ const EditProfile = ({ username, setUsername, tags, setTags, profilePic, setProf
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-n-8 p-6 rounded-lg w-96 border border-n-6">
-        <h2 className="text-2xl font-semibold text-n-1 mb-4">Edit Profile</h2>
-        
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-n-7 p-6 rounded-lg w-full max-w-md">
+        <h2 className="text-2xl font-semibold mb-4 text-n-1">Edit Profile</h2>
+
         <div className="mb-4 flex flex-col items-center">
           <div className="relative w-24 h-24">
-            <img 
-              src={newProfilePic} 
-              alt="Profile Pic" 
+            <img
+              src={newProfilePic}
+              alt="Profile Pic"
               className="w-24 h-24 rounded-full object-cover border-2 border-n-6"
             />
-            <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-n-8 p-2 rounded-full cursor-pointer border border-n-6">
+            <label
+              htmlFor="profile-upload"
+              className="absolute bottom-0 right-0 bg-n-8 p-2 rounded-full cursor-pointer border border-n-6"
+            >
               📷
             </label>
             <input
@@ -54,8 +98,8 @@ const EditProfile = ({ username, setUsername, tags, setTags, profilePic, setProf
         </div>
 
         <div className="mb-4">
-          <label className="text-n-2 block mb-1">Tags</label>
-          <Input value={newTags} onChange={(e) => setNewTags(e.target.value)} />
+          <label className="text-n-2 block mb-1">Bio</label>
+          <Input value={newBio} onChange={(e) => setNewBio(e.target.value)} />
         </div>
 
         <div className="flex justify-end space-x-4">

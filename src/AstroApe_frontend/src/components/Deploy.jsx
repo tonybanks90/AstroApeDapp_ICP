@@ -1,19 +1,20 @@
 import React, { useState } from "react";
+import { FiUpload } from "react-icons/fi";
+import toast from "react-hot-toast";
 import Button from "./Button";
 import Input from "./Input";
 
-// Image Upload Component
-const ImageUpload = ({ label, id, onImageChange, imageSrc, className = "" }) => {
+const ImageUpload = ({ label, id, onImageChange, imageSrc }) => {
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className="flex flex-col items-center">
       <label className="block text-lg font-medium text-n-1 mb-2" htmlFor={id}>
         {label}
       </label>
-      <div className="relative w-full h-32 border border-n-6 bg-n-8 rounded-md flex items-center justify-center overflow-hidden">
+      <div className="relative w-32 h-32 border border-n-6 bg-n-8 rounded-md flex items-center justify-center overflow-hidden">
         {imageSrc ? (
           <img src={imageSrc} alt="Uploaded" className="object-cover h-full w-full" />
         ) : (
-          <span className="text-n-1/50">Upload {label}</span>
+          <FiUpload className="text-n-1/50 text-3xl" />
         )}
         <input
           id={id}
@@ -28,9 +29,7 @@ const ImageUpload = ({ label, id, onImageChange, imageSrc, className = "" }) => 
 
 const CreatePage = () => {
   const [logo, setLogo] = useState(null);
-  const [banner, setBanner] = useState(null);
-  const [deployNetwork, setDeployNetwork] = useState(""); // Track selected network
-  const [selectedDex, setSelectedDex] = useState(""); // Track selected DEX
+  const [selectedChain, setSelectedChain] = useState("ETH");
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -43,45 +42,22 @@ const CreatePage = () => {
     }
   };
 
-  const handleBannerChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBanner(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const handleChainClick = (chain) => {
+    if (chain === "Base" || chain === "Solana" || chain === "Sui") {
+      toast("Coming Soon", { position: "top-right" });
+    } else {
+      setSelectedChain(chain);
     }
   };
 
-  const handleNetworkClick = (network) => {
-    setDeployNetwork(network);
-    setSelectedDex(""); // Reset DEX selection when switching networks
-  };
-
-  const handleDexClick = (dex) => {
-    setSelectedDex(dex);
-  };
-
   return (
-    <div className="pt-16 lg:pt-20 p-6 lg:p-8">
-      {/* Page Header */}
+    <div className="pt-16 lg:pt-20 p-6 lg:px-36">
       <h1 className="text-3xl font-bold mb-8 text-n-1">Create Your Token</h1>
 
-      {/* Form */}
       <form className="space-y-6">
-        {/* Bento Box Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Side - Logo */}
-          <ImageUpload
-            label="Logo"
-            id="logo"
-            onImageChange={handleLogoChange}
-            imageSrc={logo}
-            className="lg:col-span-1"
-          />
+          <ImageUpload label="Logo" id="logo" onImageChange={handleLogoChange} imageSrc={logo} />
 
-          {/* Right Side - Token Name & Ticker Symbol */}
           <div className="flex flex-col space-y-6">
             <div>
               <label htmlFor="tokenName" className="block text-lg font-medium text-n-1 mb-2">
@@ -98,7 +74,6 @@ const CreatePage = () => {
           </div>
         </div>
 
-        {/* Description */}
         <div>
           <label htmlFor="description" className="block text-lg font-medium text-n-1 mb-2">
             Description
@@ -112,88 +87,42 @@ const CreatePage = () => {
           ></textarea>
         </div>
 
-        {/* Banner */}
-        <ImageUpload
-          label="Banner"
-          id="banner"
-          onImageChange={handleBannerChange}
-          imageSrc={banner}
-        />
-
-        {/* Deploy To Section */}
         <div>
-          <label className="block text-lg font-medium text-n-1 mb-2">Deploy to</label>
+          <label className="block text-lg font-medium text-n-1 mb-2">Select Chain</label>
           <div className="flex space-x-4">
-            <button
-              type="button"
-              className={`px-4 py-2 border rounded-md ${deployNetwork === "ICP" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-              onClick={() => handleNetworkClick("ICP")}
-            >
-              ICP
-            </button>
-            <button
-              type="button"
-              className={`px-4 py-2 border rounded-md ${deployNetwork === "ETH" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-              onClick={() => handleNetworkClick("ETH")}
-            >
-              Ethereum
-            </button>
+            {[
+              { name: "Ethereum", key: "ETH" },
+              { name: "Base", key: "Base" },
+              { name: "Solana", key: "Solana" },
+              { name: "Sui", key: "Sui" },
+            ].map((chain) => (
+              <button
+                key={chain.key}
+                type="button"
+                className={`px-4 py-2 border rounded-md ${
+                  selectedChain === chain.key ? "bg-color-1 text-white" : "bg-n-8 text-n-1"
+                }`}
+                onClick={() => handleChainClick(chain.key)}
+              >
+                {chain.name}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Select DEX Section */}
-        {deployNetwork && (
-          <div className="mt-4">
-            <label className="block text-lg font-medium text-n-1 mb-2">Select DEX</label>
-            <div className="flex space-x-4">
-              {deployNetwork === "ICP" && (
-                <>
-                  <button
-                    type="button"
-                    className={`px-4 py-2 border rounded-md ${selectedDex === "ICPEX" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-                    onClick={() => handleDexClick("ICPEX")}
-                  >
-                    KongSwap
-                  </button>
-                  <button
-                    type="button"
-                    className={`px-4 py-2 border rounded-md ${selectedDex === "KongSwap" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-                    onClick={() => handleDexClick("KongSwap")}
-                  >
-                    ICPEX
-                  </button>
-                </>
-              )}
-              {deployNetwork === "ETH" && (
-                <button
-                  type="button"
-                  className={`px-4 py-2 border rounded-md ${selectedDex === "Uniswap" ? "bg-color-1 text-white" : "bg-n-8 text-n-1"}`}
-                  onClick={() => handleDexClick("Uniswap")}
-                >
-                  Uniswap
-                </button>
-              )}
-            </div>
-          </div>
-        )}
+        <div>
+          <label htmlFor="snipeAmount" className="block text-lg font-medium text-n-1 mb-2">
+            Snipe Amount ({selectedChain === "ETH" ? "ETH" : "ICP"})
+          </label>
+          <Input
+            id="snipeAmount"
+            name="snipeAmount"
+            type="number"
+            placeholder={`Enter Snipe Amount in ${selectedChain === "ETH" ? "ETH" : "ICP"}`}
+            required
+          />
+        </div>
 
-        {/* Snipe Amount */}
-        {deployNetwork && (
-          <div>
-            <label htmlFor="snipeAmount" className="block text-lg font-medium text-n-1 mb-2">
-              Snipe Amount ({deployNetwork === "ETH" ? "ckETH" : "ICP"})
-            </label>
-            <Input
-              id="snipeAmount"
-              name="snipeAmount"
-              type="number"
-              placeholder={`Enter Snipe Amount in ${deployNetwork === "ETH" ? "ckETH" : "ICP"}`}
-              required
-            />
-          </div>
-        )}
-
-        {/* Social Media Links */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="website" className="block text-lg font-medium text-n-1 mb-2">
@@ -215,10 +144,7 @@ const CreatePage = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
-        <Button type="submit" className="w-full">
-          Create Token
-        </Button>
+        <Button type="submit" className="w-full">Create Token</Button>
       </form>
     </div>
   );

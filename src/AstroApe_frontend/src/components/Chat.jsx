@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
-import chatData from '../data/chatData';
+import React, { useState, useEffect } from "react";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { idlFactory, canisterId } from "../../../declarations/Comments";
+
+// Set up an actor to interact with the backend
+const agent = new HttpAgent();
+
+if (process.env.DFX_NETWORK === "local") {
+  agent.fetchRootKey();
+}
+
+const commentsBackend = Actor.createActor(idlFactory, { agent, canisterId });
 
 const Chat = () => {
-  const [comments, setComments] = useState(chatData);
-  const [newComment, setNewComment] = useState('');
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
-  const handlePostComment = () => {
-    if (newComment.trim()) {
-      const newChat = {
-        username: 'You', // Placeholder for the current user
-        time: new Date().toLocaleTimeString(),
-        message: newComment,
-      };
-      setComments([newChat, ...comments]);
-      setNewComment('');
+  const groupId = "2"; // 🔐 Hardcoded group ID
+
+  // Fetch comments for group "1"
+  const fetchComments = async () => {
+    try {
+      const commentList = await commentsBackend.getComments(groupId);
+      setComments(
+        commentList.map(([id, text, author, timestamp]) => ({
+          id,
+          text,
+          author: author.toText(),
+          timestamp: new Date(Number(timestamp) * 1000).toLocaleString(),
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching comments:", error);
     }
   };
+
+  // Post comment to group "1"
+  const handlePostComment = async () => {
+    if (!newComment.trim()) return;
+    try {
+      await commentsBackend.postComment(groupId, newComment);
+      setNewComment("");
+      fetchComments();
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   return (
     <div className="space-y-4 p-2">
@@ -32,18 +65,23 @@ const Chat = () => {
           onClick={handlePostComment}
           className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
         >
-          Post Comment
+          Post
         </button>
       </div>
-      
-      {comments.map((chat, index) => (
-        <div key={index} className="p-3 rounded-lg border border-gray-700 shadow-md flex items-start gap-3">
+
+      {/* Display Comments */}
+      {comments.map((chat) => (
+        <div
+          key={chat.id}
+          className="p-3 rounded-lg border border-gray-700 shadow-md flex items-start gap-3"
+        >
           <span className="w-8 h-8 bg-blue-500 rounded-full"></span>
           <div>
             <p className="text-sm font-medium text-blue-400 flex items-center gap-2">
-              {chat.username} <span className="text-gray-500 text-xs">{chat.time}</span>
+              {chat.author}{" "}
+              <span className="text-gray-500 text-xs">{chat.timestamp}</span>
             </p>
-            <p className="text-white text-sm mt-1">{chat.message}</p>
+            <p className="text-white text-sm mt-1">{chat.text}</p>
           </div>
         </div>
       ))}

@@ -10,6 +10,7 @@ import Generating from "./Generating";
 import Notification from "./Notification";
 import SocialSection from "./SocialSection";
 import { AstroBanner } from "../assets";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
     const parallaxRef = useRef(null);
@@ -25,8 +26,9 @@ const Hero = () => {
                 <div className="relative z-1 max-w-[62rem]
                     mx-auto text-center mb-[4rem] md:mb-20 lg:mb-[6rem]">
                     <h1 className="h1 mb-6">
-                        Launch!! Cross-Chain Memecoins
-                        For $1 on
+                        Launch Cross-Chain Memecoins
+                        on
+                        
                         <span className="inline-block relative">
                             AstroApe{" "}
                             <img
@@ -41,9 +43,12 @@ const Hero = () => {
                         Unleash the power of Chain Fusion
                         On Internet Computer Protocol
                     </p>
-                    <Button href="/Token/1" white>
-                        Launch App
-                    </Button>
+                    <Link to="/Token/1">
+    <Button white>
+        Launch App
+    </Button>
+</Link>
+
                 </div>
 
                 <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">

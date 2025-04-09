@@ -1,19 +1,9 @@
 import React from "react";
+import { candlestickData } from "../data/chartData"; // Import candlestick data
 
-const TokenDistributionCard = () => {
-  // Demo data for token distribution
-  const distributionData = [
-    { address: "0x1234...abcd", percentage: "25%", tag: "Bonding Curve" },
-    { address: "0x5678...efgh", percentage: "20%", tag: "Dev" },
-    { address: "0x9101...ijkl", percentage: "15%" },
-    { address: "0x1112...mnop", percentage: "10%" },
-    { address: "0x1314...qrst", percentage: "8%" },
-    { address: "0x1516...uvwx", percentage: "7%" },
-    { address: "0x1718...yz01", percentage: "6%" },
-    { address: "0x1920...2345", percentage: "5%" },
-    { address: "0x2122...6789", percentage: "3%" },
-    { address: "0x2324...abcd", percentage: "1%" },
-  ];
+const TokenDistributionCard = ({ tokenId }) => {
+  // Fetch distribution data for the selected tokenId
+  const distributionData = candlestickData[tokenId]?.distribution || [];
 
   return (
     <div className="bg-n-8 border border-n-6 rounded-lg p-6 max-w-md mx-auto">

@@ -39,7 +39,7 @@ const Sidebar = () => {
   const toggleConnectWallet = () => {
     setShowConnectWallet(!showConnectWallet); // Toggle the ConnectWallet card
   };
-
+    
   const toggleAddressCard = () => {
     setShowAddressCard(!showAddressCard); // Toggle the address card
   };
@@ -63,12 +63,14 @@ const Sidebar = () => {
         `}
       >
         <div className="flex flex-col items-center py-6 h-full">
-          <a
-            className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
-            href="#hero"
-          >
-            ASTROAPE
-          </a>
+        <Link
+  to="/"
+  smooth={true}
+  duration={500}
+  className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
+>
+  ASTROAPE.FUN
+</Link>
 
           <nav className="mt-5 flex flex-col items-center flex-grow">
             {navigation.map((item) => (
@@ -93,6 +95,7 @@ const Sidebar = () => {
               
 
               <ConnectButton />
+              <LoginButton />
 
             
 

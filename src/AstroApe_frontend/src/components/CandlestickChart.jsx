@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
-import { candlestickData } from '../data/chartData'; // Import the data
+import { candlestickData } from '../data/chartData'; // Import the updated data
 
-const CandlestickChart = () => {
+const CandlestickChart = ({ tokenId }) => {
   const chartContainerRef = useRef(null);
 
   useEffect(() => {
@@ -41,8 +41,13 @@ const CandlestickChart = () => {
       wickUpColor: '#4caf50',
     });
 
-    // Set the data from the imported file
-    candlestickSeries.setData(candlestickData);
+    // Ensure data is available for the selected tokenId
+    const filteredData = Array.isArray(candlestickData[tokenId]?.chartData)
+      ? candlestickData[tokenId].chartData
+      : [];
+
+    // Set the data for the candlestick chart
+    candlestickSeries.setData(filteredData);
 
     // Resize chart on window resize
     const handleResize = () => {
@@ -56,7 +61,7 @@ const CandlestickChart = () => {
       window.removeEventListener('resize', handleResize);
       chart.remove();
     };
-  }, []);
+  }, [tokenId]);
 
   return (
     <div className="p-6 lg:p-8">
