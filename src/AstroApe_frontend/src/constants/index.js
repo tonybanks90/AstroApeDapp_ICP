@@ -264,7 +264,7 @@ export const coininfo = {
   export const roadmap = [
     {
       id: "0",
-      title: "Q3 2024: Platform Development",
+      title: "Q4/Q1 2024/25: Platform Development",
       description: "Complete the development of the AstroApe platform, integrating multi-chain token deployment capabilities and bonding curve mechanisms.",
       features: [
         "Multi-chain token deployer",
@@ -274,7 +274,7 @@ export const coininfo = {
     },
     {
       id: "1",
-      title: "Q4 2024: Beta Testing & Security Audits",
+      title: "Q2 2025: Beta Testing & Security Audits",
       description: "Initiate beta testing with select users and conduct rigorous security audits to ensure platform reliability and safety.",
       features: [
         "Beta testing phase with early adopters",
@@ -284,27 +284,27 @@ export const coininfo = {
     },
     {
       id: "2",
-      title: "Q1 2025: Mainnet Launch & Airdrop",
+      title: "Q3 2025: Mainnet Launch ",
       description: "Launch the platform on the mainnet, conduct an airdrop of the native utility token to early supporters, and initiate the first funding round.",
       features: [
         "Mainnet launch with full feature set",
-        "Airdrop of utility tokens",
-        "First funding round"
+        "First funding round",
+        "CD/CI"
       ],
     },
     {
       id: "3",
-      title: "Q2 2025: Ecosystem Expansion",
-      description: "Expand the AstroApe ecosystem by integrating with additional blockchains and launching governance features for token holders.",
+      title: "Q4 2025: Ecosystem Expansion",
+      description: "Expand the AstroApe ecosystem by integrating with additional blockchains and decentralizing the platform.",
       features: [
         "Integration with Solana and Bitcoin",
-        "Introduction of multi-chain governance",
+        "Decentralize via SNS",
         "Partnerships with other DeFi platforms"
       ],
     },
     {
       id: "4",
-      title: "Q3 2025: DEX Integration & Staking",
+      title: "Q1 2026: DEX Integration & Staking",
       description: "Integrate with decentralized exchanges (DEXs) for seamless trading and introduce staking features for platform tokens.",
       features: [
         "DEX integration for token trading",
@@ -362,7 +362,7 @@ export const coininfo = {
     {
       id: "5",
       title: "Bonding Curve",
-      text: "Our unique bonding curve allows users to launch memecoins without initial liquidity, ensuring fair and stable pricing. As demand increases, prices adjust automatically, and once the curve is complete, liquidity is added to a DEX and burned, securing long-term market integrity and sustainable trading.",
+      text: "Our unique bonding curve allows users to launch memecoins without initial liquidity, ensuring fair and stable pricing. As demand increases, prices adjust automatically, and once the curve is complete, liquidity is added to DEX and burned, securing long-term market integrity and sustainable trading.",
       backgroundUrl: "assets/benefits/card-6.svg",
       iconUrl: benefitIcon2,
       imageUrl: benefitImage2,

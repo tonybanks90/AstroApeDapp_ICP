@@ -6,8 +6,8 @@ export const tokenData = [
     name: "Donald Kingkus",
     basepair: "ETH",
     ticker: "kingkus",
-    numReplies: 300,
-    xmarketCap: "$4.3M",
+    numReplies: 30,
+    xmarketCap: "$20k",
     logo: kingkus,
     websitelink: "https://dudintheduck.com",
     telegramlink: "https://t.me/DudinTheDuck",
@@ -15,7 +15,7 @@ export const tokenData = [
     tagline: "Put some respect on Dudin's name.",
     ascended: "This rune is being etched...",
     priceUSD: "$0.01",
-    priceSats: "5.99 sats",
+    priceSats: "0.99 ETH",
     changes: {
       "5m": "1.1%",
       "1h": "-22.9%",
@@ -23,19 +23,19 @@ export const tokenData = [
       "24h": "-22.1%",
     },
     marketCap: {
-      btc: "1.26 BTC",
-      usd: "$115K",
+      btc: "1.26 ETH",
+      usd: "$2K",
     },
     owned: {
-      tickeramount: "0.85 BTC",
+      tickeramount: "0.85 ETH",
       tickerpercent: "$78K",
     },
     value: {
-      btcvalue: "0.85 BTC",
+      btcvalue: "0.85 ETH",
       usdvalue: "$78K",
     },
     volume: {
-      btc: "11.6 BTC",
+      btc: "11.6 ETH",
       usd: "$1.1M",
     },
     transactions: {
@@ -63,11 +63,11 @@ export const tokenData = [
   },
   {
     id: 2,
-    name: "Cyber Ape",
+    name: "Cyber AI",
     ticker: "CYBA",
     basepair: "SOL",
-    numReplies: 150,
-    xmarketCap: "$2.8M",
+    numReplies: 15,
+    xmarketCap: "$10k",
     logo: cyber,
     websitelink: "https://cyberape.io",
     telegramlink: "https://t.me/CyberApeCommunity",
@@ -75,7 +75,7 @@ export const tokenData = [
     tagline: "The future is now, and it's cyber.",
     ascended: "Engraving on the blockchain...",
     priceUSD: "$0.005",
-    priceSats: "3.22 sats",
+    priceSats: "3.22 ETH",
     changes: {
       "5m": "0.5%",
       "1h": "-10.4%",
@@ -83,19 +83,19 @@ export const tokenData = [
       "24h": "-8.9%",
     },
     marketCap: {
-      btc: "0.85 BTC",
+      btc: "0.85 ETH",
       usd: "$78K",
     },
     owned: {
-      tickeramount: "0.85 BTC",
+      tickeramount: "0.85 ETH",
       tickerpercent: "$78K",
     },
     value: {
-      btcvalue: "0.85 BTC",
+      btcvalue: "0.85 ETH",
       usdvalue: "$78K",
     },
     volume: {
-      btc: "9.2 BTC",
+      btc: "9.2 ETH",
       usd: "$900K",
     },
     transactions: {

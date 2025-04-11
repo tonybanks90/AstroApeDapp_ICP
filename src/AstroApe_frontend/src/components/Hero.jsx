@@ -43,11 +43,11 @@ const Hero = () => {
                         Unleash the power of Chain Fusion
                         On Internet Computer Protocol
                     </p>
-                    <Link to="/Token/1">
+                    
     <Button white>
-        Launch App
+        Comming Soon
     </Button>
-</Link>
+
 
                 </div>
 

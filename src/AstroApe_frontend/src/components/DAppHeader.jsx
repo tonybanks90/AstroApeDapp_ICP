@@ -1,39 +1,14 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { ApeLogo, AstroLogo } from "../assets";
-import { navigation } from "../constants/index";
-import Button from "./Button";
-import MenuSvg from '../assets/svg/MenuSvg';
-import Socials from "./Socials"; // Import SocialSection
+import React from "react";
+import { useLocation } from "react-router-dom";
+import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import RainbowKit ConnectButton
+import Socials from "./Socials";
 
 const Header = () => {
   const pathname = useLocation().pathname;
-  const [openNavigation, setOpenNavigation] = useState(false);
-
-  const toggleNavigation = () => {
-    if (openNavigation) {
-      setOpenNavigation(false);
-      enablePageScroll();
-    } else {
-      setOpenNavigation(true);
-      disablePageScroll();
-    }
-  };
-
-  const handleClick = () => {
-    if (!openNavigation) return;
-    enablePageScroll();
-    setOpenNavigation(false);
-  };
 
   return (
-    <div
-      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
-        openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
-      }`}
-    >
-      <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
+    <div className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <a
           className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
           href="#hero"
@@ -41,38 +16,11 @@ const Header = () => {
           ASTROAPE
         </a>
 
-        {/* Toggle Button for small screens */}
-        <Button
-          className="ml-auto lg:hidden"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
-          <MenuSvg openNavigation={openNavigation} />
-        </Button>
-      </div>
-
-      {/* Navigation Menu (Visible on Small Screens) */}
-      <nav
-        className={`${
-          openNavigation ? "flex" : "hidden"
-        } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8 lg:hidden z-40`}
-      >
-        <div className="relative z-2 flex flex-col items-center justify-center m-auto">
-          {navigation.map((item) => (
-            <Link
-              key={item.id}
-              to={item.url}
-              onClick={handleClick}
-              className={`block relative font-code text-2xl uppercase text-n-1 transition-colors hover:text-color-1 px-6 py-6`}
-            >
-              {item.title}
-            </Link>
-          ))}
-
-          {/* Add SocialSection below the menu */}
-          <Socials className="relative z-10 mt-4" />
+        {/* ConnectWallet only on small screens */}
+        <div className="lg:hidden">
+          <ConnectButton />
         </div>
-      </nav>
+      </div>
     </div>
   );
 };

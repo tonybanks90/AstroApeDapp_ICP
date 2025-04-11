@@ -69,7 +69,7 @@ const Sidebar = () => {
   duration={500}
   className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
 >
-  ASTROAPE.FUN
+  ASTROAPE
 </Link>
 
           <nav className="mt-5 flex flex-col items-center flex-grow">
@@ -89,13 +89,12 @@ const Sidebar = () => {
 
           <div className="mt-auto flex flex-col items-center pb-6">
             {/* QuickBuy Component Above Connect Button */}
-            <QuickBuy />
-            
-      
-              
-
-              <ConnectButton />
-              <LoginButton />
+           
+        
+            <div className="flex flex-col items-center space-y-4">
+    <ConnectButton />
+    <LoginButton />
+  </div>
 
             
 
@@ -113,7 +112,7 @@ const Sidebar = () => {
         {showConnectWallet && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 shadow-lg">
-              <ConnectWallet />
+              <ConnectWallet className="mb-2"/>
               <LoginButton />
               <identity />
               <Button onClick={toggleConnectWallet} className="mt-4">Close</Button>

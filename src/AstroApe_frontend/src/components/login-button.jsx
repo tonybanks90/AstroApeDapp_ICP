@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useSiweIdentity } from "ic-use-siwe-identity";
-import Button from "./newButton"; // Your custom button component
+import Button from "./Button"; // Your custom button component
 
 export default function LoginButton() {
   const { isConnected } = useAccount();
@@ -35,7 +35,7 @@ export default function LoginButton() {
 
   // 🔐 If not signed in, show the sign-in button
   return (
-    <Button
+    <Button white
       onClick={() => void login()}
       disabled={loginStatus === "logging-in" || !isConnected}
       className={`

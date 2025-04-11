@@ -25,9 +25,7 @@
   
     "AstroApe_frontend": {
       "dependencies": [
-        "TokenFactory",
-        "Comments",
-        "Profile"
+        
       ],
       "source": [
         "src/AstroApe_frontend/dist"

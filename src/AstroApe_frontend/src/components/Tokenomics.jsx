@@ -28,13 +28,13 @@ const pieChartData = {
       '#F3A8C9'  // Reserve
     ],
     hoverBackgroundColor: [
-      '#FF6384', // Community and Airdrops
-      '#36A2EB', // Development and Bug Bounties
-      '#FFCE56', // Marketing
-      '#4BC0C0', // Team
-      '#F3A8C9'  // Reserve
+      '#FF6384',
+      '#36A2EB',
+      '#FFCE56',
+      '#4BC0C0',
+      '#F3A8C9'
     ],
-    borderWidth: 0, // Remove border for cleaner look
+    borderWidth: 0,
   }]
 };
 
@@ -61,28 +61,20 @@ const Tokenomics = () => {
             ))}
           </ul>
 
-          <Button>Learn More</Button>
+          <Button onClick={() => alert("Coming soon")}>Learn More</Button>
         </div>
 
         <div className="lg:ml-auto xl:w-[38rem] mt-4">
-          <p className="body-2 mb-4 text-n-4 md:mb-16 lg:mb-32 lg:w-[22rem] lg:mx-auto">
-            {collabText["0"]}
-          </p>
-
           <div className="relative left-1/2 flex w-[22rem] aspect-square border border-n-6 rounded-full -translate-x-1/2 scale:75 md:scale-100">
             <Pie data={pieChartData} options={{
               responsive: true,
               plugins: {
                 legend: {
-                  display: false, // Hide the legend if not needed
+                  display: false,
                 },
                 tooltip: {
                   callbacks: {
-                    label: (tooltipItem) => {
-                      const label = tooltipItem.label || '';
-                      const value = tooltipItem.raw || 0;
-                      return `${label}: ${value}%`;
-                    }
+                    label: () => 'Coming Q4 2025',
                   }
                 }
               }
