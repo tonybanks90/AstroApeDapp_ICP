@@ -1,50 +1,42 @@
 #!/bin/bash
 
+NETWORK="--network ic"
+
 # Create canisters
-dfx canister create AstroApe_frontend
-dfx canister create ic_siwe_provider
-dfx canister create Comments
-dfx canister create TokenFactory
-dfx canister create Profile
-
-
-
+dfx canister $NETWORK create AstroApe_frontend
+dfx canister $NETWORK create ic_siwe_provider
+dfx canister $NETWORK create Comments
+dfx canister $NETWORK create TokenFactory
 
 # Fetch canister IDs
-IC_SIWE_PROVIDER_ID=$(dfx canister id ic_siwe_provider)
-COMMENTS_ID=$(dfx canister id Comments)
-TOKEN_FACTORY_ID=$(dfx canister id TokenFactory)
-ASTROAPE_FRONTEND_ID=$(dfx canister id AstroApe_frontend)
-PROFILE_ID=$(dfx canister id Profile)
-
-
+IC_SIWE_PROVIDER_ID=$(dfx canister $NETWORK id ic_siwe_provider)
+COMMENTS_ID=$(dfx canister $NETWORK id Comments)
+TOKEN_FACTORY_ID=$(dfx canister $NETWORK id TokenFactory)
+ASTROAPE_FRONTEND_ID=$(dfx canister $NETWORK id AstroApe_frontend)
 
 # Deploy ic_siwe_provider with arguments
-dfx deploy ic_siwe_provider --argument "(
+dfx deploy ic_siwe_provider $NETWORK --argument "(
     record {
-        domain = \"localhost\";
-        uri = \"http://localhost:5173\";
+        domain = \"lxxcl-eyaaa-aaaap-qhsgq-cai.icp0.io\";
+        uri = \"https://lxxcl-eyaaa-aaaap-qhsgq-cai.icp0.io\";
         salt = \"nysecretsalt123\";
         chain_id = opt 1;
-        scheme = opt \"http\";
+        scheme = opt \"https\";
         statement = opt \"Login to the app\";
         sign_in_expires_in = opt 300000000000;
         session_expires_in = opt 604800000000000;
         targets = opt vec {
             \"$IC_SIWE_PROVIDER_ID\";
             \"$COMMENTS_ID\";
-            \"$PROFILE_ID\";
+            \"$TOKEN_FACTORY_ID\"
         };
     }
 )"
 
 # Deploy remaining canisters
-dfx deploy AstroApe_frontend
-dfx deploy Comments
-dfx deploy TokenFactory
-dfx deploy Profile
-
-
+dfx deploy AstroApe_frontend $NETWORK
+dfx deploy Comments $NETWORK
+dfx deploy TokenFactory $NETWORK
 
 # Generate type bindings
-dfx generate
+dfx generate $NETWORK

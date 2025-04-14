@@ -1,0 +1,118 @@
+astro@DESKTOP-12ATQ86:/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP$ ./deploy.sh
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+AstroApe_frontend canister was already created on network ic and has canister id: lxxcl-eyaaa-aaaap-qhsgq-cai
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+created-at-time for canister ic_siwe_provider is 1744571952933726820.
+ic_siwe_provider canister created on network ic with canister id: 5psk2-hyaaa-aaaap-qpzjq-cai
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+created-at-time for canister Comments is 1744571967191487407.
+Comments canister created on network ic with canister id: 52v3x-gqaaa-aaaap-qpzka-cai
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+created-at-time for canister TokenFactory is 1744571989149600925.
+TokenFactory canister created on network ic with canister id: 55u5d-liaaa-aaaap-qpzkq-cai
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+created-at-time for canister Profile is 1744572004246293420.
+Error: Insufficient cycles balance to create the canister.
+To fix: Please top up your cycles balance by converting ICP to cycles like below:
+'dfx cycles convert --amount=0.123 --network ic'
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+created-at-time for canister ApeSwap is 1744572015041645553.
+Error: Insufficient cycles balance to create the canister.
+To fix: Please top up your cycles balance by converting ICP to cycles like below:
+'dfx cycles convert --amount=0.123 --network ic'
+Error: Cannot find canister id. Please issue 'dfx canister create Profile --network ic'.
+Error: Cannot find canister id. Please issue 'dfx canister create ApeSwap --network ic'.
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+Deploying: ic_siwe_provider
+All canisters have already been created.
+WARN: .did file for canister 'AstroApe_frontend' does not exist.
+Error: Failed while trying to deploy canisters.
+Caused by: Failed while trying to install all canisters.
+Caused by: Failed to install wasm module to canister 'ic_siwe_provider'.
+Caused by: Failed during wasm installation call
+Caused by: The replica returned a rejection error: reject code CanisterError, reject message Error from Canister 5psk2-hyaaa-aaaap-qpzjq-cai: Canister called `ic0.trap` with message: 'Panicked at 'called `Result::unwrap()` on an `Err` value: TextTooShort', packages/ic_siwe_provider/src/service/init_upgrade.rs:91:46'
+Canister Backtrace:
+unknown function at index 1794
+unknown function at index 791
+unknown function at index 997
+unknown function at index 1180
+unknown function at index 2111
+unknown function at index 1472
+unknown function at index 1517
+unknown function at index 1257
+unknown function at index 665
+unknown function at index 262
+unknown function at index 848
+unknown function at index 2069
+.
+Consider gracefully handling failures from this canister or altering the canister to handle exceptions. See documentation: https://internetcomputer.org/docs/current/references/execution-errors#trapped-explicitly, error code Some("IC0503")
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+Deploying: ApeSwap AstroApe_frontend Comments Profile TokenFactory ic_siwe_provider
+created-at-time for canister ApeSwap is 1744572047376264431.
+Error: Insufficient cycles balance to create the canister.
+To fix: Please top up your cycles balance by converting ICP to cycles like below:
+'dfx cycles convert --amount=0.123 --network ic'
+Please enter the passphrase for your identity: [hidden]
+Decryption complete.
+Deploying: Comments
+All canisters have already been created.
+WARN: .did file for canister 'AstroApe_frontend' does not exist.
+Installed code for canister Comments, with canister ID 52v3x-gqaaa-aaaap-qpzka-cai
+Deployed canisters.
+URLs:
+  Frontend canister via browser:
+    AstroApe_frontend: https://lxxcl-eyaaa-aaaap-qhsgq-cai.icp0.io/
+  Backend canister via Candid interface:
+    Comments: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=52v3x-gqaaa-aaaap-qpzka-cai
+    TokenFactory: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=55u5d-liaaa-aaaap-qpzkq-cai
+    ic_siwe_provider: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=5psk2-hyaaa-aaaap-qpzjq-cai
+Please enter the passphrase for your identity: [hidden]
+Error: Failed to create AgentEnvironment.
+Caused by: Failed to create AgentEnvironment for network 'ic'.
+Caused by: Failed to load identity
+Caused by: Failed to instantiate identity
+Caused by: Failed to load PEM
+Caused by: Failed to load PEM file from file
+Caused by: Failed to decrypt PEM file at /home/astro/.config/dfx/identity/my_identity/identity.pem.encrypted
+Caused by: Failed to decrypt content: aead::Error
+Please enter the passphrase for your identity: [hidden]
+Error: Failed to create AgentEnvironment.
+Caused by: Failed to create AgentEnvironment for network 'ic'.
+Caused by: Failed to load identity
+Caused by: Failed to instantiate identity
+Caused by: Failed to load PEM
+Caused by: Failed to load PEM file from file
+Caused by: Failed to decrypt PEM file at /home/astro/.config/dfx/identity/my_identity/identity.pem.encrypted
+Caused by: Failed to decrypt content: aead::Error
+Please enter the passphrase for your identity: [hidden]
+Error: Failed to create AgentEnvironment.
+Caused by: Failed to create AgentEnvironment for network 'ic'.
+Caused by: Failed to load identity
+Caused by: Failed to instantiate identity
+Caused by: Failed to load PEM
+Caused by: Failed to load PEM file from file
+Caused by: Failed to decrypt PEM file at /home/astro/.config/dfx/identity/my_identity/identity.pem.encrypted
+Caused by: Failed to decrypt content: aead::Error
+WARN: .did file for canister 'AstroApe_frontend' does not exist.
+WARN: /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/ApeSwap/ApeSwap.mo:92.52-92.73: warning [M0155], operator may trap for inferred type
+  Nat
+/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/ApeSwap/ApeSwap.mo:112.48-112.69: warning [M0155], operator may trap for inferred type
+  Nat
+/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/ApeSwap/ApeSwap.mo:4.8-4.12: warning [M0194], unused identifier Iter (delete or rename to wildcard `_` or `_Iter`)
+/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/ApeSwap/ApeSwap.mo:23.9-23.22: warning [M0194], unused identifier testPrincipal (delete or rename to wildcard `_` or `_testPrincipal`)
+
+Generated type declarations for canister ic_siwe_provider to /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/declarations/ic_siwe_provider
+Generated type declarations for canister TokenFactory to /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/declarations/TokenFactory
+Generated type declarations for canister Profile to /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/declarations/Profile
+Generated type declarations for canister Comments to /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/declarations/Comments
+Error: Failed while trying to generate type declarations for 'AstroApe_frontend'.
+Caused by: Candid file: /mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/.dfx/ic/canisters/AstroApe_frontend/assetstorage.did doesn't exist.
+astro@DESKTOP-12ATQ86:/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP$ 

@@ -4,5 +4,14 @@
   },
   "AstroApe_frontend": {
     "ic": "lxxcl-eyaaa-aaaap-qhsgq-cai"
+  },
+  "Comments": {
+    "ic": "52v3x-gqaaa-aaaap-qpzka-cai"
+  },
+  "TokenFactory": {
+    "ic": "55u5d-liaaa-aaaap-qpzkq-cai"
+  },
+  "ic_siwe_provider": {
+    "ic": "5psk2-hyaaa-aaaap-qpzjq-cai"
   }
 }

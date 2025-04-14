@@ -8,6 +8,15 @@ dotenv.config({ path: "../../.env" });
 export default defineConfig({
   build: {
     emptyOutDir: true,
+    rollupOptions: {
+      external: [
+        // Add both old and new package names
+        '@safe-window/safe-apps-sdk',
+        '@safe-window/safe-apps-provider',
+        '@safe-global/safe-apps-sdk',
+        '@safe-global/safe-apps-provider'
+      ]
+    }
   },
   optimizeDeps: {
     esbuildOptions: {

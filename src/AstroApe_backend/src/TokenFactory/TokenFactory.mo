@@ -63,7 +63,7 @@ actor class TokenFactory() {
   func fetch_wasm(url : Text) : async Result.Result<Blob, Text> {
     try {
       Debug.print("Fetching WASM from " # url);
-      Cycles.add<system>(2_000_000_000);
+      Cycles.add<system>(30_000_000_000);
       let response = await http.http_request({
         url = url;
         max_response_bytes = null;
@@ -89,7 +89,7 @@ actor class TokenFactory() {
   public shared func testGoogle() : async Result.Result<Text, Text> {
     try {
       Debug.print("Testing Google...");
-      Cycles.add<system>(2_000_000_000);
+      Cycles.add<system>(30_000_000_000);
       let response = await http.http_request({
         url = "https://www.google.com";
         max_response_bytes = null;

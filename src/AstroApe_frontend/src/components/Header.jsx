@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { ApeLogo, AstroLogo } from "../assets";
 import { navigation, navigation2 } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";

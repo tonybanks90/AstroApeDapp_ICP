@@ -16,6 +16,11 @@
       "type": "motoko"
     },
 
+    "ApeSwap": {
+      "main": "src/AstroApe_backend/src/ApeSwap/ApeSwap.mo",
+      "type": "motoko"
+    },
+
 
     "ic_siwe_provider": {
       "type": "custom",
