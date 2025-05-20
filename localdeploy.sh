@@ -7,6 +7,7 @@ dfx canister create Comments
 dfx canister create TokenFactory
 dfx canister create Profile
 dfx canister create ApeSwap
+dfx canister create ckBoostManager
 
 
 

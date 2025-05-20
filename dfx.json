@@ -21,6 +21,11 @@
       "type": "motoko"
     },
 
+    "ckBoostManager": {
+      "main": "src/AstroApe_backend/src/ckBoostManager/ckBoostManager.mo",
+      "type": "motoko"
+    },
+
 
     "ic_siwe_provider": {
       "type": "custom",

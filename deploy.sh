@@ -7,6 +7,7 @@ dfx canister $NETWORK create AstroApe_frontend
 dfx canister $NETWORK create ic_siwe_provider
 dfx canister $NETWORK create Comments
 dfx canister $NETWORK create TokenFactory
+dfx canister $NETWORK create ckBoostManager
 
 # Fetch canister IDs
 IC_SIWE_PROVIDER_ID=$(dfx canister $NETWORK id ic_siwe_provider)
