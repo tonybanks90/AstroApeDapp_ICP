@@ -4,20 +4,23 @@ import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import { navigation } from "../constants/index";
 import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
-import ConnectWallet from "./ConnectWallet"; // Import ConnectWallet component 
-import Socials from "./Socials"; // Import SocialSection
-import QuickBuy from "./QuickBuy"; // Import QuickBuy component
-import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import RainbowKit ConnectButton
-import LoginButton from "./login-button"; // Import LoginButton
-import identity from "./identity"; // Import identiy
+import ConnectWallet from "./ConnectWallet";
+import Socials from "./Socials";
+import QuickBuy from "./QuickBuy";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import LoginButton from "./login-button";
+import identity from "./identity";
+import Astroapplogo2 from "../assets/Astroapplogo2.png";
+import { Astrofun } from "../assets"; // Adjust extension if needed
+import { FaHome, FaChartLine, FaWallet, FaPlusCircle, FaUser } from "react-icons/fa";
+import { GradientLight } from "../design/Benefits";
+
 
 const Sidebar = () => {
-  const pathname = useLocation().pathname; // Get current pathname from useLocation
+  const pathname = useLocation().pathname;
   const [openNavigation, setOpenNavigation] = useState(false);
-  const [showConnectWallet, setShowConnectWallet] = useState(false); // State to show/hide ConnectWallet
-  const [showAddressCard, setShowAddressCard] = useState(false); // State to show/hide address card
-
-
+  const [showConnectWallet, setShowConnectWallet] = useState(false);
+  const [showAddressCard, setShowAddressCard] = useState(false);
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -31,17 +34,16 @@ const Sidebar = () => {
 
   const handleClick = () => {
     if (!openNavigation) return;
-
     enablePageScroll();
     setOpenNavigation(false);
   };
 
   const toggleConnectWallet = () => {
-    setShowConnectWallet(!showConnectWallet); // Toggle the ConnectWallet card
+    setShowConnectWallet(!showConnectWallet);
   };
-    
+
   const toggleAddressCard = () => {
-    setShowAddressCard(!showAddressCard); // Toggle the address card
+    setShowAddressCard(!showAddressCard);
   };
 
   const formatAddress = (address) => {
@@ -53,7 +55,7 @@ const Sidebar = () => {
 
   return (
     <div className="flex relative">
-      {/* Sidebar - hidden on small screens */}
+      {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 h-screen bg-n-8 z-50 transform ${
           openNavigation ? "translate-x-0" : "-translate-x-full"
@@ -63,15 +65,16 @@ const Sidebar = () => {
         `}
       >
         <div className="flex flex-col items-center py-6 h-full">
-        <Link
-  to="/"
-  smooth={true}
-  duration={500}
-  className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
->
-  ASTROAPE
-</Link>
+          {/* AstroApe Logo */}
+          <Link to="/" className="block">
+            <img
+              src={Astrofun}
+              alt="AstroApe Logo"
+              className="h-24 md:h-32 lg:h-24"
+            />
+          </Link>
 
+          {/* Navigation */}
           <nav className="mt-5 flex flex-col items-center flex-grow">
             {navigation.map((item) => (
               <Link
@@ -82,37 +85,30 @@ const Sidebar = () => {
                   item.url === pathname ? "text-color-1" : "text-n-1/50"
                 }`}
               >
+                {item.icon}
                 {item.title}
+                
               </Link>
             ))}
           </nav>
 
+          {/* Bottom Controls */}
           <div className="mt-auto flex flex-col items-center pb-6">
-            {/* QuickBuy Component Above Connect Button */}
-           
-        
             <div className="flex flex-col items-center space-y-4">
-    <ConnectButton />
-    <LoginButton />
-  </div>
-
-            
-
-            {/* Add SocialSection below the connect button */}
-            <Socials className="hidden relative z-10 mt-4 lg:block"/>
+              <ConnectButton />
+              <LoginButton />
+            </div>
+            <Socials className="hidden relative z-10 mt-4 lg:block" />
           </div>
         </div>
       </div>
 
       {/* Main content area */}
       <div className="lg:ml-64 w-full p-4">
-        {/* Your main content goes here */}
-
-        {/* Render the ConnectWallet card when showConnectWallet is true */}
         {showConnectWallet && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 shadow-lg">
-              <ConnectWallet className="mb-2"/>
+              <ConnectWallet className="mb-2" />
               <LoginButton />
               <identity />
               <Button onClick={toggleConnectWallet} className="mt-4">Close</Button>
@@ -121,7 +117,7 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Toggle Button for small screens */}
+      {/* Toggle Button for mobile */}
       <div className="ml-auto p-4 lg:hidden">
         <Button onClick={toggleNavigation}>
           <MenuSvg openNavigation={openNavigation} />

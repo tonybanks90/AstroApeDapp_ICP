@@ -7,7 +7,7 @@ dfx canister create Comments
 dfx canister create TokenFactory
 dfx canister create Profile
 dfx canister create ApeSwap
-dfx canister create ckBoostManager
+dfx canister create ckBoostManager 
 
 
 
@@ -19,6 +19,8 @@ TOKEN_FACTORY_ID=$(dfx canister id TokenFactory)
 ASTROAPE_FRONTEND_ID=$(dfx canister id AstroApe_frontend)
 PROFILE_ID=$(dfx canister id Profile)
 APESWAP_ID=$(dfx canister id ApeSwap)
+ckBoostManager_ID=$(dfx canister id ckBoostManager)
+
 
 
 
@@ -38,6 +40,7 @@ dfx deploy ic_siwe_provider --argument "(
             \"$COMMENTS_ID\";
             \"$PROFILE_ID\";
             \"$APESWAP_ID\";
+          
         };
     }
 )"
@@ -48,6 +51,8 @@ dfx deploy Comments
 dfx deploy TokenFactory
 dfx deploy Profile
 dfx deploy ApeSwap
+dfx deploy ckBoostManager
+
 
 # Generate type bindings
 dfx generate

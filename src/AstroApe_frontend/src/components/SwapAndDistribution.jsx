@@ -6,6 +6,7 @@ import SwapComponent from "./SwapComponent";
 import CoinDetails from "./CoinDetails";
 import CandlestickChart from "./CandlestickChart";
 import MenuBar from "./MenuBar";
+import Tokentopdetails from "./Tokentopdetails";
 
 const SwapAndDistribution = () => {
 
@@ -16,10 +17,11 @@ const SwapAndDistribution = () => {
 
   return (
     <>
-      <div className="mt-10 w-full mx-auto px-4 lg:px-8 pb-20">
+      <div className="mt-14 w-full mx-auto px-4 lg:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left Side - Large Screen Layout */}
           <div className="lg:col-span-2 flex flex-col gap-4">
+            <Tokentopdetails tokenId={tokenId}/>
             <CandlestickChart tokenId={tokenId}/> {/* Chart on top-left */}
             <ChatAndTrades /> {/* Chat and Trades below Chart */}
           </div>

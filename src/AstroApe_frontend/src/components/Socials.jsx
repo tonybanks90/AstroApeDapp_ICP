@@ -12,7 +12,7 @@ const Socials = ({ className }) => {
       <ul className="flex flex-wrap justify-center space-x-4 mt-2">
         {socials.map((social) => (
           <li
-            className="flex items-center justify-center h-12 w-12 bg-n-7 rounded-full"
+            className="flex items-center justify-center h-12 w-12 bg-color-1 rounded-full"
             key={social.id}
           >
             <a href={social.url} target="_blank" rel="noopener noreferrer">

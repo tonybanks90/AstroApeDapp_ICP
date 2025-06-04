@@ -3,38 +3,21 @@ import tokenData from "../data/dataToken";
 
 const CoinDetails = ({ tokenId }) => {
   const coininfo = tokenData.find((token) => token.id === Number(tokenId));
+  const token = tokenData.find((t) => t.id === Number(tokenId));
+  const bondedProgress = token?.bonded || "0%";
 
   if (!coininfo) {
     return <div className="text-red-500 text-center">Token not found</div>;
   }
 
   return (
-    <div className="bg-n-8 border border-n-6 rounded-lg p-4">
+    <div className="bg-n-8  rounded-lg ">
+      
       {/* Coin Information */}
-      <div className="border border-n-6 rounded-lg p-4 flex items-center space-x-4">
-        <img src={coininfo.logo} alt="Logo" className="w-16 h-16 border border-n-6 rounded-lg" />
-        <div>
-          <h2 className="text-xl font-bold text-n-1">{coininfo.name}</h2>
-          <p className="text-n-3">{coininfo.tagline}</p>
-        </div>
-      </div>
+     
 
       {/* Social Icons */}
-      <div className="mt-4 flex space-x-4 justify-center">
-        {coininfo.icons && (
-          <>
-            <a href={coininfo.twitterlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-              <img src={coininfo.icons.twitter} alt="Twitter" className="w-6 h-6" />
-            </a>
-            <a href={coininfo.telegramlink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-              <img src={coininfo.icons.telegram} alt="Telegram" className="w-6 h-6" />
-            </a>
-            <a href={coininfo.websitelink} target="_blank" rel="noopener noreferrer" className="text-n-3 hover:text-n-1">
-              <img src={coininfo.icons.website} alt="Website" className="w-6 h-6" />
-            </a>
-          </>
-        )}
-      </div>
+      
 
       {/* Prices */}
       <div className="mt-4 grid grid-cols-2 gap-4">
@@ -77,9 +60,9 @@ const CoinDetails = ({ tokenId }) => {
           <p className="font-bold">{coininfo.transactions.total}</p>
         </div>
         <div className="border border-n-6 rounded-lg p-4 text-center">
-          <p className="text-n-3">Buys / Sells</p>
+          {/*<p className="text-n-3">Buys / Sells</p>
           <p className="font-bold text-green-500">{coininfo.transactions.buys}</p> / 
-          <p className="font-bold text-red-500">{coininfo.transactions.sells}</p>
+          <p className="font-bold text-red-500">{coininfo.transactions.sells}</p>*/}
         </div>
       </div>
 
@@ -100,9 +83,18 @@ const CoinDetails = ({ tokenId }) => {
       </div>
 
       {/* Dev */}
-      <div className="mt-4 text-center text-green-500 font-bold border border-n-6 rounded-lg p-4">
-        Dev: {coininfo.dev}
+       {/* Bonding Progress */}
+      <div className="mt-4 text-center flex flex-col gap-2 items-start font-bold border border-n-6 rounded-lg p-4">
+        <div className="w-full bg-n-6 rounded-full h-2 relative">
+          <div
+            className="h-2 bg-purple-500 rounded-full transition-all duration-300"
+            style={{ width: bondedProgress }}
+          ></div>
+        </div>
+        <p className="text-n-1 text-xs">{bondedProgress} Complete</p>
       </div>
+
+      
     </div>
   );
 };

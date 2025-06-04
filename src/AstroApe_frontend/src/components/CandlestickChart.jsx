@@ -64,7 +64,7 @@ const CandlestickChart = ({ tokenId }) => {
   }, [tokenId]);
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="">
       <div ref={chartContainerRef} style={{ width: '100%', height: '400px' }} />
     </div>
   );

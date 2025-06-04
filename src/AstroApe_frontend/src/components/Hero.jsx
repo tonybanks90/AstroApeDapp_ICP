@@ -5,6 +5,10 @@ import { heroBackground } from "../assets";
 import { BackgroundCircles, BottomLine, Gradient } from "../design/Hero";
 import { useRef } from "react";
 import SocialSection from "./SocialSection";
+import { Astroapplogo3 } from "../assets";
+import { Darkastro } from "../assets";
+import { GradientLight } from "../design/Benefits";
+import { p } from "../../dist/assets/hooks.module-b6a718b4";
 
 const Hero = () => {
     const parallaxRef = useRef(null);
@@ -30,10 +34,12 @@ const Hero = () => {
                                 alt="curve"
                             />
                         </span>
+                      
                     </h1>
                     <p className="body-1 max-w-3xl mx-auto mb-6 text-n-2 lg:mb-8">
                         Unleash the power of Chain Fusion On Internet Computer Protocol
                     </p>
+                    
 
                     <Button white>Coming Soon</Button>
                 </div>
@@ -62,7 +68,7 @@ const Hero = () => {
 
                     <div className="absolute -top-[54%] left-1/2 w-[234%] -translate-x-1/2 md:-top-[46%] md:w-[138%] lg:-top-[104%]">
                         <img
-                            src={heroBackground}
+                            src={Darkastro}
                             className="w-full"
                             width={1440}
                             height={1800}

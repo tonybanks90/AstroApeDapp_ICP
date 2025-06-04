@@ -10,7 +10,7 @@ const MenuBar = () => {
         { name: "Liquidity", icon: <FaChartLine />, path: "/liquidity" },
         { name: "Create", icon: <FaPlusCircle />, path: "/Token/2" },
         { name: "Wallet", icon: <FaWallet />, path: "/Token/8" },
-        { name: "Profile", icon: <FaUser />, path: "/Token/3" },
+        { name: "Profile", icon: <FaUser />, path: "/Token/profile" },
     ];
 
     return (

@@ -23,7 +23,7 @@ const TokenDistributionCard = ({ tokenId }) => {
             <div className="flex items-center">
               <span className="text-n-1">{holder.address}</span>
               {holder.tag && (
-                <span className="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                <span className="ml-2 bg-color-1 text-white text-xs px-2 py-1 rounded">
                   {holder.tag}
                 </span>
               )}

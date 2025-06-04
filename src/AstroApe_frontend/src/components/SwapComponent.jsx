@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Input from "./Input";
-import Button from "./newButton";
+import Button from "./Button";
 import { Card, CardContent } from "./Card";
 import tokenData from "../data/dataToken";
 import AddMinusLiq from "./addminusLiq";
@@ -40,14 +40,14 @@ const SwapComponent = ({ tokenId }) => {
         <div className="flex justify-center bg-n-7 p-2 rounded-lg space-x-2">
           <Button
             variant={view === "buy" ? "default" : "ghost"}
-            className={`w-1/4 rounded-lg transition-all ${view === "buy" ? "bg-purple-600 text-white" : "text-gray-400"}`}
+            className={`w-1/4 rounded-lg transition-all ${view === "buy" ? "bg-green-600 text-white" : "text-white-400"}`}
             onClick={() => setView("buy")}
           >
             Buy
           </Button>
           <Button
             variant={view === "sell" ? "default" : "ghost"}
-            className={`w-1/4 rounded-lg transition-all ${view === "sell" ? "bg-purple-600 text-white" : "text-gray-400"}`}
+            className={`w-1/4 rounded-lg transition-all ${view === "sell" ? "bg-red-600 text-white" : "text-gray-400"}`}
             onClick={() => setView("sell")}
           >
             Sell
@@ -88,23 +88,23 @@ const SwapComponent = ({ tokenId }) => {
 
             <div className="flex items-center justify-between space-x-2">
               {[25, 50, 75, 100].map((percent) => (
-                <Button
+                <button
                   key={percent}
                   variant="ghost"
-                  className={`w-full py-2 text-sm rounded-lg transition-all ${
+                  className={`px-4 py-2 border rounded-md ${
                     percentage === percent ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
                   }`}
                   onClick={() => handlePercentage(percent)}
                 >
                   {percent}%
-                </Button>
+                </button>
               ))}
             </div>
 
             <div className="flex justify-between">
-              <Button variant="ghost" className="text-gray-400 hover:text-white" onClick={resetAmount}>
+              <button variant="ghost" className="px-4 py-2 border rounded-md hover:text-white" onClick={resetAmount}>
                 Reset
-              </Button>
+              </button>
               <Button
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg"
                 onClick={handleAction}

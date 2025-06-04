@@ -5,6 +5,7 @@ import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";
 import { HamburgerMenu } from "../design/Header";
 import { useState } from "react";
+import { Astroapplogo2 } from "../assets";
 
 const Header = () => {
   const pathname = useLocation();
@@ -34,12 +35,15 @@ const Header = () => {
       }`}
     >
       <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a
-          className="block text-2xl font-bold text-n-1 relative pb-2 before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-n-1 before:translate-y-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-n-1"
-          href="#hero"
-        >
-          ASTROAPE
-        </a>
+      <a
+  className="block text-n-1"
+  href="#hero"
+>
+  <img src={Astroapplogo2} alt="AstroApe Logo" className="h-24 md:h-32 lg:h-24" />
+</a>
+
+
+
 
         <nav
           className={`${
@@ -56,9 +60,9 @@ const Header = () => {
                   item.onlyMobile ? "lg:hidden" : ""
                 } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
                   item.url === pathname.hash
-                    ? "z-2 lg:text-n-1"
+                    ? "z-2 lg:text-color-1"
                     : "lg:text-n-1/50"
-                } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
+                } lg:leading-5 lg:hover:text-color-1 xl:px-12`}
               >
                 {item.title}
               </a>

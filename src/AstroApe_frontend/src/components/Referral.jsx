@@ -31,7 +31,7 @@ const Referral = () => {
   return (
     <div className="mt-15 p-6 lg:p-8">
       {/* Banner Intro */}
-      <section className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg p-6 mb-8">
+      <section className="bg-gradient-to-r from-purple-500 to-color-1 text-white rounded-lg p-6 mb-8">
         <h1 className="text-3xl font-bold mb-2">Earn 1% of Each Trade</h1>
         <p className="text-lg">Share your referral link and earn 1% of every trade they make. Start earning now!</p>
       </section>

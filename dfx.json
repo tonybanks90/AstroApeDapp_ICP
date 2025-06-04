@@ -21,6 +21,11 @@
       "type": "motoko"
     },
 
+    "Faucet": {
+      "main": "src/AstroApe_backend/src/Faucet/Ckfaucet.mo",
+      "type": "motoko"
+    },
+
     "ckBoostManager": {
       "main": "src/AstroApe_backend/src/ckBoostManager/ckBoostManager.mo",
       "type": "motoko"

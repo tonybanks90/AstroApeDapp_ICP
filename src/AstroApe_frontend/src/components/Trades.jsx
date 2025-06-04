@@ -32,7 +32,7 @@ const Trades = () => {
                 <td className="p-3 text-xs">{trade.usd}</td>
                 <td className="p-3 text-xs">{trade.amt}</td>
                 <td className="p-3 text-xs">{trade.price}</td>
-                <td className="p-3 text-xs text-blue-400">{trade.maker}</td>
+                <td className="p-3 text-xs text-color-1">{trade.maker}</td>
               </tr>
             ))
           ) : (

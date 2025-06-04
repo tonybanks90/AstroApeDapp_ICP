@@ -1,5 +1,11 @@
 import {
     benefitIcon1,
+    Astroapplogo3,
+    btcicon,
+    ethicon,
+    solicon,
+    baseicon,
+    suiicon,
     logo9,
     DiscordLogo,
     TwitterLogo,
@@ -31,6 +37,7 @@ import {
     benefitCard4
 
   } from "../../src/assets";
+  import { FaHome, FaChartLine, FaWallet, FaPlusCircle, FaUser } from "react-icons/fa";
 
 
 export const coininfo = {
@@ -90,6 +97,7 @@ export const coininfo = {
       id: "2",
       title: "Profile",
       url: "/Token/profile",
+      icon: "FaHome",
     },
     {
       id: "3",
@@ -102,8 +110,16 @@ export const coininfo = {
       url: "/Token/8",
       onlyMobile: true,
     },
+    {
+      id: "5",
+      title: "Faucet",
+      url: "/Token/faucet",
+      onlyMobile: true,
+    },
     
   ];
+
+  
 
   export const navigation2 = [
     {
@@ -252,9 +268,9 @@ export const coininfo = {
       id: "0",
       title: "Create a Memecoin",
       text: "Deploy an ICRC-2 Token on ICP, Ethereum, EVM chains and soon Solana for Under $2",
-      backgroundUrl: "/assets/benefits/card-1.svg",
+      backgroundUrl: "/assets/Astroapplogo3.png",
       iconUrl: benefitIcon1,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
     },
     {
       id: "1",
@@ -262,7 +278,7 @@ export const coininfo = {
       text: "Buy Meme coins when they launch, Sell to cash in profits or cut down Losses",
       backgroundUrl: "assets/benefits/card-2.svg",
       iconUrl: benefitIcon2,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
       light: true,
     },
     {
@@ -271,7 +287,7 @@ export const coininfo = {
       text: " AstroApe empowers users from various blockchain networks to participate in shaping the future of the platform, ensuring that it remains community-driven and adaptable to the needs of its diverse user base.",
       backgroundUrl: "assets/benefits/card-3.svg",
       iconUrl: benefitIcon3,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
     },
     {
       id: "3",
@@ -279,7 +295,7 @@ export const coininfo = {
       text: "Users can Sign In with,Internet Identity, Ethereum (SIWE), Sign In with Solana (SIWS), enabling users from various blockchains to securely sign in, deploy, and trade tokens on the platform.",
       backgroundUrl: "assets/benefits/card-4.svg",
       iconUrl: benefitIcon4,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
       light: true,
     },
     {
@@ -288,7 +304,7 @@ export const coininfo = {
       text: "Our DApp has simple UI/UX ensures that launching tokens, trading, participating in referral programs, and engaging in governance are all accessible, efficient, and user-friendly experiences.",
       backgroundUrl: "assets/benefits/card-5.svg",
       iconUrl: benefitIcon1,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
     },
     {
       id: "5",
@@ -296,7 +312,7 @@ export const coininfo = {
       text: "Our unique bonding curve allows users to launch memecoins without initial liquidity, ensuring fair and stable pricing. As demand increases, prices adjust automatically, and once the curve is complete, liquidity is added to DEX and burned, securing long-term market integrity and sustainable trading.",
       backgroundUrl: "assets/benefits/card-6.svg",
       iconUrl: benefitIcon2,
-      imageUrl: benefitImage2,
+      imageUrl: Astroapplogo3,
     },
   ];
   
@@ -304,7 +320,7 @@ export const coininfo = {
     {
       id: "0",
       title: "Telegram",
-      iconUrl: discordBlack,
+      iconUrl: btcicon,
       url: "https://t.me/+g7W5Phsre6w1ZjQ0",
     },
     {

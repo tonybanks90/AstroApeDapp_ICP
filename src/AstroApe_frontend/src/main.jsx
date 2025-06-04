@@ -47,6 +47,7 @@ import Tokens from './components/Tokens';
 import Liquidity from './components/Liquidity';
 import Created from './components/Created';
 import Activity from './components/Activity';
+import Faucet from './components/Faucet';
 
 
 
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
       { path: '/Token/5', element: <Governance /> },
       { path: '/Token/7', element: <ConnectWallet /> },
       { path: '/Token/8', element: <DepositWithdraw /> },
+      { path: '/Token/faucet', element: <Faucet /> },
       { path: '/Token/swap/:tokenId', element: <SwapAndDistribution /> },
       {
         path: '/Token/profile',

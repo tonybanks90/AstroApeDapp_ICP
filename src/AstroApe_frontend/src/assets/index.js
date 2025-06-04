@@ -74,10 +74,29 @@ import aidog from "./aidog.png";
 import cyber from "./cyber.jpg";
 import egg from "./egg.jpg";
 import pepe from "./pepe.jpg";
-
+import Astroapplogo from "./Astroapplogo.png";
+import Astroapplogo2 from "./Astroapplogo2.png";
+import Astroapplogo3 from "./Astroapplogo3.png";
+import Darkastro from "./Darkastro.png";
+import Astrofun from "./Astrofun.png";
+import btcicon from "./icons/btcicon.jpg";
+import suiicon from "./icons/suiicon.jpg";
+import ethicon from "./icons/ethicon.jpg";
+import baseicon from "./icons/baseicon.jpg";
+import solicon from "./icons/solicon.jpg";
 
 export {
   websiteicon,
+  btcicon,
+  suiicon,
+  ethicon,
+  baseicon,
+  solicon,
+  Astroapplogo,
+  Astrofun,
+  Darkastro,
+  Astroapplogo2,
+  Astroapplogo3,
   ApeAppM,
   ApeApp,
   Dog,
