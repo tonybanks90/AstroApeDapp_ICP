@@ -29,7 +29,8 @@ const ImageUpload = ({ label, id, onImageChange, imageSrc }) => {
 
 const CreatePage = () => {
   const [logo, setLogo] = useState(null);
-  const [selectedChain, setSelectedChain] = useState("ETH");
+  const [selectedBaseToken, setSelectedBaseToken] = useState("ETH");
+  const [selectedDeployChains, setSelectedDeployChains] = useState([]);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -42,16 +43,14 @@ const CreatePage = () => {
     }
   };
 
-  const handleChainClick = (chain) => {
-    if (chain === "Base" || chain === "Solana" || chain === "Sui") {
-      toast("Coming Soon", { position: "top-right" });
-    } else {
-      setSelectedChain(chain);
-    }
+  const toggleDeploymentChain = (chain) => {
+    setSelectedDeployChains((prev) =>
+      prev.includes(chain) ? prev.filter((c) => c !== chain) : [...prev, chain]
+    );
   };
 
   return (
-    <div className="pt-16 lg:pt-20 p-6 lg:px-36">
+    <div className="pt-16 lg:pt-20 p-6 mb-12 lg:px-36">
       <h1 className="text-3xl font-bold mb-8 text-n-1">Create Your Token</h1>
 
       <form className="space-y-6">
@@ -87,42 +86,59 @@ const CreatePage = () => {
           ></textarea>
         </div>
 
+        {/* Select Base Token */}
         <div>
-          <label className="block text-lg font-medium text-n-1 mb-2">Select Chain</label>
+          <label className="block text-lg font-medium text-n-1 mb-2">Select Base Token</label>
           <div className="flex space-x-4">
-            {[
-              { name: "Ethereum", key: "ETH" },
-              { name: "Base", key: "Base" },
-              { name: "Solana", key: "Solana" },
-              { name: "Sui", key: "Sui" },
-            ].map((chain) => (
+            {["ETH", "BTC", "SOL", "SUI"].map((token) => (
               <button
-                key={chain.key}
+                key={token}
                 type="button"
                 className={`px-4 py-2 border rounded-md ${
-                  selectedChain === chain.key ? "bg-color-1 text-white" : "bg-n-8 text-n-1"
+                  selectedBaseToken === token ? "bg-color-1 text-white" : "bg-n-8 text-n-1"
                 }`}
-                onClick={() => handleChainClick(chain.key)}
+                onClick={() => setSelectedBaseToken(token)}
               >
-                {chain.name}
+                {token}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Select Chains to Deploy To */}
+        <div>
+          <label className="block text-lg font-medium text-n-1 mb-2">Select Chain(s) to Deploy To</label>
+          <div className="flex flex-wrap gap-4">
+            {["Ethereum", "Bitcoin", "Solana", "Base", "SUI"].map((chain) => (
+              <button
+                key={chain}
+                type="button"
+                onClick={() => toggleDeploymentChain(chain)}
+                className={`px-4 py-2 border rounded-md ${
+                  selectedDeployChains.includes(chain) ? "bg-color-1 text-white" : "bg-n-8 text-n-1"
+                }`}
+              >
+                {chain}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Snipe Amount */}
         <div>
           <label htmlFor="snipeAmount" className="block text-lg font-medium text-n-1 mb-2">
-            Snipe Amount ({selectedChain === "ETH" ? "ETH" : "ICP"})
+            Snipe Amount ({selectedBaseToken})
           </label>
           <Input
             id="snipeAmount"
             name="snipeAmount"
             type="number"
-            placeholder={`Enter Snipe Amount in ${selectedChain === "ETH" ? "ETH" : "ICP"}`}
+            placeholder={`Enter Snipe Amount in ${selectedBaseToken}`}
             required
           />
         </div>
 
+        {/* Socials */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="website" className="block text-lg font-medium text-n-1 mb-2">
@@ -144,7 +160,7 @@ const CreatePage = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full">Create Token</Button>
+        <Button type="submit" className="w-full z-40">Create Token</Button>
       </form>
     </div>
   );

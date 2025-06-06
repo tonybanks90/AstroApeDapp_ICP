@@ -81,11 +81,13 @@ const Sidebar = () => {
                 key={item.id}
                 to={item.url}
                 onClick={handleClick}
-                className={`block relative font-code text-1xl uppercase transition-colors hover:text-color-1 px-6 py-4 ${
+                className={`block relative font-code text-1xl uppercase transition-colors hover:text-color-1 px-6 py-4 flex items-center ${
                   item.url === pathname ? "text-color-1" : "text-n-1/50"
                 }`}
               >
-                {item.icon}
+                <span className="text-xl gap-2">
+                  <item.icon />
+                </span>
                 {item.title}
                 
               </Link>

@@ -14,7 +14,7 @@ const MenuBar = () => {
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-n-8 border-t border-n-6 p-2 flex justify-around items-center lg:hidden">
+        <div className="fixed z-50 bottom-0 left-0 w-full bg-n-8 border-t border-n-6 p-2 flex justify-around items-center lg:hidden">
             {menuItems.map((item) => (
                 <Link key={item.name} to={item.path} className={`flex flex-col items-center text-sm p-2 ${location.pathname === item.path ? "text-color-1" : "text-n-1/50"}`}>
                     {item.icon}

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"; // Import useParams
+import { useParams } from "react-router-dom";
 import React, { useState } from "react";
 import ChatAndTrades from "./ChatAndTrades";
 import TokenDistributionCard from "./TokenDistributionCard";
@@ -9,34 +9,34 @@ import MenuBar from "./MenuBar";
 import Tokentopdetails from "./Tokentopdetails";
 
 const SwapAndDistribution = () => {
-
-
-  const { tokenId } = useParams(); // Get tokenId from URL
+  const { tokenId } = useParams();
   const [showSwap, setShowSwap] = useState(false);
-  console.log("Token ID from useParams:", tokenId);
 
   return (
     <>
-      <div className="mt-14 w-full mx-auto px-4 lg:px-8 pb-20">
+      {/* Desktop Layout */}
+      <div className="mt-14 mb-16 w-full mx-auto px-4 lg:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Left Side - Large Screen Layout */}
+          {/* Left Section */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <Tokentopdetails tokenId={tokenId}/>
-            <CandlestickChart tokenId={tokenId}/> {/* Chart on top-left */}
-            <ChatAndTrades /> {/* Chat and Trades below Chart */}
+            <Tokentopdetails tokenId={tokenId} />
+            <CandlestickChart tokenId={tokenId} />
+            <ChatAndTrades />
           </div>
 
-          {/* Right Side - Large Screen Layout */}
+          {/* Right Section */}
           <div className="flex flex-col gap-4">
-            <CoinDetails tokenId={tokenId} /> {/* CoinDetails on top-right */}
-            <SwapComponent tokenId={tokenId} />
+            <CoinDetails tokenId={tokenId} />
+            <div className="hidden lg:block">
+              <SwapComponent tokenId={tokenId} />
+            </div>
             <TokenDistributionCard tokenId={tokenId} />
           </div>
         </div>
       </div>
 
-      {/* Floating Swap Button - Small Screens Only */}
-      <div className="lg:hidden fixed bottom-16 left-0 w-full p-2">
+      {/* Swap Button - Small Screens Only */}
+      <div className="z-40 lg:hidden fixed bottom-16 left-0 w-full p-2">
         <button
           onClick={() => setShowSwap(true)}
           className="w-full bg-purple-600 text-white py-4 shadow-lg rounded-md hover:bg-purple-700 transition"
@@ -45,25 +45,14 @@ const SwapAndDistribution = () => {
         </button>
       </div>
 
-      {/* SwapComponent - Slides Up like Telegram */}
-      <div
-        className={`fixed inset-x-0 bottom-0 bg-gray-900 text-white transition-transform duration-300 ease-in-out transform ${
-          showSwap ? "translate-y-0" : "translate-y-full"
-        } w-full h-[85vh] rounded-t-2xl shadow-lg flex flex-col`}
-      >
-        {/* Close Button */}
-        <button
-          onClick={() => setShowSwap(false)}
-          className="absolute top-4 right-4 text-white text-3xl font-bold"
-        >
-          ✕
-        </button>
-
-        {/* SwapComponent Content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <SwapComponent tokenId={tokenId} />
+      {/* Mobile Swap Component Overlay */}
+      {showSwap && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center lg:hidden">
+          <div className="w-full max-w-md px-4">
+            <SwapComponent tokenId={tokenId} onClose={() => setShowSwap(false)} />
+          </div>
         </div>
-      </div>
+      )}
 
       <MenuBar />
     </>

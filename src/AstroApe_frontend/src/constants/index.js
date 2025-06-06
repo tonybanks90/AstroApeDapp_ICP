@@ -37,7 +37,14 @@ import {
     benefitCard4
 
   } from "../../src/assets";
-  import { FaHome, FaChartLine, FaWallet, FaPlusCircle, FaUser } from "react-icons/fa";
+  import {
+  FaRocket,
+  FaUpload,
+  FaUser,
+  FaShareAlt,
+  FaWallet,
+  FaFaucet,
+} from "react-icons/fa";
 
 
 export const coininfo = {
@@ -80,44 +87,46 @@ export const coininfo = {
 };
 
   
-  export const navigation = [
-    {
-      id: "0",
-      title: "New Pairs",
-      url: "/Token/1",
-      path: "/Token/3",
-    },
-    {
-      id: "1",
-      title: "Deploy Token",
-      url: "/Token/2",
-      path: "/Token/2",
-    },
-    {
-      id: "2",
-      title: "Profile",
-      url: "/Token/profile",
-      icon: "FaHome",
-    },
-    {
-      id: "3",
-      title: "Referrals",
-      url: "/Token/4",
-    },
-    {
-      id: "4",
-      title: "Wallet",
-      url: "/Token/8",
-      onlyMobile: true,
-    },
-    {
-      id: "5",
-      title: "Faucet",
-      url: "/Token/faucet",
-      onlyMobile: true,
-    },
-    
-  ];
+ export const navigation = [
+  {
+    id: "0",
+    title: "New Pairs",
+    url: "/Token/1",
+    icon: FaRocket,
+  },
+  {
+    id: "1",
+    title: "Deploy Token",
+    url: "/Token/2",
+    icon: FaUpload,
+  },
+  {
+    id: "2",
+    title: "Profile",
+    url: "/Token/profile",
+    icon: FaUser,
+  },
+  {
+    id: "3",
+    title: "Referrals",
+    url: "/Token/4",
+    icon: FaShareAlt,
+  },
+  {
+    id: "4",
+    title: "Wallet",
+    url: "/Token/8",
+    icon: FaWallet,
+    onlyMobile: true,
+  },
+  {
+    id: "5",
+    title: "Faucet",
+    url: "/Token/faucet",
+    icon: FaFaucet,
+    onlyMobile: true,
+  },
+];
 
   
 
@@ -320,26 +329,26 @@ export const coininfo = {
     {
       id: "0",
       title: "Telegram",
-      iconUrl: btcicon,
+      iconUrl: telegramicon,
       url: "https://t.me/+g7W5Phsre6w1ZjQ0",
     },
     {
       id: "1",
       title: "Twitter",
-      iconUrl: twitter,
+      iconUrl: DiscordLogo,
       url: "https://x.com/AstroApe_",
     },
     
     {
       id: "2",
       title: "OpenChat",
-      iconUrl: telegram,
+      iconUrl: TwitterLogo,
       url: "https://oc.app/group/htzn6-ayaaa-aaaar-bf6lq-cai/?ref=ewnwv-5qaaa-aaaar-bf6aa-cai&code=91706620c34ec1ca",
     },
     {
       id: "3",
       title: "Discord",
-      iconUrl: telegram,
+      iconUrl: OpenChatLogo,
       url: "https://discord.gg/AVwCZj9p",
     },
     

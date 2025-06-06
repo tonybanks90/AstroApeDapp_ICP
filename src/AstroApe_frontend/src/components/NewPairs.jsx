@@ -17,7 +17,7 @@ const NewPairs = () => {
   const [isBondedExpanded, setIsBondedExpanded] = useState(false);
 
   return (
-    <div className="mt-8 p-6">
+    <div className="mt-8 mb-12 p-6">
       <DappHero />
       {/* Search and Button Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">

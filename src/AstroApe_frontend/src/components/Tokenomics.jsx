@@ -7,6 +7,7 @@ import { LeftCurve, RightCurve } from "../design/Collaboration";
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import 'chart.js/auto';
+import { Astroapplogo3 } from '../assets';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -64,7 +65,12 @@ const Tokenomics = () => {
           <Button onClick={() => alert("Coming soon")}>Learn More</Button>
         </div>
 
-        <div className="lg:ml-auto xl:w-[38rem] mt-4">
+        <div className="lg:ml-auto mt-4">
+          <img
+                        src={Astroapplogo3}
+                        alt="AstroApe Logo"
+                        className="w-40 object-contain max-h-full"
+                      />
           <div className="relative left-1/2 flex w-[22rem] aspect-square border border-n-6 rounded-full -translate-x-1/2 scale:75 md:scale-100">
             <Pie data={pieChartData} options={{
               responsive: true,
@@ -79,6 +85,7 @@ const Tokenomics = () => {
                 }
               }
             }} />
+            
             <LeftCurve />
             <RightCurve />
           </div>
