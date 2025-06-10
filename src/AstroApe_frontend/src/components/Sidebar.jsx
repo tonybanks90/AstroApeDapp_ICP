@@ -85,10 +85,11 @@ const Sidebar = () => {
                   item.url === pathname ? "text-color-1" : "text-n-1/50"
                 }`}
               >
-                <span className="text-xl gap-2">
-                  <item.icon />
-                </span>
-                {item.title}
+                <div className="flex items-center gap-x-3">
+  <item.icon className="text-xl" />
+  <span className="text-base font-medium">{item.title}</span>
+</div>
+
                 
               </Link>
             ))}

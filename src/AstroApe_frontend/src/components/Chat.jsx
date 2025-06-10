@@ -75,9 +75,9 @@ const Chat = () => {
           key={chat.id}
           className="p-3 rounded-lg border border-gray-700 shadow-md flex items-start gap-3"
         >
-          <span className="w-8 h-8 bg-blue-500 rounded-full"></span>
+          <span className="w-8 h-8 bg-color-1 rounded-full"></span>
           <div>
-            <p className="text-sm font-medium text-blue-400 flex items-center gap-2">
+            <p className="text-sm font-medium text-color-1 flex items-center gap-2">
               {chat.author}{" "}
               <span className="text-gray-500 text-xs">{chat.timestamp}</span>
             </p>

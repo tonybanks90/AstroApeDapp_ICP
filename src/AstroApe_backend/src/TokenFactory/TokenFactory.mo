@@ -10,6 +10,7 @@ import Error "mo:base/Error";
 import Nat16 "mo:base/Nat16";
 
 actor class TokenFactory() {
+  // The initialization arguments required for the ICRC-1 ledger canister.
   public type InitArgs = {
     token_symbol : Text;
     token_name : Text;
@@ -26,9 +27,12 @@ actor class TokenFactory() {
     };
   };
 
+  // Stable variable to store the principals of created token canisters.
   stable var tokens : List.List<Principal> = List.nil();
-  stable var wasm_module : ?Blob = null; // Store the WASM module here
+  // Stable variable to store the ICRC-1 ledger Wasm module as a blob.
+  stable var wasm_module : ?Blob = null;
 
+  // Actor reference to the management canister.
   let mgmt = actor "aaaaa-aa" : actor {
     create_canister : shared { settings : ?{ controllers : [Principal] } } -> async { canister_id : Principal };
     install_code : shared {
@@ -39,6 +43,7 @@ actor class TokenFactory() {
     } -> async ();
   };
 
+  // Actor reference for making HTTP outcalls.
   let http = actor "aaaaa-aa" : actor {
     http_request : shared {
       url : Text;
@@ -57,12 +62,14 @@ actor class TokenFactory() {
     };
   };
 
+  // URL to the official ICRC-1 ledger Wasm.
   let icrc1_wasm_url = "https://download.dfinity.systems/ic/4833f30d3b5afd84a385dfb146581580285d8a7e/canisters/ic-icrc1-ledger.wasm.gz";
 
   /// Fetches the WASM module from the given URL.
   func fetch_wasm(url : Text) : async Result.Result<Blob, Text> {
     try {
       Debug.print("Fetching WASM from " # url);
+      // Provide cycles for the HTTP outcall.
       Cycles.add<system>(30_000_000_000);
       let response = await http.http_request({
         url = url;
@@ -86,31 +93,15 @@ actor class TokenFactory() {
     }
   };
 
-  public shared func testGoogle() : async Result.Result<Text, Text> {
-    try {
-      Debug.print("Testing Google...");
-      Cycles.add<system>(30_000_000_000);
-      let response = await http.http_request({
-        url = "https://www.google.com";
-        max_response_bytes = null;
-        headers = [];
-        body = null;
-        method = #get;
-        transform = null;
-      });
-      if (response.status_code == 200) {
-        Debug.print("Google test successful");
-        #ok("Google test successful")
-      } else {
-        Debug.print("Google test failed with status: " # Nat16.toText(response.status_code));
-        #err("Google test failed with status: " # Nat16.toText(response.status_code))
-      }
-    } catch (e) {
-      let errMsg = "Google test failed: " # Error.message(e);
-      Debug.print(errMsg);
-      #err(errMsg)
-    }
+  /// Upload and save the WASM module directly as a blob.
+  /// This bypasses the need to fetch it from a URL.
+  public shared func uploadWasm(wasm_blob : Blob) : async Result.Result<Text, Text> {
+    Debug.print("WASM blob received. Saving...");
+    wasm_module := ?wasm_blob;
+    Debug.print("WASM blob saved successfully.");
+    return #ok("WASM module uploaded and saved successfully.");
   };
+
 
   /// Stores the fetched WASM in stable memory.
   public shared func save_wasm() : async Result.Result<Text, Text> {
@@ -147,6 +138,7 @@ actor class TokenFactory() {
     try {
       Debug.print("Adding cycles for canister creation");
       Cycles.add<system>(40_000_000_000);
+
       Debug.print("Creating new canister...");
       let createResult = await mgmt.create_canister<system>({
         settings = ?{ controllers = [caller] }
@@ -154,15 +146,17 @@ actor class TokenFactory() {
       let newCanister = createResult.canister_id;
       Debug.print("New token canister created: " # Principal.toText(newCanister));
 
+      // Ensure the Wasm is loaded, either by fetching or prior upload.
       let save_wasm_result = await checkAndSaveWasm();
       switch(save_wasm_result){
         case(#err(msg)) return #err(msg);
-        case(#ok(_)) Debug.print("WASM checked and saved if needed.");
+        case(#ok(_)) Debug.print("WASM is available for installation.");
       };
 
       switch (wasm_module) {
         case (?icrc1_wasm) {
-          Debug.print("WASM fetched successfully, preparing to install...");
+          // At this point, icrc1_wasm is the Blob, ready for installation.
+          Debug.print("WASM blob found, preparing to install...");
           Debug.print("Preparing initialization arguments...");
           let initArgs : InitArgs = {
             token_symbol = symbol;
@@ -179,21 +173,24 @@ actor class TokenFactory() {
               cycles_for_archive_creation = ?5_000_000_000_000;
             };
           };
+
           Debug.print("Encoding arguments using Candid...");
           let encodedArgs = to_candid(initArgs);
-          Debug.print("Installing the ledger code...");
+
+          Debug.print("Installing the ledger code using the WASM blob...");
           await mgmt.install_code({
             canister_id = newCanister;
-            wasm_module = icrc1_wasm;
+            wasm_module = icrc1_wasm; // Here we use the stored Blob.
             arg = encodedArgs;
             mode = #install;
           });
+
           Debug.print("Token canister successfully installed.");
           tokens := List.push(newCanister, tokens);
           #ok(newCanister)
         };
         case null {
-          return #err("Failed to fetch and save WASM");
+          return #err("WASM module not available. Please fetch or upload it first.");
         };
       }
     } catch(e) {
