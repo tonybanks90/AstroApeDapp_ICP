@@ -1,0 +1,6 @@
+[
+  {
+    "match": "**/*",               // Applies to all assets
+    "security_policy": "standard" // Applies the standard security policy
+  }
+]
