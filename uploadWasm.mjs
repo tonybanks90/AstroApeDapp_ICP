@@ -8,7 +8,7 @@ global.fetch = fetch;
 
 // --- CONFIGURATION ---
 // The canister ID of your TokenFactory canister.
-const canisterId = 'bkyz2-fmaaa-aaaaa-qaaaq-cai'; 
+const canisterId = 'uxrrr-q7777-77774-qaaaq-cai'; 
 
 // The local path to your Wasm file.
 const wasmFilePath = '/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/TokenFactory/icrc1_ledger.wasm.gz';
@@ -19,7 +19,7 @@ const localUrl = 'http://127.0.0.1:4943';
 // The Candid interface for the TokenFactory canister.
 // This tells the script what functions are available and what arguments they expect.
 const idlFactory = ({ IDL }) => {
-  const Result = IDL.Variant({ Ok: IDL.Text, Err: IDL.Text });
+  const Result = IDL.Variant({ ok: IDL.Text, err: IDL.Text });
   return IDL.Service({
     'uploadWasm': IDL.Func([IDL.Vec(IDL.Nat8)], [Result], []),
   });
@@ -54,13 +54,14 @@ const uploadWasm = async () => {
     // Call the 'uploadWasm' function on the canister.
     const result = await tokenFactory.uploadWasm(wasmBlob);
 
-    if ('Ok' in result) {
-        console.log('✅ Success:', result.Ok);
-    } else if ('Err' in result) {
-        console.error('❌ Error:', result.Err);
-    } else {
-        console.error('❌ Unexpected response:', result);
-    }
+    if ('ok' in result) {
+  console.log('✅ Upload successful:', result.ok);
+} else if ('err' in result) {
+  console.error('❌ Upload failed:', result.err);
+} else {
+  console.error('❌ Unexpected response:', result);
+}
+
 
   } catch (error) {
     console.error("Failed to upload Wasm:", error);

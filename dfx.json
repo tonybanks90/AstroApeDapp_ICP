@@ -1,6 +1,11 @@
 {
   "canisters": {
    
+    "BondingCurve": {
+      "main": "src/AstroApe_backend/src/BondingCurve/BondingCurve.mo",
+      "type": "motoko"
+    },
+
     "TokenFactory": {
       "main": "src/AstroApe_backend/src/TokenFactory/TokenFactory.mo",
       "type": "motoko"

@@ -38,6 +38,8 @@ dfx start --background
 dfx deploy
 ```
 bash deploy.sh
+# Upload ICRC wasm modude
+node uploadWasm.mjs
 
 Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
 
