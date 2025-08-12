@@ -1,14 +1,11 @@
 import Section from "./Section";
 import { curve, ApeApp, ApeAppM } from "../assets";
 import Button from "./Button";
-import { heroBackground } from "../assets";
 import { BackgroundCircles, BottomLine, Gradient } from "../design/Hero";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import SocialSection from "./SocialSection";
-import { Astroapplogo3 } from "../assets";
 import { Darkastro } from "../assets";
-import { GradientLight } from "../design/Benefits";
-import { p } from "../../dist/assets/hooks.module-b6a718b4";
 
 const Hero = () => {
     const parallaxRef = useRef(null);
@@ -41,7 +38,10 @@ const Hero = () => {
                     </p>
                     
 
-                    <Button white>Coming Soon</Button>
+                    <Link to="/Token/2">
+                    <Button white>Launch App</Button>
+                    </Link>
+
                 </div>
 
                 {/* Styled image section like the original card layout */}

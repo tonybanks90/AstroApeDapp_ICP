@@ -6,7 +6,6 @@ import Button from "./Button";
 import MenuSvg from '../assets/svg/MenuSvg';
 import ConnectWallet from "./ConnectWallet";
 import Socials from "./Socials";
-import QuickBuy from "./QuickBuy";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import LoginButton from "./login-button";
 import identity from "./identity";

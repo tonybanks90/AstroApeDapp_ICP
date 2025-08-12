@@ -5,6 +5,7 @@ import Section from "./Section";
 import { LeftLine, RightLine } from "../design/Pricing";
 import Button from "./Button";
 import { Parallax } from "react-scroll-parallax";
+import { Link } from "react-router-dom";
 
 const Roadmap = () => {
   return (
@@ -35,9 +36,11 @@ const Roadmap = () => {
         </Parallax>
 
         <div className="text-center mt-12">
+          <Link to="/Token/2">
           <Button href="" white>
-            Coming Soon
+            Launch App
           </Button>
+          </Link>
         </div>
       </div>
     </Section>

@@ -5,7 +5,7 @@ import TokenDistributionCard from "./TokenDistributionCard";
 import SwapComponent from "./SwapComponent";
 import CoinDetails from "./CoinDetails";
 import CandlestickChart from "./CandlestickChart";
-import MenuBar from "./MenuBar";
+import MenuBar from "./Menubar";
 import Tokentopdetails from "./Tokentopdetails";
 
 const SwapAndDistribution = () => {

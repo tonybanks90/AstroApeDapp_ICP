@@ -2,7 +2,7 @@ import React from "react";
 import DAppHeader from "../components/DAppHeader";
 import ButtonGradient from "../assets/svg/ButtonGradient";
 import Sidebar from "../components/Sidebar";
-import MenuBar from "../components/MenuBar"; // Import MenuBar
+import MenuBar from "../components/Menubar"; // Import MenuBar
 import { Outlet } from "react-router-dom";
 
 const TokenDeploy = () => {
