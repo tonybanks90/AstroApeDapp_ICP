@@ -11,8 +11,8 @@ const SwapComponent = ({ tokenId, onClose }) => {
   const basepair = selectedToken ? selectedToken.basepair : "BASE";
   const ticker = selectedToken ? selectedToken.ticker.toUpperCase() : "TOKEN";
 
-  const [mode, setMode] = useState("trades"); // 'trades' or 'liquidity'
-  const [view, setView] = useState("buy"); // 'buy', 'sell', or 'liq'
+  const [mode, setMode] = useState("trades");
+  const [view, setView] = useState("buy");
   const [amount, setAmount] = useState("");
   const [percentage, setPercentage] = useState(0);
   const [slippage, setSlippage] = useState(0.5);
@@ -22,12 +22,6 @@ const SwapComponent = ({ tokenId, onClose }) => {
     const fromToken = view === "buy" ? basepair : ticker;
     const toToken = view === "buy" ? ticker : basepair;
     alert(`${action} ${amount} ${fromToken} for ${toToken} with ${slippage}% slippage`);
-  };
-
-  const handlePercentage = (value) => {
-    setPercentage(value);
-    const balance = view === "buy" ? 1000 : 500;
-    setAmount((balance * value) / 100);
   };
 
   const resetAmount = () => {
@@ -43,18 +37,18 @@ const SwapComponent = ({ tokenId, onClose }) => {
   };
 
   return (
-    <Card className="relative w-full bg-n-8 border border-n-6 shadow-xl rounded-2xl p-6">
-      {/* Top Left Mode Toggle */}
-      <div className="absolute top-4 left-4 z-10">
-        <div className="flex space-x-2">
+    <Card className="relative w-full max-w-md bg-n-8 border border-n-6 shadow-xl rounded-xl p-4 space-y-4">
+      {/* Top Bar */}
+      <div className="flex justify-between items-center">
+        <div className="flex space-x-1">
           <button
             onClick={() => {
               setMode("trades");
               setView("buy");
             }}
-            className={`px-3 py-1 text-sm font-medium rounded-md ${
+            className={`px-3 py-1 text-sm font-medium rounded-md transition w-full ${
               mode === "trades"
-                ? "bg-purple-600 text-white"
+                ? "bg-color-1 text-white"
                 : "bg-n-6 text-gray-400 hover:bg-n-5"
             }`}
           >
@@ -65,39 +59,37 @@ const SwapComponent = ({ tokenId, onClose }) => {
               setMode("liquidity");
               setView("liq");
             }}
-            className={`px-3 py-1 text-sm font-medium rounded-md ${
+            className={`px-3 py-1 text-sm font-medium rounded-md transition w-full ${
               mode === "liquidity"
-                ? "bg-purple-600 text-white"
+                ? "bg-color-1 text-white"
                 : "bg-n-6 text-gray-400 hover:bg-n-5"
             }`}
           >
             Liquidity
           </button>
         </div>
+
+        {/* Close (mobile only) */}
+        <button
+          className="lg:hidden text-white text-lg font-bold"
+          onClick={onClose}
+        >
+          ✕
+        </button>
       </div>
 
-      {/* Close button for small screens */}
-      <button
-        className="lg:hidden absolute top-3 right-4 text-white text-3xl font-bold z-50"
-        onClick={onClose}
-      >
-        ✕
-      </button>
-
-      <CardContent className="space-y-6 mt-10">
-        {/* Buy/Sell Toggle inside Trades */}
+      <CardContent className="space-y-2">
+        {/* Buy/Sell Toggle */}
         {mode === "trades" && (
-          <div className="flex justify-center bg-n-7 p-2 rounded-lg space-x-2">
+          <div className="flex rounded-md overflow-hidden border border-n-6 w-full">
             {["buy", "sell"].map((type) => (
               <Button
                 key={type}
                 variant={view === type ? "default" : "ghost"}
-                className={`w-1/2 rounded-lg ${
+                className={`flex-1 py-2 transition ${
                   view === type
-                    ? type === "buy"
-                      ? "bg-green-600 text-white"
-                      : "bg-red-600 text-white"
-                    : "text-white/40"
+                    ? "bg-color-5 text-white"
+                    : "bg-n-7 text-white/50 hover:text-white"
                 }`}
                 onClick={() => setView(type)}
               >
@@ -107,83 +99,85 @@ const SwapComponent = ({ tokenId, onClose }) => {
           </div>
         )}
 
-        {/* Main content */}
+        {/* Main Content */}
         {view === "liq" ? (
           <AddMinusLiq tokenId={tokenId} />
         ) : (
           <>
+            {/* Input */}
             <div>
-              <label className="block text-gray-300 text-lg font-semibold mb-2">
+              <label className="block text-gray-300 text-sm font-medium mb-1">
                 {view === "buy" ? `Buy ${ticker}` : `Sell ${ticker}`}
               </label>
               <Input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-500"
+                className="w-full p-2 border border-n-6 rounded-md bg-n-7 text-white placeholder-gray-500"
                 placeholder={`Enter amount of ${view === "buy" ? basepair : ticker}`}
                 min="0"
               />
             </div>
 
             {/* Amount Buttons */}
-<div className="flex items-center justify-between space-x-2">
-  {view === "sell"
-    ? [25, 50, 75, 100].map((percent) => (
-        <button
-          key={percent}
-          className={`px-4 py-2 border rounded-md text-sm ${
-            percentage === percent ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
-          }`}
-          onClick={() => {
-            setPercentage(percent);
-            const balance = 500; // replace with actual token balance if available
-            setAmount((balance * percent) / 100);
-          }}
-        >
-          {percent}%
-        </button>
-      ))
-    : [0.01, 0.05, 0.015, 0.03].map((value) => (
-        <button
-          key={value}
-          className={`px-4 py-2 border rounded-md text-sm ${
-            parseFloat(amount) === value ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
-          }`}
-          onClick={() => {
-            setAmount(value);
-            setPercentage(0); // reset percentage when using fixed buy amounts
-          }}
-        >
-          {value}
-        </button>
-      ))}
-</div>
+            <div className="grid grid-cols-4 gap-1 w-full">
+              {view === "sell"
+                ? [25, 50, 75, 100].map((percent) => (
+                    <button
+                      key={percent}
+                      className={`py-2 rounded-md text-xs transition border w-full ${
+                        percentage === percent
+                          ? "bg-color-1 text-white border-color-1"
+                          : "text-gray-300 border-n-6 hover:bg-n-6"
+                      }`}
+                      onClick={() => {
+                        setPercentage(percent);
+                        const balance = 500;
+                        setAmount((balance * percent) / 100);
+                      }}
+                    >
+                      {percent}%
+                    </button>
+                  ))
+                : [0.01, 0.05, 0.015, 0.03].map((value) => (
+                    <button
+                      key={value}
+                      className={`py-2 rounded-md text-xs transition border w-full ${
+                        parseFloat(amount) === value
+                          ? "bg-color-1 text-white border-color-1"
+                          : "text-gray-300 border-n-6 hover:bg-n-6"
+                      }`}
+                      onClick={() => {
+                        setAmount(value);
+                        setPercentage(0);
+                      }}
+                    >
+                      {value}
+                    </button>
+                  ))}
+            </div>
 
-
-            {/* Slippage & Output */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 gap-4">
-              <p className="text-sm text-gray-400">
-                You will receive approx:{" "}
+            {/* Slippage + Output */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-2 bg-n-7 rounded-md border border-n-6 w-full">
+              <p className="text-xs text-gray-400">
+                receive approx:{" "}
                 <span className="text-white font-medium">
                   {getEstimatedOutput()} {view === "buy" ? ticker : basepair}
                 </span>
               </p>
-              <div className="w-full sm:w-auto">
-                <SlippageCard slippage={slippage} onChange={setSlippage} />
-              </div>
+              <SlippageCard slippage={slippage} onChange={setSlippage} />
             </div>
 
-            {/* Reset & Place Order */}
-            <div className="flex justify-between mt-4">
+            {/* Reset & Order */}
+            <div className="flex gap-2 w-full">
               <button
-                className="px-4 py-2 border rounded-md text-gray-400 hover:text-white"
+                className="flex-1 py-2 border rounded-md text-gray-400 hover:text-white hover:bg-n-6 transition text-sm"
                 onClick={resetAmount}
               >
                 Reset
               </button>
               <Button
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg"
+                className="flex-1 py-2 bg-color-5 text-white rounded-md hover:opacity-90 transition text-sm"
                 onClick={handleAction}
               >
                 Place Order

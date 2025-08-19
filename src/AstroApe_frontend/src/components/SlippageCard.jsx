@@ -44,7 +44,7 @@ const SlippageCard = ({ slippage, onChange }) => {
                   }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium ${
                     slippage === value
-                      ? "bg-purple-600 text-white"
+                      ? "bg-color-1 text-white"
                       : "bg-n-6 text-gray-300 hover:bg-n-5"
                   }`}
                 >

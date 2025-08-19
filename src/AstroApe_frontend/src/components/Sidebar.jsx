@@ -63,9 +63,9 @@ const Sidebar = () => {
           border-r border-n-6 overflow-y-auto hidden 
         `}
       >
-        <div className="flex flex-col items-center py-6 h-full">
+        <div className="flex flex-col items-center py-2 h-full">
           {/* AstroApe Logo */}
-          <Link to="/" className="block">
+          <Link to="/Token/9" className="block">
             <img
               src={Astrofun}
               alt="AstroApe Logo"

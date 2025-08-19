@@ -28,6 +28,7 @@
     "ic-siwe-js": "^0.2.4",
     "ic-use-siwe-identity": "^0.1.2",
     "lightweight-charts": "^5.0.8",
+    "lucide-react": "^0.540.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0",

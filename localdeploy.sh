@@ -4,7 +4,7 @@
 dfx canister create AstroApe_frontend
 dfx canister create ic_siwe_provider
 dfx canister create Comments
-
+dfx canister create TokenFactory
 dfx canister create Profile
 dfx canister create ApeSwap
 
@@ -15,7 +15,7 @@ dfx canister create ApeSwap
 # Fetch canister IDs
 IC_SIWE_PROVIDER_ID=$(dfx canister id ic_siwe_provider)
 COMMENTS_ID=$(dfx canister id Comments)
-
+TOKENFACTORY=$(dfx canister id TokenFactory)
 ASTROAPE_FRONTEND_ID=$(dfx canister id AstroApe_frontend)
 PROFILE_ID=$(dfx canister id Profile)
 APESWAP_ID=$(dfx canister id ApeSwap)
@@ -40,6 +40,7 @@ dfx deploy ic_siwe_provider --argument "(
             \"$COMMENTS_ID\";
             \"$PROFILE_ID\";
             \"$APESWAP_ID\";
+            \"$TOKENFACTORY\";
           
         };
     }
@@ -48,7 +49,7 @@ dfx deploy ic_siwe_provider --argument "(
 # Deploy remaining canisters
 dfx deploy AstroApe_frontend
 dfx deploy Comments
-
+dfx deploy TokenFactory 
 dfx deploy Profile
 dfx deploy ApeSwap
 
@@ -57,3 +58,4 @@ dfx deploy ApeSwap
 # Generate type bindings
 dfx generate
 
+node uploadWasm.mjs

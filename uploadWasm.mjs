@@ -8,10 +8,10 @@ global.fetch = fetch;
 
 // --- CONFIGURATION ---
 // The canister ID of your TokenFactory canister.
-const canisterId = 'bkyz2-fmaaa-aaaaa-qaaaq-cai'; 
+const canisterId = 'umunu-kh777-77774-qaaca-cai'; 
 
 // The local path to your Wasm file.
-const wasmFilePath = '/mnt/c/Users/user/Desktop/Astro/AstroApeDapp_ICP/AstroApeDapp_ICP/src/AstroApe_backend/src/TokenFactory/icrc1_ledger.wasm.gz';
+const wasmFilePath = '/workspaces/AstroApeDapp_ICP/src/AstroApe_backend/src/TokenFactory/icrc1_ledger.wasm.gz';
 // The URL for the local replica.
 const localUrl = 'http://127.0.0.1:4943';
 // --------------------

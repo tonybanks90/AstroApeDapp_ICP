@@ -63,7 +63,7 @@ const Chat = () => {
         />
         <button
           onClick={handlePostComment}
-          className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+          className="px-3 py-2 bg-color-1 hover:bg-color-5 text-white rounded-lg"
         >
           Post
         </button>

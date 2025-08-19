@@ -3,6 +3,7 @@ import Chats from './Chat';
 import Trades from './Trades';
 import TokenDistributionCard from './TokenDistributionCard';
 import { candlestickData } from "../data/chartData";
+import CoinDetails from './CoinDetails';
 
 
 const ChatAndTrades = ({ tokenId }) => {
@@ -31,7 +32,7 @@ const ChatAndTrades = ({ tokenId }) => {
           }`}
         >
           Chat
-          {view === 'chat' && <div className="absolute bottom-0 left-0 w-full h-1 bg-purple-500"></div>}
+          {view === 'chat' && <div className="bg-purple-600 text-white"></div>}
         </button>
         <button
           onClick={() => setView('trades')}
@@ -42,14 +43,23 @@ const ChatAndTrades = ({ tokenId }) => {
           Trades
           {view === 'trades' && <div className="bg-purple-600 text-white"></div>}
         </button>
+        <button
+          onClick={() => setView('Distribution')}
+          className={`flex-1 py-2 border rounded-md text-center text-sm font-medium transition-all duration-300 relative ${
+            view === 'Distribution' ? 'bg-color-1 text-white' : ' hover:text-color-1'
+          }`}
+        >
+          Distribution
+          {view === 'Distribution' && <div className="bg-purple-600 text-white"></div>}
+        </button>
         {isSmallScreen && (
           <button
-            onClick={() => setView('distribution')}
+            onClick={() => setView('info')}
             className={`flex-1 py-2 border rounded-md text-center text-sm font-medium transition-all duration-300 relative ${
               view === 'distribution' ? 'bg-color-1 text-white' : ' hover:text-color-1'
             }`}
           >
-            Token Distribution
+            Info
             {view === 'distribution' && <div className="absolute bottom-0 left-0 w-full h-1 bg-purple-500"></div>}
           </button>
         )}
@@ -57,7 +67,8 @@ const ChatAndTrades = ({ tokenId }) => {
       <div className="p-4 flex-1 overflow-y-auto">
         {view === 'chat' && <Chats />}
         {view === 'trades' && <Trades />}
-        {isSmallScreen && view === 'distribution' && <TokenDistributionCard tokenId={tokenId} />}
+        {view === 'trades' && <TokenDistributionCard tokenId={tokenId}/>}
+        {isSmallScreen && view === 'distribution' && <CoinDetails tokenId={tokenId} />}
       </div>
     </div>
   );

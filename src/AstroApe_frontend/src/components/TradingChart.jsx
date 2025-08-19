@@ -67,7 +67,7 @@ const TradingChart = () => {
   };
 
   return (
-    <div className="mt-20 bg-gray-900 p-4 rounded-lg">
+    <div className="mt-2 bg-gray-900 p-4 rounded-lg">
       <Line data={data} options={options} />
     </div>
   );

@@ -13,7 +13,7 @@ const AddMinusLiq = ({ tokenId }) => {
       <div className="flex flex-col gap-2 items-start">
         <div className="w-full bg-n-6 rounded-full h-2 relative">
           <div
-            className="h-2 bg-purple-500 rounded-full transition-all duration-300"
+            className="h-2 bg-color-1 rounded-full transition-all duration-300"
             style={{ width: bondedProgress }}
           ></div>
         </div>

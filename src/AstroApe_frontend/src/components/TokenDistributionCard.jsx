@@ -1,7 +1,10 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+
 import { candlestickData } from "../data/chartData"; // Import candlestick data
 
-const TokenDistributionCard = ({ tokenId }) => {
+const TokenDistributionCard = () => {
+  const { tokenId } = useParams();
   // Fetch distribution data for the selected tokenId
   const distributionData = candlestickData[tokenId]?.distribution || [];
 
