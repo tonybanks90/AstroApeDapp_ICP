@@ -3,14 +3,24 @@ import { FiUpload } from "react-icons/fi";
 import Button from "./Button";
 import Input from "./Input";
 import { Actor, HttpAgent } from "@dfinity/agent";
+//import { canisterId as tokenFactoryId, createActor } from "../../../declarations/TokenFactory";
 import { idlFactory, canisterId } from "../../../declarations/TokenFactory";
 
+// 🎯 manually specify playground canister ID
+const tokenFactoryCanisterId = "v3x57-gaaaa-aaaab-qadmq-cai";
+
+// Point to playground network
+const agent = new HttpAgent({ host: "https://playground.dfinity.network" });
+
 // 🎯 Setup agent + actor for TokenFactory
-const agent = new HttpAgent();
+//const agent = new HttpAgent();
 if (process.env.DFX_NETWORK === "local") {
   agent.fetchRootKey();
 }
-const tokenFactory = Actor.createActor(idlFactory, { agent, canisterId });
+//const tokenFactory = Actor.createActor(idlFactory, { agent, canisterId });
+
+//const tokenFactory = createActor(tokenFactoryId, { agent });
+const tokenFactory = Actor.createActor(idlFactory, { agent, canisterId: tokenFactoryCanisterId });
 
 const ImageUpload = ({ label, id, onImageChange, imageSrc }) => {
   return (
@@ -103,7 +113,7 @@ const CreatePage = () => {
   };
 
   return (
-    <div className="pt-16 lg:pt-20 p-6 mb-12 lg:px-36">
+    <div className=" lg:pt-20 p-2 mb-12 lg:px-32">
       <h1 className="text-3xl font-bold mb-8 text-n-1">Create Your Token</h1>
 
       <form className="space-y-6" onSubmit={handleCreateToken}>
@@ -111,7 +121,7 @@ const CreatePage = () => {
         <div>
           <label className="block text-lg font-medium text-n-1 mb-2">Select Base Token</label>
           <div className="flex space-x-4">
-            {["BTC", "ETH", "SOL", "SUI"].map((token) => (
+            {["BITCOIN", "ETHEREUM", "SOLANA", "SUI"].map((token) => (
               <button
                 key={token}
                 type="button"
@@ -217,7 +227,7 @@ const CreatePage = () => {
         </Button>
 
         {/* Create to Earn Section */}
-        <div className="mt-6 p-4 border border-n-6 bg-n-8 rounded-md text-center">
+        <div className="mt-6 p-4 border border-n-6 bg-color-1 rounded-md text-center">
           <h2 className="text-lg font-bold text-n-1">Create to Earn</h2>
           <p className="text-n-1/80">
             Earn 0.001 when a token you create successfully bond to the AMM!

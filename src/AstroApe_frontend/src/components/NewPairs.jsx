@@ -20,27 +20,38 @@ const NewPairs = () => {
   return (
     <div className="lg:mt-9 mb-12 p-6">
 
-      {/* --- Top Row Buttons --- */}
-      <div className="flex justify-center lg:justify-end gap-3 mb-4">
-        {/* How it works */}
-        <button
-          type="button"
-          onClick={() => setShowGuide(true)}
-          className="px-4 py-2 border rounded-md bg-n-8 text-n-1 hover:bg-color-1 hover:text-white transition font-bold text-sm"
-        >
-          How it works
-        </button>
+     {/* --- Top Row --- */}
+<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+  {/* ✅ Left Side Text (only visible on large screens) */}
+  <div className="hidden lg:block text-white">
+  <h1 className="text-lg font-semibold">Trade Memecoins,</h1>
+  <h3 className="text-lg font-semibold text-color-1">Discover the most trending tokens</h3>
+</div>
 
-        {/* Launch Token */}
-        <Link to="/Token/2">
-          <button
-            type="button"
-            className="px-4 py-2 border rounded-md bg-n-8 text-n-1 hover:bg-color-1 hover:text-white transition font-bold text-sm"
-          >
-            Launch Token
-          </button>
-        </Link>
-      </div>
+
+  {/* ✅ Right Side Buttons */}
+  <div className="flex justify-center lg:justify-end gap-3">
+    {/* How it works */}
+    <button
+      type="button"
+      onClick={() => setShowGuide(true)}
+      className="px-4 py-2 rounded-md bg-color-1 text-white border border-transparent hover:border-white transition font-bold text-sm"
+    >
+      How it works
+    </button>
+
+    {/* Launch Token */}
+    <Link to="/Token/2">
+      <button
+        type="button"
+        className="px-4 py-2 rounded-md bg-color-1 text-white border border-transparent hover:border-white transition font-bold text-sm"
+      >
+        Launch Token
+      </button>
+    </Link>
+  </div>
+</div>
+
 
       {/* --- Filters + Search Row --- */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
@@ -146,19 +157,15 @@ const NewPairs = () => {
       </div>
 
       {/* --- Guide Modal --- */}
-      {showGuide && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-n-8 p-6 rounded-xl max-w-lg w-full relative">
-            <button
-              onClick={() => setShowGuide(false)}
-              className="absolute top-3 right-3 text-white hover:text-color-1"
-            >
-              ✕
-            </button>
-            <Guide />
-          </div>
-        </div>
-      )}
+{showGuide && (
+  <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div className="bg-n-8 p-6 rounded-xl max-w-lg w-full relative">
+      {/* Guide handles its own close buttons */}
+      <Guide onClose={() => setShowGuide(false)} />
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

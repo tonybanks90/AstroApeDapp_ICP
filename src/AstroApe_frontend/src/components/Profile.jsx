@@ -262,7 +262,7 @@ const Profile = () => {
 
     // --- Render Logic (JSX - no changes needed here) ---
     return (
-        <div className="mt-20 p-6 lg:p-8">
+        <div className="lg:mt-8 p-6 lg:p-8">
             {/* Section 1: Profile Header */}
             <section className="flex flex-col lg:flex-row items-center mb-8 gap-4 lg:gap-8">
                 <div className="flex items-center">

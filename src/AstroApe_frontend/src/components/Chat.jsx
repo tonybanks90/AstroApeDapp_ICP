@@ -5,7 +5,7 @@ import { idlFactory, canisterId } from "../../../declarations/Comments";
 // Set up an actor to interact with the backend
 const agent = new HttpAgent();
 
-if (process.env.DFX_NETWORK === "local") {
+if (process.env.DFX_NETWORK === "--playground") {
   agent.fetchRootKey();
 }
 

@@ -12,7 +12,7 @@ import { ParallaxProvider } from 'react-scroll-parallax';
 const LandingPage = () => {
     return (
         <>
-        <div className='pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden'>
+        <div className='pt-[4.75rem] lg:pt-[5.25rem] '>
             
             <Hero />
             <Features />
@@ -21,7 +21,7 @@ const LandingPage = () => {
                 <Roadmap />
             </ParallaxProvider>
             
-            <Footer />
+            {/* */}<Footer />
         
         </div>
 
