@@ -437,6 +437,128 @@ shared ({ caller = owner }) actor class BondingCurveICRC2(
     trades;
   };
 
+  // ========== USER UTILITY FUNCTIONS ==========
+  
+  // Allow users to approve unlimited spending (max Nat value)
+  public shared ({ caller }) func approve_unlimited() : async Result.Result<Text, Text> {
+    if (Principal.isAnonymous(caller)) {
+      return #err("Anonymous caller not allowed");
+    };
+
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    // Use max Nat value for unlimited approval
+    let max_amount : Nat = 18446744073709551615; // 2^64 - 1
+    
+    let approve_result = await ckbtc.icrc2_approve({
+      from_subaccount = null;
+      spender = { owner = Principal.fromActor(this); subaccount = null };
+      amount = max_amount;
+      expected_allowance = null;
+      expires_at = null;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+    
+    switch (approve_result) {
+      case (#Err(e)) #err("Approval failed: " # debug_show(e));
+      case (#Ok(_)) #ok("Unlimited spending approved successfully");
+    };
+  };
+
+  // Allow users to approve a specific amount
+  public shared ({ caller }) func approve_amount(amount : Nat) : async Result.Result<Text, Text> {
+    if (Principal.isAnonymous(caller)) {
+      return #err("Anonymous caller not allowed");
+    };
+
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    let approve_result = await ckbtc.icrc2_approve({
+      from_subaccount = null;
+      spender = { owner = Principal.fromActor(this); subaccount = null };
+      amount = amount;
+      expected_allowance = null;
+      expires_at = null;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+    
+    switch (approve_result) {
+      case (#Err(e)) #err("Approval failed: " # debug_show(e));
+      case (#Ok(_)) #ok("Amount approved successfully");
+    };
+  };
+
+  // Check user's ckBTC balance
+  public shared ({ caller }) func get_my_ckbtc_balance() : async Nat {
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    await ckbtc.icrc1_balance_of({
+      owner = caller;
+      subaccount = null;
+    });
+  };
+
+  // Check any user's ckBTC balance (public)
+  public shared func get_ckbtc_balance(user : Principal) : async Nat {
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    await ckbtc.icrc1_balance_of({
+      owner = user;
+      subaccount = null;
+    });
+  };
+
+  // Check current allowance for the caller
+  public shared ({ caller }) func get_my_allowance() : async Nat {
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    let allowance_result = await ckbtc.icrc2_allowance({
+      account = { owner = caller; subaccount = null };
+      spender = { owner = Principal.fromActor(this); subaccount = null };
+    });
+    
+    allowance_result.allowance;
+  };
+
+  // Get user's token balance (same as get_user_balance but for convenience)
+  public query ({ caller }) func get_my_token_balance() : async Nat {
+    Option.get(balances.get(caller), 0);
+  };
+
+  // Check if user needs to approve more spending
+  public shared ({ caller }) func check_approval_needed(trade_amount : Nat) : async {
+    current_allowance : Nat;
+    needs_approval : Bool;
+    suggested_approval : Nat;
+  } {
+    let ckbtc : ICRC.Actor = actor(Principal.toText(init_params.ckbtc_canister));
+    
+    let allowance_result = await ckbtc.icrc2_allowance({
+      account = { owner = caller; subaccount = null };
+      spender = { owner = Principal.fromActor(this); subaccount = null };
+    });
+    
+    let current_allowance = allowance_result.allowance;
+    let needs_approval = current_allowance < trade_amount;
+    
+    // Suggest approving 10x the trade amount or unlimited
+    let suggested_approval = if (needs_approval) {
+      max(trade_amount * 10, 100000000) // At least 1 ckBTC worth
+    } else {
+      0
+    };
+    
+    {
+      current_allowance = current_allowance;
+      needs_approval = needs_approval;
+      suggested_approval = suggested_approval;
+    };
+  };
+
   // ========== ADMIN FUNCTIONS ==========
   public shared ({ caller }) func withdraw_fees() : async Result.Result<Nat, Text> {
     if (caller != owner) return #err("Not authorized");
