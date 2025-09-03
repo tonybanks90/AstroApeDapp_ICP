@@ -25,6 +25,10 @@
       "main": "src/AstroApe_backend/src/Profile/Profile.mo",
       "type": "motoko"
     },
+    "Profile2": {
+      "main": "src/AstroApe_backend/src/Profile/main.mo",
+      "type": "motoko"
+    },
 
     "ApeSwap": {
       "main": "src/AstroApe_backend/src/ApeSwap/ApeSwap.mo",

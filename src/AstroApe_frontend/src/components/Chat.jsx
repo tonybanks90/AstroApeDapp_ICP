@@ -5,11 +5,13 @@ import { idlFactory, canisterId } from "../../../declarations/Comments";
 // Set up an actor to interact with the backend
 const agent = new HttpAgent();
 
-if (process.env.DFX_NETWORK === "--playground") {
+if (process.env.DFX_NETWORK === "local") {
   agent.fetchRootKey();
 }
 
-const commentsBackend = Actor.createActor(idlFactory, { agent, canisterId });
+const commentsBackend = Actor.createActor(idlFactory, { agent,
+  canisterId: "uzt4z-lp777-77774-qaabq-cai",
+ });
 
 const Chat = () => {
   const [comments, setComments] = useState([]);

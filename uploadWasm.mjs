@@ -7,8 +7,8 @@ import fetch from 'node-fetch';
 global.fetch = fetch;
 
 // --- CONFIGURATION ---
-// The canister ID of your TokenFactory canister.
-const canisterId = 'y4oop-liaaa-aaaab-qacha-cai'; 
+// The canister ID of your TokenFactory canister.up
+const canisterId = '6mce5-laaaa-aaaab-qacsq-cai'; 
 
 // The local path to your Wasm file.
 const wasmFilePath = '/workspaces/AstroApeDapp_ICP/src/AstroApe_backend/src/TokenFactory/icrc1_ledger.wasm.gz';

@@ -48,7 +48,9 @@ import Liquidity from './components/Liquidity';
 import Created from './components/Created';
 import Activity from './components/Activity';
 import Faucet from './components/Faucet';
-import Test from './components/Test';
+import CryptoBalances from './components/CryptoBalances';
+import CustomTokenBalance from './components/CustomTokenBalance';
+import Display from './components/display.jsx';
 
 
 
@@ -71,7 +73,9 @@ const router = createBrowserRouter([
     element: <TokenDeploy />,
     children: [
       { path: '/Token/1', element: <NewPairs /> },
-      { path: '/Token/test', element: <Test /> },
+      { path: '/Token/display', element: <Display /> },
+      { path: '/Token/test', element: <CryptoBalances /> },
+      { path: '/Token/test2', element: <CustomTokenBalance /> },
       { path: '/Token/9', element: <LandingPage /> },
       { path: '/Token/2', element: <Deploy /> },
       { path: '/Token/profile', element: <Profile /> },
