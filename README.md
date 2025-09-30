@@ -35,11 +35,13 @@ npm install
 dfx start --background
 
 # Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
 bash deploy.sh
 
 #deploys canisters & Uploads Wasm 
+```
+
+
+
 
 Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
 
@@ -54,7 +56,9 @@ npm run generate
 If you are making frontend changes, you can start a development server with
 
 ```bash
-npm start
+cd src/
+cd AstroAPe_Frontend
+npm run dev
 ```
 
 Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
