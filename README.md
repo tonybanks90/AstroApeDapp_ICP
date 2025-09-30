@@ -57,7 +57,7 @@ If you are making frontend changes, you can start a development server with
 
 ```bash
 cd src/
-cd AstroAPe_Frontend
+cd AstroApe_Frontend
 npm run dev
 ```
 
