@@ -1,8 +1,8 @@
 import { useInternetIdentity } from './useInternetIdentity';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { type backendInterface } from '../../../declarations/Profile2';
-import { createActorWithConfig } from '../ic/config';
+import { type backendInterface } from '../../../declarations/Profile2/index.js';
+import { createActorWithConfig } from '../ic/config.js';
 
 interface ExtendedBackendInterface extends backendInterface {
     initializeAccessControl: () => Promise<void>;

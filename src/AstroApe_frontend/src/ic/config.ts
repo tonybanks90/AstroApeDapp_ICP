@@ -1,5 +1,5 @@
-import { CreateActorOptions } from '../../../declarations/Profile2';
-import { createActor, canisterId, type backendInterface } from '../../../declarations/Profile2';
+import { CreateActorOptions } from '../../../declarations/Profile2/index.js';
+import { createActor, canisterId, type backendInterface } from '../../../declarations/Profile2/index.js';
 
 const DEFAULT_STORAGE_GATEWAY_URL = 'https://dev-blob.caffeine.ai';
 const DEFAULT_BUCKET_NAME = 'default-bucket';

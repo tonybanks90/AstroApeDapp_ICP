@@ -8,12 +8,12 @@ global.fetch = fetch;
 
 // --- CONFIGURATION ---
 // The canister ID of your TokenFactory canister
-const canisterId = '6fbpb-5iaaa-aaaab-qacta-cai'; 
+const canisterId = 'umunu-kh777-77774-qaaca-cai'; 
 
 // The local path to your Wasm file
-const wasmFilePath = '/workspaces/AstroApeDapp_ICP/wasm/icrc1_ledger.wasm.gz';
+const wasmFilePath = '/mnt/c/Users/user/AstroApeDapp_ICP/wasm/icrc1_ledger.wasm.gz';
 // The URL for the local replica or mainnet
-const localUrl = 'https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io';
+const localUrl = 'http://127.0.0.1:4943/';
 // --------------------
 
 // Updated Candid interface for the Enhanced TokenFactory with Bitcoin/Ethereum support
