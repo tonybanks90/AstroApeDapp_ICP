@@ -16,7 +16,7 @@ import Iter "mo:base/Iter";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
 import Char "mo:base/Char";
-import Int "mo:base/Int";
+import Int "mo:base/Int"
 
 
 actor TokenFactory {
