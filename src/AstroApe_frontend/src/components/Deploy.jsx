@@ -30,14 +30,14 @@ const createTokenFactoryActor = async () => {
       
       return Actor.createActor(idlFactory, { 
         agent: mainnetAgent, 
-        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "umunu-kh777-77774-qaaca-cai",
       });
     }
   }
   
   return Actor.createActor(idlFactory, { 
     agent, 
-    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "umunu-kh777-77774-qaaca-cai",
   });
 };
 
