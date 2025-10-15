@@ -29,6 +29,10 @@
       "main": "src/AstroApe_backend/src/Profile/main.mo",
       "type": "motoko"
     },
+    "Referral": {
+      "main": "src/AstroApe_backend/src/Referral/Referral.mo",
+      "type": "motoko"
+    },
 
     "ApeSwap": {
       "main": "src/AstroApe_backend/src/ApeSwap/ApeSwap.mo",
