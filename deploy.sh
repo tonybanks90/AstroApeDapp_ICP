@@ -7,17 +7,15 @@ dfx canister $NETWORK create AstroApe_frontend
 dfx canister $NETWORK create ic_siwe_provider
 dfx canister $NETWORK create Comments
 dfx canister $NETWORK create TokenFactory
-dfx canister $NETWORK create ckBoostManager
 dfx canister $NETWORK create Profile
-dfx canister $NETWORK create ApeSwap
+dfx canister $NETWORK create Referral
 
 
 # Fetch canister IDs
 IC_SIWE_PROVIDER_ID=$(dfx canister $NETWORK id ic_siwe_provider)
 COMMENTS_ID=$(dfx canister $NETWORK id Comments)
 PROFILE_ID=$(dfx canister $NETWORK id Profile) 
-APESWAP_ID=$(dfx canister $NETWORK id ApeSwap)
-ckBoostManager_ID=$(dfx canister $NETWORK id ckBoostManager)
+REFERRAL_ID=$(dfx canister $NETWORK id Referral)
 TOKEN_FACTORY_ID=$(dfx canister $NETWORK id TokenFactory)
 ASTROAPE_FRONTEND_ID=$(dfx canister $NETWORK id AstroApe_frontend)
 
@@ -45,8 +43,8 @@ dfx deploy AstroApe_frontend $NETWORK
 dfx deploy Comments $NETWORK
 dfx deploy TokenFactory $NETWORK
 dfx deploy Profile $NETWORK
-dfx deploy ApeSwap $NETWORK
-dfx deploy ckBoostManager $NETWORK
+dfx deploy Referral $NETWORK
+
 
 
 # Generate type bindings

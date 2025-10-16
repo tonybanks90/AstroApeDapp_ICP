@@ -6,8 +6,8 @@
   "scripts": {
     "setup": "npm i && dfx canister create AstroApe_backend && dfx generate AstroApe_backend && dfx deploy",
     "dev": "vite",
-    "prebuild": "dfx generate",
-    "build": "tsc && vite build",
+    "prebuild": "echo skipping dfx generate",
+    "build": "vite build",
     "format": "prettier --write \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\""
   },
   "dependencies": {

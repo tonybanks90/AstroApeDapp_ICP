@@ -1,4 +1,7 @@
 {
+  "ApeSwap": {
+    "ic": "c2b6n-iqaaa-aaaap-qqftq-cai"
+  },
   "AstroApe_backend": {
     "ic": "lqwe7-jaaaa-aaaap-qhsga-cai"
   },
@@ -7,6 +10,12 @@
   },
   "Comments": {
     "ic": "52v3x-gqaaa-aaaap-qpzka-cai"
+  },
+  "Profile": {
+    "ic": "c5ayz-fiaaa-aaaap-qqfta-cai"
+  },
+  "Referral": {
+    "ic": "cudtf-taaaa-aaaap-qqfsq-cai"
   },
   "TokenFactory": {
     "ic": "55u5d-liaaa-aaaap-qpzkq-cai"

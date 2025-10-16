@@ -1,4 +1,5 @@
 import Array "mo:base/Array";
+import Text "mo:base/Text";
 import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
