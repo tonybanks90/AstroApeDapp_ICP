@@ -19,7 +19,7 @@ import Char "mo:base/Char";
 import Int "mo:base/Int"
 
 
-actor TokenFactory {
+persistent actor TokenFactory {
   // ICRC-2 Standard Types
   public type Account = {
     owner : Principal;
@@ -162,10 +162,10 @@ actor TokenFactory {
   };
 
   // Constants for different chain types
-  private let BITCOIN_SUPPLY : Nat = 21_000_000; // 21 Million tokens
-  private let ETHEREUM_SUPPLY : Nat = 1_000_000_000; // 1 Billion tokens
-  private let DEFAULT_DECIMALS : Nat8 = 8;
-  private let DEFAULT_FEE : Nat = 10_000;
+  private transient let BITCOIN_SUPPLY : Nat = 21_000_000; // 21 Million tokens
+  private transient let ETHEREUM_SUPPLY : Nat = 1_000_000_000; // 1 Billion tokens
+  private transient let DEFAULT_DECIMALS : Nat8 = 8;
+  private transient let DEFAULT_FEE : Nat = 10_000;
 
   // Stable storage
   private stable var tokens : List.List<Principal> = List.nil();
@@ -174,10 +174,10 @@ actor TokenFactory {
   private stable var tokenMetadataEntries : [(Principal, TokenMetadata)] = [];
   
   // Runtime storage - explicitly marked as transient
-  private var tokenMetadata = HashMap.HashMap<Principal, TokenMetadata>(0, Principal.equal, Principal.hash);
+  private transient var tokenMetadata = HashMap.HashMap<Principal, TokenMetadata>(0, Principal.equal, Principal.hash);
 
   // Management canister interface - explicitly marked as transient
-  private let mgmt = actor "aaaaa-aa" : actor {
+  private transient let mgmt = actor "aaaaa-aa" : actor {
     create_canister : shared { settings : ?{ controllers : [Principal] } } -> async { canister_id : Principal };
     install_code : shared {
       canister_id : Principal;
@@ -188,7 +188,7 @@ actor TokenFactory {
   };
 
   // HTTP outcalls interface - explicitly marked as transient
-  private let http = actor "aaaaa-aa" : actor {
+  private transient let http = actor "aaaaa-aa" : actor {
     http_request : shared {
       url : Text;
       max_response_bytes : ?Nat64;
@@ -206,7 +206,7 @@ actor TokenFactory {
     };
   };
 
-  private let icrc1_wasm_url = "https://download.dfinity.systems/ic/4833f30d3b5afd84a385dfb146581580285d8a7e/canisters/ic-icrc1-ledger.wasm.gz";
+  private transient let icrc1_wasm_url = "https://download.dfinity.systems/ic/4833f30d3b5afd84a385dfb146581580285d8a7e/canisters/ic-icrc1-ledger.wasm.gz";
 
   // Initialize from stable storage
   system func preupgrade() {

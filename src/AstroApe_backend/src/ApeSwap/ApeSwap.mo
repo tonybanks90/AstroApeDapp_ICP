@@ -53,18 +53,18 @@ actor MultiBaseDEX {
     };
 
     // Constants
-    let FEE : Nat = 3; // 0.3% fee
-    let FEE_DENOMINATOR : Nat = 1000;
+    private let FEE : Nat = 3; // 0.3% fee
+    private let FEE_DENOMINATOR : Nat = 1000;
     
     // Base token principals (these should be set to actual canister IDs)
-    let ckETH_PRINCIPAL = Principal.fromText("ss2fx-dyaaa-aaaar-qacoq-cai");
-    let ckBTC_PRINCIPAL = Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai");
-    let ckSOL_PRINCIPAL = Principal.fromText("6vt6p-6qaaa-aaaas-aibfa-cai");
+    private let ckETH_PRINCIPAL = Principal.fromText("ss2fx-dyaaa-aaaar-qacoq-cai");
+    private let ckBTC_PRINCIPAL = Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai");
+    private let ckSOL_PRINCIPAL = Principal.fromText("6vt6p-6qaaa-aaaas-aibfa-cai");
 
     // State variables
-    private var tokens = HashMap.HashMap<Principal, Token>(10, Principal.equal, Principal.hash);
-    private var liquidityPools = HashMap.HashMap<PoolId, LiquidityPool>(10, Text.equal, Text.hash);
-    private var userLiquidity = HashMap.HashMap<Principal, HashMap.HashMap<PoolId, UserLiquidity>>(10, Principal.equal, Principal.hash);
+    private transient var tokens = HashMap.HashMap<Principal, Token>(10, Principal.equal, Principal.hash);
+    private transient var liquidityPools = HashMap.HashMap<PoolId, LiquidityPool>(10, Text.equal, Text.hash);
+    private transient var userLiquidity = HashMap.HashMap<Principal, HashMap.HashMap<PoolId, UserLiquidity>>(10, Principal.equal, Principal.hash);
     
     // Initialize base tokens
     private func initializeBaseTokens() {
@@ -225,6 +225,11 @@ actor MultiBaseDEX {
                 #err("Pool does not exist")
             };
             case (?pool) {
+                // Validate pool reserves
+                if (pool.baseReserve == 0 or pool.tokenReserve == 0) {
+                    return #err("Invalid pool state: reserves cannot be zero");
+                };
+                
                 // Calculate required token amount based on current ratio
                 let requiredTokenAmount = (pool.tokenReserve * baseAmount) / pool.baseReserve;
                 
@@ -297,6 +302,11 @@ actor MultiBaseDEX {
                     return #err("Insufficient shares");
                 };
                 
+                // Validate pool state
+                if (pool.totalShares == 0) {
+                    return #err("Invalid pool state: total shares cannot be zero");
+                };
+                
                 // Calculate amounts to return
                 let baseAmount = (shares * pool.baseReserve) / pool.totalShares;
                 let tokenAmount = (shares * pool.tokenReserve) / pool.totalShares;
@@ -324,6 +334,11 @@ actor MultiBaseDEX {
                 if (newShares == 0) {
                     removeUserLiquidityRecord(msg.caller, poolId);
                 } else {
+                    // Validate user shares before division
+                    if (userLiq.shares == 0) {
+                        return #err("Invalid user liquidity state");
+                    };
+                    
                     let newUserLiq : UserLiquidity = {
                         poolId = userLiq.poolId;
                         shares = newShares;
@@ -372,7 +387,11 @@ actor MultiBaseDEX {
                 };
                 
                 // Calculate price impact
-                let priceImpact = (amountOut * 10000) / pool.tokenReserve;
+                let priceImpact = if (pool.tokenReserve > 0) {
+                    (amountOut * 10000) / pool.tokenReserve
+                } else {
+                    0
+                };
                 
                 // Update pool
                 let updatedPool : LiquidityPool = {
@@ -430,7 +449,11 @@ actor MultiBaseDEX {
                 };
                 
                 // Calculate price impact
-                let priceImpact = (amountOut * 10000) / pool.baseReserve;
+                let priceImpact = if (pool.baseReserve > 0) {
+                    (amountOut * 10000) / pool.baseReserve
+                } else {
+                    0
+                };
                 
                 // Update pool
                 let updatedPool : LiquidityPool = {

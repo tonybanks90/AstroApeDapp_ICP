@@ -34,8 +34,8 @@
       "type": "motoko"
     },
 
-    "ApeSwap": {
-      "main": "src/AstroApe_backend/src/ApeSwap/ApeSwap.mo",
+    "Vault": {
+      "main": "src/AstroApe_backend/src/Vault/vault.mo",
       "type": "motoko"
     },
 

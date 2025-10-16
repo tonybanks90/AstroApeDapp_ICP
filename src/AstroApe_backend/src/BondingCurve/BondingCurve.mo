@@ -15,7 +15,7 @@ import Time "mo:base/Time";
 import TrieMap "mo:base/TrieMap";
 import Int "mo:base/Int";
 
-shared ({ caller = owner }) actor class ImprovedBondingCurve(
+shared ({ caller = owner }) persistent actor class ImprovedBondingCurve(
   init_params : {
     curve_id : Nat;
     curve_type : { #quadratic; #logarithmic; #linear; #exponential };
@@ -104,39 +104,39 @@ shared ({ caller = owner }) actor class ImprovedBondingCurve(
   
   // ===== CONSTANTS =====
   
-  private let BITCOIN_SUPPLY : Nat = 21_000_000;
-  private let ETHEREUM_SUPPLY : Nat = 1_000_000_000;
-  private let SATOSHI_DECIMALS : Nat8 = 8;
-  private let WEI_DECIMALS : Nat8 = 18;
+  private transient let BITCOIN_SUPPLY : Nat = 21_000_000;
+  private transient let ETHEREUM_SUPPLY : Nat = 1_000_000_000;
+  private transient let SATOSHI_DECIMALS : Nat8 = 8;
+  private transient let WEI_DECIMALS : Nat8 = 18;
   
   // ===== STATE =====
   
-  private var tokens_minted : Nat = 0;
-  private var total_base_raised : Nat = 0;
-  private var protocol_fees : Nat = 0;
-  private var is_graduated : Bool = false;
-  private var trade_count : Nat = 0;
-  private var vault_registered : Bool = false;
+  private transient var tokens_minted : Nat = 0;
+  private transient var total_base_raised : Nat = 0;
+  private transient var protocol_fees : Nat = 0;
+  private transient var is_graduated : Bool = false;
+  private transient var trade_count : Nat = 0;
+  private transient var vault_registered : Bool = false;
   
   // Derived constants based on base pair
-  private let max_supply : Nat = switch (init_params.base_pair) {
+  private transient let max_supply : Nat = switch (init_params.base_pair) {
     case (#ckBTC) { BITCOIN_SUPPLY * (10 ** Nat8.toNat(SATOSHI_DECIMALS)) };
     case (#ckETH) { ETHEREUM_SUPPLY * (10 ** Nat8.toNat(WEI_DECIMALS)) };
   };
   
-  private let graduation_threshold : Nat = (max_supply * 80) / 100; // 80% of max supply
+  private transient let graduation_threshold : Nat = (max_supply * 80) / 100; // 80% of max supply
   
-  private let base_decimals : Nat8 = switch (init_params.base_pair) {
+  private transient let base_decimals : Nat8 = switch (init_params.base_pair) {
     case (#ckBTC) { SATOSHI_DECIMALS };
     case (#ckETH) { WEI_DECIMALS };
   };
   
-  private var balances = TrieMap.TrieMap<Principal, Nat>(
+  private transient var balances = TrieMap.TrieMap<Principal, Nat>(
     Principal.equal, 
     Principal.hash
   );
   
-  private var recent_trades = Array.init<TradeInfo>(100, {
+  private transient var recent_trades = Array.init<TradeInfo>(100, {
     user = owner;
     amount_in = 0;
     amount_out = 0;
@@ -144,7 +144,7 @@ shared ({ caller = owner }) actor class ImprovedBondingCurve(
     timestamp = 0;
     trade_type = #buy;
   });
-  private var trade_index : Nat = 0;
+  private transient var trade_index : Nat = 0;
   
   // Stable variables for upgrades
   private stable var stable_balances : [(Principal, Nat)] = [];

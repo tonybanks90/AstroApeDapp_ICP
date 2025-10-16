@@ -14,7 +14,7 @@ import Nat32 "mo:base/Nat32";
 import Float "mo:base/Float";
 
 
-actor AstroApeReferral {
+persistent actor AstroApeReferral {
     // Types
     type ReferralCode = Text;
     type UserId = Principal;
@@ -57,17 +57,17 @@ actor AstroApeReferral {
     };
 
     // Constants
-    private let REFERRAL_REWARD_AMOUNT: Nat = 100; // Tokens per referral
-    private let REFEREE_BONUS_AMOUNT: Nat = 50; // Bonus for new user
+    private transient let REFERRAL_REWARD_AMOUNT: Nat = 100; // Tokens per referral
+    private transient let REFEREE_BONUS_AMOUNT: Nat = 50; // Bonus for new user
 
     // Storage
-    private var referralCodes = HashMap.HashMap<UserId, ReferralCode>(0, Principal.equal, Principal.hash);
-    private var codeToUser = HashMap.HashMap<ReferralCode, UserId>(0, Text.equal, Text.hash);
-    private var referrals = HashMap.HashMap<ReferralCode, Buffer.Buffer<ReferralInfo>>(0, Text.equal, Text.hash);
-    private var userReferralCount = HashMap.HashMap<UserId, Nat>(0, Principal.equal, Principal.hash);
-    private var claimedRewards = HashMap.HashMap<UserId, Buffer.Buffer<RewardInfo>>(0, Principal.equal, Principal.hash);
-    private var userSignupTime = HashMap.HashMap<UserId, Time.Time>(0, Principal.equal, Principal.hash);
-    private var pendingRewards = HashMap.HashMap<UserId, Nat>(0, Principal.equal, Principal.hash);
+    private transient var referralCodes = HashMap.HashMap<UserId, ReferralCode>(0, Principal.equal, Principal.hash);
+    private transient var codeToUser = HashMap.HashMap<ReferralCode, UserId>(0, Text.equal, Text.hash);
+    private transient var referrals = HashMap.HashMap<ReferralCode, Buffer.Buffer<ReferralInfo>>(0, Text.equal, Text.hash);
+    private transient var userReferralCount = HashMap.HashMap<UserId, Nat>(0, Principal.equal, Principal.hash);
+    private transient var claimedRewards = HashMap.HashMap<UserId, Buffer.Buffer<RewardInfo>>(0, Principal.equal, Principal.hash);
+    private transient var userSignupTime = HashMap.HashMap<UserId, Time.Time>(0, Principal.equal, Principal.hash);
+    private transient var pendingRewards = HashMap.HashMap<UserId, Nat>(0, Principal.equal, Principal.hash);
     
     // Stable storage for upgrades
     private stable var referralCodesEntries: [(UserId, ReferralCode)] = [];

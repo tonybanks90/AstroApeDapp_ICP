@@ -9,7 +9,7 @@ import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Text "mo:base/Text";
 
-actor CommentsBackend {
+persistent actor CommentsBackend {
 
   type Comment = {
     id: Nat;
@@ -18,8 +18,8 @@ actor CommentsBackend {
     timestamp: Nat;
   };
 
-  var groups = HashMap.HashMap<Text, List.List<Comment>>(10, Text.equal, Text.hash);
-  var groupCounters = HashMap.HashMap<Text, Nat>(10, Text.equal, Text.hash); // ✅ commentCounter per group
+  transient var groups = HashMap.HashMap<Text, List.List<Comment>>(10, Text.equal, Text.hash);
+  transient var groupCounters = HashMap.HashMap<Text, Nat>(10, Text.equal, Text.hash); // ✅ commentCounter per group
 
   // For upgrade compatibility
   stable var stableGroups: [(Text, [Comment])] = [];
