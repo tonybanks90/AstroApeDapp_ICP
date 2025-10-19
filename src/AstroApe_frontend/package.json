@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
     "setup": "npm i && dfx canister create AstroApe_backend && dfx generate AstroApe_backend && dfx deploy",
     "dev": "vite",
@@ -11,6 +14,7 @@
     "format": "prettier --write \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\""
   },
   "dependencies": {
+    "@ckboost/client": "^0.1.0",
     "@dfinity/agent": "^2.4.0",
     "@dfinity/candid": "^2.4.0",
     "@dfinity/ledger-icp": "^2.6.11",
@@ -45,15 +49,16 @@
     "@types/node": "^24.6.2",
     "@types/react": "^18.3.24",
     "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4.0.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.3.1",
+    "esbuild": "^0.25.11",
     "eslint": "^9.6.0",
     "postcss": "^8.4.39",
     "sass": "^1.63.6",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.9.2",
-    "vite": "^4.3.9",
+    "vite": "^7.1.10",
     "vite-plugin-environment": "^1.1.3"
   }
 }

@@ -51,6 +51,7 @@ import Faucet from './components/Faucet';
 import CryptoBalances from './components/CryptoBalances';
 import CustomTokenBalance from './components/CustomTokenBalance';
 import Display from './components/display.jsx';
+import CKBoostWallet from './components/CKBoostWallet'
 
 
 
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
       { path: '/Token/4', element: <Referral /> },
       { path: '/Token/5', element: <Governance /> },
       { path: '/Token/7', element: <ConnectWallet /> },
-      { path: '/Token/8', element: <DepositWithdraw /> },
+      { path: '/Token/8', element: <CKBoostWallet /> },
       { path: '/Token/faucet', element: <Faucet /> },
       { path: '/Token/swap/:tokenId', element: <SwapAndDistribution /> },
       {

@@ -652,7 +652,7 @@ persistent actor BondingCurveVault {
         
         let regTime = switch (registrationTimes.get(curveId)) {
             case (?t) { t };
-            case (null) { 0 };
+            case (null) { 0 : Nat64 };
         };
         
         let deactivTime = deactivationTimes.get(curveId);

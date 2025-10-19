@@ -11,7 +11,6 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       external: [
-        // Add both old and new package names
         '@safe-window/safe-apps-sdk',
         '@safe-window/safe-apps-provider',
         '@safe-global/safe-apps-sdk',
@@ -19,48 +18,44 @@ export default defineConfig({
       ]
     }
   },
-
-  // 👇 Force Vite to compile even if TS errors exist
   esbuild: {
-    logLevel: "silent", // suppress type errors and warnings
+    logLevel: "silent",
   },
-
   optimizeDeps: {
     esbuildOptions: {
       define: {
         global: "globalThis",
       },
+      supported: {
+      'import-attributes': true // 👈 allows “with { type: 'json' }”
+    },
     },
     exclude: ['lucide-react'],
   },
-
   server: {
     watch: {
       usePolling: true,
     },
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:4943", // Proxy backend calls to local DFX
+        target: "http://127.0.0.1:4943",
         changeOrigin: true,
         secure: false,
       },
     },
   },
-
   plugins: [
     react(),
     environment("all", { prefix: "CANISTER_" }),
     environment("all", { prefix: "DFX_" }),
   ],
-
   resolve: {
     alias: {
-      buffer: "buffer", // Polyfill for Buffer
+      buffer: "buffer",
       declarations: fileURLToPath(new URL("../declarations", import.meta.url)),
     },
   },
-
   define: {
-    global: "window", // Ensure compatibility with libraries expecting global
+    global: "window",
   },
 });
