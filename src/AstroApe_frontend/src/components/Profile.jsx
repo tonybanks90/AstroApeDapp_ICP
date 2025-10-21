@@ -1,379 +1,419 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useSiweIdentity } from "ic-use-siwe-identity"; // Make sure this path is correct
-import Button from "./Button"; // Assuming Button component exists
-import { FaCog } from "react-icons/fa";
-import EditProfile from "./EditProfile"; // Assuming EditProfile component exists
-import DepositWithdraw from "./Deposit&Withdraw"; // Assuming DepositWithdraw component exists
-import WalletProfile from "./WalletProfile"; // Assuming WalletProfile component exists
-import { Actor, HttpAgent } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal"; // Keep Principal import if used directly
-import {
-    idlFactory as profileIdlFactory,
-    canisterId as profileCanisterId,
-} from "../../../declarations/Profile"; // Adjust path as needed
+import React, { useState, useEffect } from 'react';
+import { useSiweIdentity } from 'ic-use-siwe-identity';
+import { useCryptoBalances } from '../hooks/useQueries';
+import { 
+  Wallet, 
+  User, 
+  Settings, 
+  Copy,
+  ExternalLink,
+  RefreshCw
+} from 'lucide-react';
 
-// Import ICP Ledger utilities
-import {
-    AccountIdentifier,
-    LedgerCanister,
-    // ICP class might not be needed if not using its methods directly after removing types
-} from "@dfinity/ledger-icp";
+// Reusable Components
+const Button = ({ 
+  variant = 'primary', 
+  children, 
+  className = '',
+  disabled,
+  ...props 
+}) => {
+  const baseStyles = "button relative inline-flex items-center justify-center h-11 px-7 rounded-xl transition-all font-code text-xs uppercase tracking-wider";
+  
+  const variants = {
+    primary: "text-n-8 bg-color-1 hover:bg-color-2 disabled:bg-n-5 disabled:text-n-4",
+    secondary: "text-n-1 bg-n-6 border border-n-5 hover:bg-n-5 disabled:opacity-50",
+    ghost: "text-color-1 hover:text-color-2 hover:bg-n-7"
+  };
 
-// --- Configuration ---
-const HOST =
-    process.env.DFX_NETWORK === "local"
-        ? "http://127.0.0.1:4943" // Local replica host
-        : "https://icp-api.io"; // Use official boundary node for mainnet
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${disabled ? 'cursor-not-allowed' : ''} ${className}`}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
-const Profile = () => {
-    const { identity /* login, logout, ... */ } = useSiweIdentity();
+const Card = ({ children, className = '' }) => (
+  <div className={`bg-n-7 border border-n-6 rounded-2xl p-6 ${className}`}>
+    {children}
+  </div>
+);
 
-    // --- Component State ---
-    const [rewardsBalance] = useState("12.34 ICP");
-    const [ethBalance] = useState("1.25 ETH");
-    const [solBalance] = useState("10.5 SOL");
+const CardHeader = ({ children }) => (
+  <div className="mb-6">{children}</div>
+);
 
-    // State for fetched ICP balance (no TypeScript types)
-    const [icpBalance, setIcpBalance] = useState(null);
-    const [icpBalanceLoading, setIcpBalanceLoading] = useState(false);
-    const [icpBalanceError, setIcpBalanceError] = useState(null);
+const CardTitle = ({ children, className = '' }) => (
+  <h3 className={`h6 text-n-1 ${className}`}>{children}</h3>
+);
 
-    // State for user profile data
-    const [username, setUsername] = useState("Sample User");
-    const [bio, setBio] = useState("Sample Bio");
-    const [profilePic, setProfilePic] = useState(
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s"
-    );
-    const [hasProfile, setHasProfile] = useState(false);
+const Input = ({ 
+  label, 
+  helperText, 
+  className = '',
+  ...props 
+}) => {
+  return (
+    <div className="space-y-2">
+      {label && (
+        <label className="block caption text-n-3 uppercase tracking-wider">
+          {label}
+        </label>
+      )}
+      <input
+        className={`w-full px-5 py-3.5 bg-n-6 border border-n-5 rounded-xl text-n-1 placeholder:text-n-4 focus:border-color-1 focus:outline-none transition-colors ${className}`}
+        {...props}
+      />
+      {helperText && (
+        <p className="caption text-n-4">{helperText}</p>
+      )}
+    </div>
+  );
+};
 
-    // State for UI control
-    const [isEditing, setIsEditing] = useState(false);
-    const [showDeposit, setShowDeposit] = useState(false);
+const Alert = ({ type, children, className = '' }) => {
+  const styles = {
+    success: 'bg-color-4/10 border-color-4/30 text-color-4',
+    error: 'bg-color-3/10 border-color-3/30 text-color-3',
+    info: 'bg-color-1/10 border-color-1/30 text-color-1'
+  };
 
-    // Ref for modals
-    const modalRef = useRef(null);
+  const icons = {
+    success: '✓',
+    error: '⚠',
+    info: 'ℹ'
+  };
 
-    // State for backend actors/helpers (no TypeScript types)
-    const [profileBackend, setProfileBackend] = useState(null);
-    const [ledger, setLedger] = useState(null);
+  return (
+    <div className={`p-4 border rounded-2xl flex items-start space-x-3 ${styles[type]} ${className}`}>
+      <div className="flex-shrink-0 mt-0.5 font-bold">
+        {icons[type]}
+      </div>
+      <div className="body-2 flex-1">
+        {children}
+      </div>
+    </div>
+  );
+};
 
-    // --- Effect: Initialize Agent and Actors ---
-    useEffect(() => {
-        console.log(`Initializing agent for host: ${HOST}`);
-        const agent = new HttpAgent({ host: HOST });
+// Edit Profile Modal Component
+const EditProfileModal = ({ 
+  currentUsername, 
+  currentBio, 
+  currentProfilePic, 
+  onClose, 
+  onSave 
+}) => {
+  const [username, setUsername] = useState(currentUsername);
+  const [bio, setBio] = useState(currentBio);
+  const [profilePic, setProfilePic] = useState(currentProfilePic);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-        if (process.env.DFX_NETWORK === "local") {
-            agent.fetchRootKey().catch((err) => {
-                console.warn("Unable to fetch root key. Check replica:", err);
-            });
-        }
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      await onSave({ username, bio, profilePic });
+      onClose();
+    } catch (err) {
+      setError('Failed to update profile. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Create LedgerCanister helper (no changes needed here for JSX)
-        const ledgerInstance = LedgerCanister.create({ agent });
-        setLedger(ledgerInstance);
-        console.log("LedgerCanister helper created.");
+  return (
+    <div className="fixed inset-0 bg-n-8/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="max-w-lg w-full">
+        <CardHeader>
+          <CardTitle>Edit Profile</CardTitle>
+        </CardHeader>
 
-        if (identity) {
-            console.log("Identity found, creating authenticated Profile actor...");
-            const agentWithIdentity = new HttpAgent({
-                host: HOST,
-                identity: identity,
-            });
+        {error && <Alert type="error" className="mb-4">{error}</Alert>}
 
-            if (process.env.DFX_NETWORK === "local") {
-                agentWithIdentity.fetchRootKey().catch((err) => {
-                    console.warn("Unable to fetch root key for identity agent:", err);
-                });
-            }
+        <div className="space-y-6">
+          <Input
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+          />
 
-            const backendActor = Actor.createActor(profileIdlFactory, {
-                agent: agentWithIdentity,
-                canisterId: profileCanisterId,
-            });
-            setProfileBackend(backendActor);
-            console.log("Authenticated Profile backend actor created.");
-        } else {
-            setProfileBackend(null);
-            console.log("No identity, clearing Profile backend actor.");
-        }
-    }, [identity]);
+          <Input
+            label="Profile Picture URL"
+            value={profilePic}
+            onChange={(e) => setProfilePic(e.target.value)}
+            placeholder="https://..."
+          />
 
-    // --- Effect: Fetch Profile Data ---
-    useEffect(() => {
-        const fetchProfile = async () => {
-            if (identity && profileBackend) {
-                const userPrincipal = identity.getPrincipal();
-                console.log("Fetching profile for principal:", userPrincipal.toText());
-                try {
-                    // Assuming getMyProfile takes the principal as an argument
-                    const profileResult = await profileBackend.getMyProfile(userPrincipal);
+          <div className="space-y-2">
+            <label className="block caption text-n-3 uppercase tracking-wider">
+              Bio
+            </label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell us about yourself..."
+              rows={4}
+              className="w-full px-5 py-3.5 bg-n-6 border border-n-5 rounded-xl text-n-1 placeholder:text-n-4 focus:border-color-1 focus:outline-none transition-colors resize-none"
+            />
+          </div>
 
-                    // Check based on common agent-js mapping (optional record -> [T] | [])
-                    // This logic should still work correctly.
-                    if (profileResult && (Array.isArray(profileResult) ? profileResult.length > 0 : true)) {
-                        const profile = Array.isArray(profileResult) ? profileResult[0] : profileResult;
-
-                        if (profile && profile.username) { // Check a key field
-                            setUsername(profile.username);
-                            setBio(profile.bio);
-                            setProfilePic(profile.profilePic); // Use field name from Motoko
-                            setHasProfile(true);
-                            console.log("Profile Data Fetched:", profile);
-                        } else {
-                            console.log("Profile data structure returned, but seems empty or invalid.");
-                            setHasProfile(false);
-                        }
-                    } else {
-                        console.log("No profile data found for this principal.");
-                        setHasProfile(false);
-                    }
-                } catch (error) {
-                    console.error("Error fetching profile:", error);
-                    setHasProfile(false);
-                    // Reset fields?
-                    // setUsername("Sample User"); setBio("Sample Bio"); ...
-                }
-            } else {
-                if (!identity) {
-                    console.log("Skipping profile fetch: User not logged in.");
-                    // Reset profile state
-                    setUsername("Sample User");
-                    setBio("Sample Bio");
-                    setProfilePic("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s");
-                    setHasProfile(false);
-                } else {
-                    console.log("Skipping profile fetch: Profile backend actor not ready yet.");
-                }
-            }
-        };
-
-        fetchProfile();
-    }, [identity, profileBackend]);
-
-    // --- Effect: Check and Save Default Profile (if none exists) ---
-    useEffect(() => {
-        const checkAndCreateDefaultProfile = async () => {
-            if (identity && profileBackend && !hasProfile) {
-                const principal = identity.getPrincipal();
-                console.log("Attempting to create default profile for:", principal.toText());
-
-                const defaultUsername = "User" + principal.toText().slice(0, 5);
-                const defaultBio = "Welcome!";
-                const defaultPic = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s";
-
-                try {
-                    // *** CHANGED FUNCTION NAME HERE ***
-                    // The Motoko function takes 'caller' (principal) first.
-                    await profileBackend.createUserProfile(
-                        principal,
-                        defaultUsername,
-                        defaultPic,
-                        defaultBio
-                    );
-                    console.log("Default user profile created successfully.");
-                    setUsername(defaultUsername);
-                    setBio(defaultBio);
-                    setProfilePic(defaultPic);
-                    setHasProfile(true);
-                } catch (error) {
-                    console.error("Error creating default profile:", error);
-                     // Check the console for the specific error details
-                     // It might still be the delegation target issue if that wasn't fixed.
-                }
-            }
-        };
-
-        checkAndCreateDefaultProfile();
-    }, [identity, profileBackend, hasProfile]);
-
-
-    // --- Effect: Fetch ICP Balance ---
-    useEffect(() => {
-        const fetchIcpBalance = async () => {
-            if (identity && ledger) {
-                // ---> START LOCAL MOCKING <---
-                if (process.env.DFX_NETWORK === "local") {
-                    console.log("Local environment: Mocking ICP balance.");
-                    setIcpBalance("100.0000 ICP (Mock)"); // Set a fake balance
-                    setIcpBalanceLoading(false);
-                    return; // Skip the actual network call
-                }
-                // ---> END LOCAL MOCKING <---
-
-                setIcpBalanceLoading(true);
-                setIcpBalanceError(null);
-                setIcpBalance(null);
-
-                try {
-                    const principal = identity.getPrincipal();
-                    const accountId = AccountIdentifier.fromPrincipal({ principal });
-                    console.log(`Workspaceing ICP balance for Account ID: ${accountId.toHex()} (derived from Principal: ${principal.toText()})`);
-
-                    // Call ledger (no type needed for balanceICP variable)
-                    const balanceICP = await ledger.accountBalance({ accountIdentifier: accountId });
-
-                    // Format balance - assumes balanceICP has toFormat method
-                    // If @dfinity/ledger-icp types were removed, ensure this method exists
-                    // It should still work as it's a method on the returned object instance
-                    setIcpBalance(`${balanceICP.toFormat({ decimals: 4 })} ICP`);
-                    console.log(`Raw balance (e8s): ${balanceICP.e8s().toString()}`);
-
-                } catch (error) { // No ': any' type needed
-                    console.error("Error fetching ICP balance:", error);
-                    setIcpBalanceError(`Failed to fetch ICP balance`);
-                    setIcpBalance(null);
-                } finally {
-                    setIcpBalanceLoading(false);
-                }
-            } else {
-                setIcpBalance(null);
-                setIcpBalanceLoading(false);
-                setIcpBalanceError(null);
-                if (!identity) {
-                    console.log("Skipping ICP balance fetch: User not logged in.");
-                } else {
-                    console.log("Skipping ICP balance fetch: Ledger helper not ready yet.");
-                }
-            }
-        };
-
-        fetchIcpBalance();
-    }, [identity, ledger]);
-
-    // --- Effect: Handle Modal Click Outside ---
-    useEffect(() => {
-        // No type needed for event parameter
-        const handleClickOutside = (event) => {
-            // No type assertions ('as any', 'as Node') needed
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                setShowDeposit(false);
-            }
-        };
-
-        if (showDeposit || isEditing) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [showDeposit, isEditing]);
-
-
-    // --- Render Logic (JSX - no changes needed here) ---
-    return (
-        <div className="lg:mt-8 p-6 lg:p-8">
-            {/* Section 1: Profile Header */}
-            <section className="flex flex-col lg:flex-row items-center mb-8 gap-4 lg:gap-8">
-                <div className="flex items-center">
-                    <img
-                        src={profilePic}
-                        alt="Profile Pic"
-                        className="w-20 h-20 lg:w-24 lg:h-24 rounded-full mr-4 object-cover border-2 border-n-5"
-                        onError={(e) => { // No type assertion needed for e.target
-                            e.target.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s";
-                        }}
-                    />
-                    <div className="flex-grow">
-                        <h1 className="text-2xl lg:text-3xl font-bold text-n-1 break-all">
-                            {identity ? username : "Not Logged In"}
-                        </h1>
-                        {identity && <p className="text-n-2 mt-1">{bio}</p>}
-                    </div>
-                </div>
-
-                 {identity && (
-                    <div className="flex items-center gap-4 mt-4 lg:mt-0 lg:ml-auto">
-                        <button
-                            className="text-n-2 hover:text-n-1 transition-colors"
-                            onClick={() => setIsEditing(true)}
-                            aria-label="Edit Profile"
-                            title="Edit Profile"
-                        >
-                            <FaCog size={24} />
-                        </button>
-                        <Button onClick={() => setShowDeposit(true)}>Deposit</Button>
-                        {/* <Button onClick={logout} variant="danger">Logout</Button> */}
-                    </div>
-                 )}
-            </section>
-
-             {identity && (
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {/* Rewards Balance Card */}
-                    <div className="bg-n-8 border border-n-6 rounded-lg p-6 shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-3 text-n-1">
-                            Rewards Balance
-                        </h2>
-                        <p className="text-3xl lg:text-4xl font-bold text-green-400 mb-4">
-                            {rewardsBalance}
-                        </p>
-                        <Button onClick={() => alert("Claiming rewards...")} disabled>
-                            Claim (Soon)
-                        </Button>
-                    </div>
-
-                    {/* Wallet Balance Card */}
-                    <div className="bg-n-8 border border-n-6 rounded-lg p-6 shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-3 text-n-1">
-                            Wallet Balance
-                        </h2>
-                        <div className="space-y-2">
-                            <p className="text-lg text-n-2">
-                                ICP:{" "}
-                                {icpBalanceLoading ? (
-                                    <span className="text-sm text-n-4">Loading...</span>
-                                ) : icpBalanceError ? (
-                                    <span className="text-sm text-red-500">{icpBalanceError}</span>
-                                ) : icpBalance !== null ? (
-                                    <span className="font-semibold text-n-1">{icpBalance}</span>
-                                ) : (
-                                    <span className="text-sm text-n-4">N/A</span>
-                                )}
-                            </p>
-                            <p className="text-lg text-n-2">ETH: <span className="font-semibold text-n-1">{ethBalance}</span></p>
-                            <p className="text-lg text-n-2">SOL: <span className="font-semibold text-n-1">{solBalance}</span></p>
-                        </div>
-                    </div>
-                </section>
-             )}
-
-             {identity && <WalletProfile />}
-
-            {isEditing && (
-                <EditProfile
-                    currentUsername={username}
-                    currentBio={bio}
-                    currentProfilePic={profilePic}
-                    onClose={() => setIsEditing(false)}
-                    identity={identity}
-                    profileBackend={profileBackend}
-                    onProfileUpdate={(updatedData) => {
-                        console.log("Profile updated successfully:", updatedData);
-                        setUsername(updatedData.username);
-                        setBio(updatedData.bio);
-                        // Use correct field name from backend if different (e.g., updatedData.profilePic)
-                        setProfilePic(updatedData.profilePicUrl || updatedData.profilePic);
-                        setHasProfile(true);
-                        setIsEditing(false);
-                    }}
-                />
-            )}
-
-            {showDeposit && (
-                <div ref={modalRef}>
-                    <DepositWithdraw onClose={() => setShowDeposit(false)} />
-                </div>
-            )}
-
-            {!identity && (
-                <div className="text-center text-n-2 mt-10 border border-n-6 p-6 rounded-lg bg-n-8">
-                    <p className="text-lg">Please connect your wallet to view your profile and balances.</p>
-                    {/* <Button onClick={login} className="mt-4">Connect Wallet</Button> */}
-                </div>
-            )}
+          <div className="flex space-x-4">
+            <Button onClick={handleSave} disabled={loading} className="flex-1">
+              {loading ? 'Saving...' : 'Save Changes'}
+            </Button>
+            <Button onClick={onClose} variant="secondary" className="flex-1">
+              Cancel
+            </Button>
+          </div>
         </div>
+      </Card>
+    </div>
+  );
+};
+
+// Balance Card Component
+const BalanceCard = ({ symbol, balance, isLoading, error }) => {
+  const getTokenColor = (symbol) => {
+    const colors = {
+      ckBTC: 'text-color-1',
+      ckETH: 'text-color-2',
+      ckTESTBTC: 'text-color-1',
+      cksepoliaETH: 'text-color-2'
+    };
+    return colors[symbol] || 'text-n-1';
+  };
+
+  return (
+    <div className="bg-n-8 border border-n-6 rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <span className="caption text-n-3 uppercase tracking-wider">{symbol}</span>
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-color-1 to-color-2 flex items-center justify-center">
+          <Wallet className="w-5 h-5 text-n-8" />
+        </div>
+      </div>
+      
+      {isLoading ? (
+        <div className="h-8 bg-n-6 rounded animate-pulse" />
+      ) : error ? (
+        <p className="text-sm text-color-3">Error loading</p>
+      ) : (
+        <p className={`text-2xl font-code font-bold ${getTokenColor(symbol)}`}>
+          {balance.toFixed(8)}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// Main Profile Component
+const Profile = () => {
+  const { identity, isInitializing } = useSiweIdentity();
+  
+  const isAuthenticated = !!identity;
+  const principalId = identity ? identity.getPrincipal().toText() : null;
+
+  // Fetch crypto balances
+  const { data: balances, isLoading: balancesLoading, error: balancesError, refetch } = useCryptoBalances(principalId || '');
+
+  // Profile state
+  const [username, setUsername] = useState('Web3 User');
+  const [bio, setBio] = useState('Building on the Internet Computer');
+  const [profilePic, setProfilePic] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s');
+  
+  // UI state
+  const [isEditing, setIsEditing] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setSuccess('Principal ID copied to clipboard!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const handleRefreshBalances = async () => {
+    setRefreshing(true);
+    await refetch();
+    setTimeout(() => setRefreshing(false), 1000);
+  };
+
+  const handleSaveProfile = async (updatedData) => {
+    setUsername(updatedData.username);
+    setBio(updatedData.bio);
+    setProfilePic(updatedData.profilePic);
+    setSuccess('Profile updated successfully!');
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  if (isInitializing) {
+    return (
+      <div className="container max-w-4xl mx-auto mt-10">
+        <Card>
+          <div className="text-center py-8">
+            <div className="inline-block p-4 bg-n-6 rounded-2xl mb-4">
+              <User className="w-12 h-12 text-n-4 animate-pulse" />
+            </div>
+            <p className="body-2 text-n-3">Loading profile...</p>
+          </div>
+        </Card>
+      </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container max-w-4xl mx-auto mt-10">
+        <Card>
+          <div className="text-center py-12">
+            <div className="inline-block p-6 bg-gradient-to-br from-color-1 to-color-2 rounded-2xl mb-6">
+              <User className="w-16 h-16 text-n-8" />
+            </div>
+            <h2 className="h3 text-n-1 mb-4">Web3 Profile</h2>
+            <p className="body-2 text-n-3 mb-2">
+              Connect your wallet to access your decentralized profile
+            </p>
+            <p className="caption text-n-4">
+              Please use the navigation menu to connect
+            </p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto py-10 space-y-8">
+      {/* Success Alert */}
+      {success && <Alert type="success">{success}</Alert>}
+
+      {/* Profile Header Card */}
+      <Card>
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+          {/* Profile Picture and Info */}
+          <div className="flex items-center space-x-6 flex-1">
+            <img
+              src={profilePic}
+              alt="Profile"
+              className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-n-5"
+              onError={(e) => {
+                e.target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtoagYg1XvNp0KTskjA_F7TqVLEvkWqmPYqQ&s';
+              }}
+            />
+            <div className="flex-1 min-w-0">
+              <h1 className="h2 text-n-1 mb-2 break-words">{username}</h1>
+              <p className="body-2 text-n-3 mb-3 break-words">{bio}</p>
+              <div className="flex items-center space-x-2">
+                <code className="caption bg-n-8 px-3 py-1.5 rounded-lg text-n-2 font-code truncate max-w-[200px] md:max-w-xs">
+                  {principalId}
+                </code>
+                <button
+                  onClick={() => copyToClipboard(principalId)}
+                  className="p-2 text-color-1 hover:text-color-2 transition-colors"
+                  title="Copy Principal ID"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-3 w-full md:w-auto">
+            <Button
+              onClick={() => setIsEditing(true)}
+              variant="secondary"
+              className="flex-1 md:flex-none"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Edit Profile
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Wallet Balances Section */}
+      <Card>
+        <div className="flex items-center justify-between mb-6">
+          <CardTitle>Wallet Balances</CardTitle>
+          <button
+            onClick={handleRefreshBalances}
+            disabled={refreshing}
+            className="p-2 text-color-1 hover:text-color-2 transition-colors disabled:opacity-50"
+            title="Refresh Balances"
+          >
+            <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <BalanceCard
+            symbol="ckBTC"
+            balance={balances?.ckBTC?.balance || 0}
+            isLoading={balancesLoading}
+            error={balances?.ckBTC?.error}
+          />
+          <BalanceCard
+            symbol="ckETH"
+            balance={balances?.ckETH?.balance || 0}
+            isLoading={balancesLoading}
+            error={balances?.ckETH?.error}
+          />
+          <BalanceCard
+            symbol="ckTESTBTC"
+            balance={balances?.ckTESTBTC?.balance || 0}
+            isLoading={balancesLoading}
+            error={balances?.ckTESTBTC?.error}
+          />
+          <BalanceCard
+            symbol="cksepoliaETH"
+            balance={balances?.cksepoliaETH?.balance || 0}
+            isLoading={balancesLoading}
+            error={balances?.cksepoliaETH?.error}
+          />
+        </div>
+
+        {balancesError && (
+          <Alert type="error" className="mt-4">
+            Failed to load some balances. Please try refreshing.
+          </Alert>
+        )}
+      </Card>
+
+      {/* Activity Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        
+        <div className="text-center py-12">
+          <div className="inline-block p-4 bg-n-6 rounded-2xl mb-4">
+            <ExternalLink className="w-8 h-8 text-n-4" />
+          </div>
+          <p className="body-2 text-n-3 mb-2">No recent activity</p>
+          <p className="caption text-n-4">Your transactions will appear here</p>
+        </div>
+      </Card>
+
+      {/* Edit Profile Modal */}
+      {isEditing && (
+        <EditProfileModal
+          currentUsername={username}
+          currentBio={bio}
+          currentProfilePic={profilePic}
+          onClose={() => setIsEditing(false)}
+          onSave={handleSaveProfile}
+        />
+      )}
+    </div>
+  );
 };
 
 export default Profile;

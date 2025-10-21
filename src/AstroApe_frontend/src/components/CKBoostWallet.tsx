@@ -19,9 +19,49 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Button } from './booster/Button';
-import { Card, CardHeader, CardTitle, CardContent } from './booster/Card';
+import { Card, CardHeader, CardTitle } from './booster/Card';
 import { Alert } from './booster/Alert';
 import { Input, RangeInput } from './booster/Input';
+
+// Helper to get storage key for user requests
+const getUserRequestsKey = (principalId: string) => `ckboost_requests_${principalId}`;
+
+// Helper to load user requests from localStorage
+const loadUserRequests = (principalId: string): string[] => {
+  try {
+    const stored = localStorage.getItem(getUserRequestsKey(principalId));
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error loading user requests from storage:', error);
+    return [];
+  }
+};
+
+// Helper to save user requests to localStorage
+const saveUserRequests = (principalId: string, requestIds: string[]) => {
+  try {
+    localStorage.setItem(getUserRequestsKey(principalId), JSON.stringify(requestIds));
+    console.log(`Saved ${requestIds.length} request IDs for user ${principalId}`);
+  } catch (error) {
+    console.error('Error saving user requests to storage:', error);
+  }
+};
+
+// Helper to add a request ID to user's list
+const addUserRequest = (principalId: string, requestId: string) => {
+  const existing = loadUserRequests(principalId);
+  if (!existing.includes(requestId)) {
+    existing.push(requestId);
+    saveUserRequests(principalId, existing);
+  }
+};
+
+// Helper to remove a request ID from user's list
+const removeUserRequest = (principalId: string, requestId: string) => {
+  const existing = loadUserRequests(principalId);
+  const updated = existing.filter(id => id !== requestId);
+  saveUserRequests(principalId, updated);
+};
 
 const CKBoostWallet = () => {
   const { identity, isInitializing } = useSiweIdentity();
@@ -52,19 +92,24 @@ const CKBoostWallet = () => {
   // Token configuration
   const [tokenConfig, setTokenConfig] = useState<TokenConfig | null>(null);
 
+  // Load token config on mount
   useEffect(() => {
     const config = client.getTokenConfig();
     setTokenConfig(config);
     console.log('CKBoost token config loaded:', config);
+  }, [client]);
 
+  // Handle authentication changes and load requests
+  useEffect(() => {
     if (isAuthenticated && principalId) {
-      console.log('User authenticated, loading active requests for:', principalId);
-      loadActiveRequests();
+      console.log('User authenticated, loading user requests for:', principalId);
+      loadUserRequestsFromStorage();
     } else {
-      console.log('Skipping active requests load: User not authenticated');
-      // Clear requests when user logs out
+      console.log('User not authenticated, clearing requests');
       setActiveRequests([]);
       setDepositInfo(null);
+      monitoringIntervals.forEach(interval => clearInterval(interval));
+      setMonitoringIntervals(new Map());
     }
 
     return () => {
@@ -72,32 +117,60 @@ const CKBoostWallet = () => {
     };
   }, [isAuthenticated, principalId]);
 
-  const loadActiveRequests = async () => {
+  const loadUserRequestsFromStorage = async () => {
     if (!principalId) {
       console.log('Cannot load requests: No principal ID');
       return;
     }
 
     try {
-      console.log('Fetching pending boost requests...');
-      const result = await client.getPendingBoostRequests();
-      
-      if (result.success) {
-        // Filter requests to only show those owned by the current user
-        const userRequests = result.data.filter(req => req.owner === principalId);
-        console.log(`Found ${userRequests.length} requests for user`);
-        
-        setActiveRequests(userRequests);
-        
-        // Start monitoring each of the user's pending requests
-        userRequests.forEach(request => {
-          if (request.status === BoostStatus.PENDING || request.status === BoostStatus.ACTIVE) {
-            startMonitoring(request.id);
-          }
-        });
+      // Get user's request IDs from localStorage
+      const userRequestIds = loadUserRequests(principalId);
+      console.log(`Found ${userRequestIds.length} stored request IDs for user`);
+
+      if (userRequestIds.length === 0) {
+        setActiveRequests([]);
+        return;
       }
+
+      // Fetch each request from the backend
+      const requests: BoostRequest[] = [];
+      const invalidRequestIds: string[] = [];
+
+      for (const requestId of userRequestIds) {
+        console.log(`Fetching request: ${requestId}`);
+        const result = await client.getBoostRequest(requestId);
+        
+        if (result.success) {
+          requests.push(result.data);
+          console.log(`Request ${requestId} status: ${result.data.status}`);
+
+          // Start monitoring if still active
+          if (result.data.status === BoostStatus.PENDING || result.data.status === BoostStatus.ACTIVE) {
+            startMonitoring(requestId);
+          } else if (result.data.status === BoostStatus.COMPLETED || result.data.status === BoostStatus.CANCELLED) {
+            // Optionally remove completed/cancelled requests after some time
+            console.log(`Request ${requestId} is ${result.data.status}, keeping in list`);
+          }
+        } else {
+          console.error(`Failed to fetch request ${requestId}:`, result.error);
+          // If request not found, mark for removal
+          if (result.error.type === CKBoostErrorType.REQUEST_NOT_FOUND) {
+            invalidRequestIds.push(requestId);
+          }
+        }
+      }
+
+      // Clean up invalid request IDs
+      if (invalidRequestIds.length > 0) {
+        console.log(`Removing ${invalidRequestIds.length} invalid request IDs`);
+        invalidRequestIds.forEach(id => removeUserRequest(principalId, id));
+      }
+
+      setActiveRequests(requests);
+      console.log(`Loaded ${requests.length} active requests`);
     } catch (err) {
-      console.error('Failed to load active requests:', err);
+      console.error('Failed to load user requests:', err);
     }
   };
 
@@ -133,6 +206,11 @@ const CKBoostWallet = () => {
   };
 
   const handleDeposit = async () => {
+    if (!principalId) {
+      setError('Please ensure you are logged in');
+      return;
+    }
+
     if (!depositAmount || parseFloat(depositAmount) <= 0) {
       setError('Please enter a valid amount');
       return;
@@ -157,17 +235,22 @@ const CKBoostWallet = () => {
     setSuccess('');
 
     try {
-      console.log('Generating deposit address for amount:', depositAmount);
+      console.log('=== CREATING NEW DEPOSIT ===');
+      console.log('Amount:', depositAmount);
+      console.log('Max Fee:', maxFee);
+      console.log('Current Principal:', principalId);
+      
       const result = await client.generateDepositAddress({
         amount: depositAmount,
         maxFeePercentage: maxFee
       });
 
       if (result.success) {
+        console.log('Deposit address generated successfully:', result.data);
         setDepositInfo(result.data);
         setSuccess('Deposit address generated successfully!');
-        console.log('Deposit address generated:', result.data.address);
 
+        // Create the request object
         const newRequest: BoostRequest = {
           id: result.data.requestId,
           status: BoostStatus.PENDING,
@@ -179,13 +262,24 @@ const CKBoostWallet = () => {
           createdAt: Date.now(),
           updatedAt: Date.now(),
           amountRaw: result.data.amountRaw,
-          owner: principalId ?? '',
           explorerUrl: result.data.explorerUrl
         };
 
+        console.log('New request created with ID:', newRequest.id);
+
+        // Save request ID to localStorage
+        addUserRequest(principalId, result.data.requestId);
+        console.log('Request ID saved to localStorage');
+
+        // Add to active requests immediately
         setActiveRequests(prev => [newRequest, ...prev]);
+        
+        // Start monitoring
         startMonitoring(result.data.requestId);
+        
+        // Clear form
         setDepositAmount('');
+
       } else {
         setError(getErrorMessage(result.error));
         console.error('Error generating deposit address:', result.error);
@@ -196,6 +290,29 @@ const CKBoostWallet = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRemoveRequest = (requestId: string) => {
+    if (!principalId) return;
+    
+    // Remove from localStorage
+    removeUserRequest(principalId, requestId);
+    
+    // Remove from state
+    setActiveRequests(prev => prev.filter(r => r.id !== requestId));
+    
+    // Stop monitoring
+    const interval = monitoringIntervals.get(requestId);
+    if (interval) {
+      clearInterval(interval);
+      setMonitoringIntervals(prev => {
+        const newMap = new Map(prev);
+        newMap.delete(requestId);
+        return newMap;
+      });
+    }
+    
+    setSuccess('Request removed');
   };
 
   const getErrorMessage = (error: { type: CKBoostErrorType; message: string }) => {
@@ -246,7 +363,6 @@ const CKBoostWallet = () => {
     }
   };
 
-  // Show loading state while SIWE is initializing
   if (isInitializing) {
     return (
       <div className="container max-w-md mx-auto mt-10">
@@ -446,7 +562,7 @@ const CKBoostWallet = () => {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Active Requests</CardTitle>
+              <CardTitle>My Requests</CardTitle>
             </CardHeader>
             
             {activeRequests.length === 0 ? (
@@ -455,6 +571,7 @@ const CKBoostWallet = () => {
                   <Clock className="w-8 h-8 text-n-4" />
                 </div>
                 <p className="body-2 text-n-3">No active requests</p>
+                <p className="caption text-n-4 mt-2">Create a deposit to get started</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -465,6 +582,7 @@ const CKBoostWallet = () => {
                     getStatusColor={getStatusColor}
                     getStatusIcon={getStatusIcon}
                     copyToClipboard={copyToClipboard}
+                    onRemove={handleRemoveRequest}
                   />
                 ))}
               </div>
@@ -482,15 +600,18 @@ interface RequestCardProps {
   getStatusColor: (status: BoostStatus) => string;
   getStatusIcon: (status: BoostStatus) => React.ReactNode;
   copyToClipboard: (text: string) => void;
+  onRemove: (requestId: string) => void;
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({ 
   request, 
   getStatusColor, 
   getStatusIcon, 
-  copyToClipboard 
+  copyToClipboard,
+  onRemove
 }) => {
   const progress = (parseFloat(request.receivedAmount) / parseFloat(request.amount)) * 100;
+  const isCompleted = request.status === BoostStatus.COMPLETED || request.status === BoostStatus.CANCELLED;
 
   return (
     <div className="border border-n-6 rounded-2xl p-4 bg-n-8">
@@ -530,7 +651,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
       </div>
 
       {request.depositAddress && (
-        <div className="pt-3 border-t border-n-6">
+        <div className="pt-3 border-t border-n-6 mb-3">
           <p className="caption text-n-4 uppercase tracking-wider mb-2">Deposit Address:</p>
           <div className="flex items-center space-x-2">
             <code className="text-xs font-code bg-n-7 px-2 py-1 rounded flex-1 truncate text-n-2">
@@ -544,6 +665,16 @@ const RequestCard: React.FC<RequestCardProps> = ({
             </button>
           </div>
         </div>
+      )}
+
+      {/* Remove button for completed/cancelled requests */}
+      {isCompleted && (
+        <button
+          onClick={() => onRemove(request.id)}
+          className="w-full text-xs text-n-4 hover:text-n-2 transition-colors py-2 border-t border-n-6"
+        >
+          Remove from list
+        </button>
       )}
     </div>
   );
