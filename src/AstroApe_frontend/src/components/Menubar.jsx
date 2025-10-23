@@ -6,10 +6,10 @@ const MenuBar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { name: "Tokens", icon: <FaHome />, path: "/Token/1" },
-        { name: "Liquidity", icon: <FaChartLine />, path: "/liquidity" },
+        { name: "Tokens", icon: <FaHome />, path: "/Token/display" },
         { name: "Create", icon: <FaPlusCircle />, path: "/Token/2" },
         { name: "Wallet", icon: <FaWallet />, path: "/Token/8" },
+        { name: "Referral", icon: <FaChartLine />, path: "/Referral" },
         { name: "Profile", icon: <FaUser />, path: "/Token/profile" },
     ];
 

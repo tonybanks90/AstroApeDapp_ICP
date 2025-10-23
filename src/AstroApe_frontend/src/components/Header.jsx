@@ -72,7 +72,7 @@ const Header = () => {
             {openNavigation && (
               <Button
                 className="mt-4"
-                href="https://nns.ic0.app/"
+                href="https://id.ai/"
                 target="_blank"
                 rel="noopener noreferrer"
               >

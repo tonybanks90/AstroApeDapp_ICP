@@ -200,7 +200,7 @@ const Referral = () => {
   }
 
   return (
-    <div className="container mx-auto py-10 space-y-8">
+    <div className="container mx-auto lg:pt-24 pt-20 pb-16 space-y-8">
       {/* Hero Banner */}
       <Card>
         <div className="bg-gradient-to-r from-color-1 to-color-2 rounded-2xl p-8 text-n-8">

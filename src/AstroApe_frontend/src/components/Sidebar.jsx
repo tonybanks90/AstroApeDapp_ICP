@@ -92,7 +92,7 @@ const Sidebar = () => {
 
               {/* Version */}
               <div className="text-orange-500 text-xs font-medium mb-1">
-                Version 1.00
+                Version 1.0.0
               </div>
 
               {/* Copyright */}

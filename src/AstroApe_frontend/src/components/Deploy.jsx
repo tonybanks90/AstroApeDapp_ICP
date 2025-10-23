@@ -28,14 +28,14 @@ const createTokenFactoryActor = async () => {
       
       return Actor.createActor(idlFactory, { 
         agent: mainnetAgent, 
-        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "umunu-kh777-77774-qaaca-cai",
+        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "55u5d-liaaa-aaaap-qpzkq-cai",
       });
     }
   }
   
   return Actor.createActor(idlFactory, { 
     agent, 
-    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "umunu-kh777-77774-qaaca-cai",
+    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "55u5d-liaaa-aaaap-qpzkq-cai",
   });
 };
 
@@ -397,20 +397,20 @@ const CreatePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-4 bg-n-8/50 rounded-xl border border-n-6">
                 <p className="text-sm text-n-4 mb-1 uppercase tracking-wider">Initial Supply</p>
-                <p className="text-2xl font-bold text-n-1">50%</p>
+                <p className="text-2xl font-bold text-n-1">-</p>
                 <p className="text-xs text-n-4 mt-1">To creator wallet</p>
               </div>
               <div className="text-center p-4 bg-n-8/50 rounded-xl border border-n-6">
                 <p className="text-sm text-n-4 mb-1 uppercase tracking-wider">Launch Fee</p>
                 <p className={`text-2xl font-bold ${selectedChain.textColor}`}>
-                  0.01 {selectedBaseToken === "BITCOIN" ? "BTC" : "ETH"}
+                  $2 {selectedBaseToken === "BITCOIN" ? "BTC" : "ETH"}
                 </p>
                 <p className="text-xs text-n-4 mt-1">Platform fee</p>
               </div>
               <div className="text-center p-4 bg-n-8/50 rounded-xl border border-n-6">
                 <p className="text-sm text-n-4 mb-1 uppercase tracking-wider">Total Payment</p>
                 <p className={`text-2xl font-bold ${selectedChain.textColor}`}>
-                  1.01 {selectedBaseToken === "BITCOIN" ? "BTC" : "ETH"}
+                  $2 {selectedBaseToken === "BITCOIN" ? "BTC" : "ETH"}
                 </p>
                 <p className="text-xs text-n-4 mt-1">Inc. supply + fee</p>
               </div>

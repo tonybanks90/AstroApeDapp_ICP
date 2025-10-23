@@ -91,7 +91,7 @@ export const coininfo = {
   {
     id: "0",
     title: "New Pairs",
-    url: "/Token/1",
+    url: "/Token/display",
     icon: FaRocket,
   },
   {

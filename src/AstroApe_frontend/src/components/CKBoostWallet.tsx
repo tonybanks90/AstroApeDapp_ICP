@@ -18,10 +18,10 @@ import {
   Copy, 
   ExternalLink
 } from 'lucide-react';
-import { Button } from './booster/Button';
-import { Card, CardHeader, CardTitle } from './booster/Card';
-import { Alert } from './booster/Alert';
-import { Input, RangeInput } from './booster/Input';
+import { Button } from './booster/Button.js';
+import { Card, CardHeader, CardTitle } from './booster/Card.js';
+import { Alert } from './booster/Alert.js';
+import { Input, RangeInput } from './booster/Input.js';
 
 // Helper to get storage key for user requests
 const getUserRequestsKey = (principalId: string) => `ckboost_requests_${principalId}`;
@@ -262,7 +262,8 @@ const CKBoostWallet = () => {
           createdAt: Date.now(),
           updatedAt: Date.now(),
           amountRaw: result.data.amountRaw,
-          explorerUrl: result.data.explorerUrl
+          explorerUrl: result.data.explorerUrl,
+          owner: ''
         };
 
         console.log('New request created with ID:', newRequest.id);
@@ -380,7 +381,7 @@ const CKBoostWallet = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="container max-w-md mx-auto mt-10">
+      <div className="container max-w-md mx-auto lg:pt-24 pt-20 pb-16 ">
         <Card>
           <div className="text-center">
             <Wallet className="w-16 h-16 text-color-1 mx-auto mb-6" />

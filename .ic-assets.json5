@@ -1,6 +1,8 @@
 [
   {
-    "match": "**/*",               // Applies to all assets
-    "security_policy": "standard" // Applies the standard security policy
+    "match": "**/*",
+    "headers": {
+      "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://ic0.app https://identity.ic0.app; img-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; frame-ancestors 'none'; object-src 'none';"
+    }
   }
 ]

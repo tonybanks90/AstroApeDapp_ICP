@@ -28,7 +28,7 @@
     "@wagmi/core": "^2.16.5",
     "buffer": "^6.0.3",
     "chart.js": "^4.5.0",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "^12.23.24",
     "ic-siwe-js": "^0.2.4",
     "ic-use-siwe-identity": "^0.1.2",
     "lightweight-charts": "^5.0.8",

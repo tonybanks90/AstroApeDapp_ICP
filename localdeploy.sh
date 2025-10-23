@@ -1,18 +1,18 @@
 #!/bin/bash
 
-NETWORK="local"
+NETWORK="ic"
 
 # Create canisters
 dfx canister create AstroApe_frontend --network $NETWORK
 dfx canister create ic_siwe_provider --network $NETWORK
-dfx canister create Comments 
+dfx canister create Comments --network $NETWORK
 dfx canister create TokenFactory --network $NETWORK
 dfx canister create Profile --network $NETWORK
 
 
 # Fetch canister IDs
 IC_SIWE_PROVIDER_ID=$(dfx canister id ic_siwe_provider --network $NETWORK)
-COMMENTS_ID=$(dfx canister id Comments)
+COMMENTS_ID=$(dfx canister id Comments) --network $NETWORK
 TOKENFACTORY=$(dfx canister id TokenFactory --network $NETWORK)
 ASTROAPE_FRONTEND_ID=$(dfx canister id AstroApe_frontend --network $NETWORK)
 PROFILE_ID=$(dfx canister id Profile --network $NETWORK)
@@ -40,13 +40,14 @@ dfx deploy ic_siwe_provider --network $NETWORK --argument "(
 
 # Deploy remaining canisters
 dfx deploy AstroApe_frontend --network $NETWORK
-dfx deploy Comments 
+dfx deploy Comments --network $NETWORK
 dfx deploy TokenFactory --network $NETWORK
 dfx deploy Profile --network $NETWORK
 
 
 # Generate type bindings
 dfx generate --network $NETWORK
-dfx generate Comments
+dfx generate Comments --network $NETWORK
+
 
 node uploadWasm.mjs

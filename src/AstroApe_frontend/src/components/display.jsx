@@ -29,14 +29,14 @@ const createTokenFactoryActor = async () => {
       
       return Actor.createActor(idlFactory, { 
         agent: mainnetAgent, 
-        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "55u5d-liaaa-aaaap-qpzkq-cai",
       });
     }
   }
   
   return Actor.createActor(idlFactory, { 
     agent, 
-    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "55u5d-liaaa-aaaap-qpzkq-cai",
   });
 };
 
