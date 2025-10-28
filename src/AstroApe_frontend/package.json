@@ -30,6 +30,7 @@
     "chart.js": "^4.5.0",
     "framer-motion": "^12.23.24",
     "ic-siwe-js": "^0.2.4",
+    "ic-use-siwb-identity": "^0.1.0",
     "ic-use-siwe-identity": "^0.1.2",
     "lightweight-charts": "^5.0.8",
     "lucide-react": "^0.540.0",

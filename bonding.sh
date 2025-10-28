@@ -45,17 +45,21 @@ deploy_bonding_curve() {
     
     echo "Deploying to playground..."
     
+    # Note: You'll need to provide a valid vault_canister principal
+    # For testing, you might need to deploy a vault first
+    VAULT_CANISTER="aaaaa-aa"  # Replace with actual vault canister
+    
     dfx deploy BondingCurve --playground --argument "(
         record {
+            curve_id = 1 : nat;
             curve_type = variant { quadratic };
-            ckbtc_canister = principal \"$CKBTC_CANISTER\";
+            base_pair = variant { ckBTC };
             token_canister = principal \"$TOKEN_CANISTER\";
-            max_supply = 1000000000;
-            initial_price = 1000;
-            price_at_80_percent = 100000;
-            fee_percent = 300;
-            min_trade_amount = 10000;
-            graduation_threshold = 800000000;
+            initial_price = 1000 : nat;
+            price_at_80_percent = 100000 : nat;
+            fee_percent = 300 : nat;
+            min_trade_amount = 10000 : nat;
+            vault_canister = principal \"$VAULT_CANISTER\";
         }
     )"
     
@@ -65,6 +69,16 @@ deploy_bonding_curve() {
     
     echo "BONDING_CURVE_CANISTER=\"$BONDING_CURVE_CANISTER\"" > .bonding_env
     print_success "Canister ID saved to .bonding_env"
+    
+    echo ""
+    print_warning "Don't forget to call registerWithVault() after deployment!"
+    echo "Run: dfx canister call $BONDING_CURVE_CANISTER registerWithVault '()' --playground"
+}
+
+check_recent_trades() {
+    print_header "Recent Trades"
+    
+    dfx canister call $BONDING_CURVE_CANISTER get_recent_trades "()" --playground
 }
 
 load_canister_id() {

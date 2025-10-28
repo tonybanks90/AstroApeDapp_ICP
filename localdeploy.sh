@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NETWORK="ic"
+NETWORK="local"
 
 # Create canisters
 dfx canister create AstroApe_frontend --network $NETWORK
