@@ -27,10 +27,10 @@ export default defineConfig({
         global: "globalThis",
       },
       supported: {
-      'import-attributes': true // 👈 allows “with { type: 'json' }”
+        'import-attributes': true // 👈 allows “with { type: 'json' }”
+      },
     },
-    },
-    exclude: ['lucide-react'],
+    exclude: ['lucide-react', '@dfinity/identity'],
   },
   server: {
     watch: {
@@ -53,6 +53,8 @@ export default defineConfig({
     alias: {
       buffer: "buffer",
       declarations: fileURLToPath(new URL("../declarations", import.meta.url)),
+      // "@dfinity/agent": fileURLToPath(new URL("./src/dfinity-agent-shim.js", import.meta.url)),
+      // "@dfinity/candid": fileURLToPath(new URL("./src/dfinity-candid-shim.js", import.meta.url)),
     },
   },
   define: {

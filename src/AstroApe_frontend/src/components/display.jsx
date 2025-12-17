@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory, canisterId } from "../../../declarations/TokenFactory";
 import { FiExternalLink, FiGlobe, FiMessageCircle } from "react-icons/fi";
@@ -8,11 +9,11 @@ import { FaTwitter } from "react-icons/fa";
 const createTokenFactoryActor = async () => {
   // Default to mainnet unless explicitly set to local
   const isLocal = process.env.DFX_NETWORK === "local" || process.env.NODE_ENV === "development";
-  
+
   const agent = new HttpAgent({
     host: isLocal ? "http://127.0.0.1:4943" : "https://icp-api.io"
   });
-  
+
   // Only fetch root key in local development and handle errors
   if (isLocal) {
     try {
@@ -21,22 +22,22 @@ const createTokenFactoryActor = async () => {
     } catch (err) {
       console.warn("⚠️ Couldn't connect to local replica, falling back to mainnet");
       console.error(err);
-      
+
       // Create new agent for mainnet
       const mainnetAgent = new HttpAgent({
         host: "https://icp-api.io"
       });
-      
-      return Actor.createActor(idlFactory, { 
-        agent: mainnetAgent, 
-        canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+
+      return Actor.createActor(idlFactory, {
+        agent: mainnetAgent,
+        canisterId: process.env.CANISTER_ID_TOKENFACTORY,
       });
     }
   }
-  
-  return Actor.createActor(idlFactory, { 
-    agent, 
-    canisterId: process.env.CANISTER_ID_TOKENFACTORY || "6mce5-laaaa-aaaab-qacsq-cai",
+
+  return Actor.createActor(idlFactory, {
+    agent,
+    canisterId: process.env.CANISTER_ID_TOKENFACTORY,
   });
 };
 
@@ -67,8 +68,8 @@ const TokenCard = ({ tokenId, metadata }) => {
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 bg-n-7 rounded-full flex items-center justify-center overflow-hidden">
           {getLogoSrc(metadata.logo) ? (
-            <img 
-              src={getLogoSrc(metadata.logo)} 
+            <img
+              src={getLogoSrc(metadata.logo)}
               alt={`${metadata.name} logo`}
               className="w-full h-full object-cover"
             />
@@ -78,7 +79,7 @@ const TokenCard = ({ tokenId, metadata }) => {
             </div>
           )}
         </div>
-        
+
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-xl font-bold text-n-1">{metadata.name}</h3>
@@ -140,7 +141,7 @@ const TokenCard = ({ tokenId, metadata }) => {
             <span className="text-sm">Website</span>
           </a>
         )}
-        
+
         {metadata.twitter && metadata.twitter[0] && (
           <a
             href={metadata.twitter[0]}
@@ -152,7 +153,7 @@ const TokenCard = ({ tokenId, metadata }) => {
             <span className="text-sm">Twitter</span>
           </a>
         )}
-        
+
         {metadata.telegram && metadata.telegram[0] && (
           <a
             href={metadata.telegram[0]}
@@ -190,13 +191,13 @@ const Display = () => {
     try {
       setLoading(true);
       setError("");
-      
+
       const tokenFactory = await createTokenFactoryActor();
       const result = await tokenFactory.getAllTokensMetadata();
       setTokens(result);
     } catch (err) {
       console.error("Error fetching tokens:", err);
-      
+
       // Provide more specific error messages
       let errorMessage = "Failed to fetch tokens";
       if (err.message?.includes("Failed to fetch") || err.message?.includes("CONNECTION_REFUSED")) {
@@ -206,7 +207,7 @@ const Display = () => {
       } else {
         errorMessage = `Failed to fetch tokens: ${err.message || "Unknown error"}`;
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -298,11 +299,12 @@ const Display = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tokens.map(([tokenId, metadata]) => (
-            <TokenCard
-              key={tokenId.toString()}
-              tokenId={tokenId}
-              metadata={metadata}
-            />
+            <Link key={tokenId.toString()} to={`/Token/swap/${tokenId.toString()}`}>
+              <TokenCard
+                tokenId={tokenId}
+                metadata={metadata}
+              />
+            </Link>
           ))}
         </div>
       )}
