@@ -1,53 +1,18 @@
 {
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
-  "name": "astro-ape",
+  "name": "astroapedapp_icp",
+  "version": "1.0.0",
+  "description": "> A fully decentralized meme coin launchpad built entirely on the Internet Computer Protocol (ICP)",
+  "main": "index.js",
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "prebuild": "npm run prebuild --workspaces --if-present",
-    "pretest": "npm run prebuild --workspaces --if-present",
-    "start": "npm start --workspaces --if-present",
-    "test": "npm test --workspaces --if-present",
-    "predeploy": "npm run build",
-    "deploy": "chmod +x deploy.sh && ./deploy.sh"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ic-mops": "^1.12.0"
+  },
   "workspaces": [
     "src/AstroApe_frontend"
-  ],
-  "devDependencies": {
-    "typescript": "^5.5.3",
-    "vite": "^6.2.0"
-  },
-  "dependencies": {
-    "@dfinity/agent": "^2.4.1",
-    "@dfinity/auth-client": "^2.0.0",
-    "@dfinity/candid": "^2.4.1",
-    "@dfinity/identity": "^2.2.0",
-    "@dfinity/use-auth-client": "^2.0.0",
-    "@rainbow-me/rainbowkit": "^2.2.4",
-    "@safe-global/safe-apps-provider": "^0.18.6",
-    "@safe-global/safe-apps-sdk": "^9.1.0",
-    "@tanstack/react-query": "^5.67.1",
-    "@wagmi/connectors": "^5.7.8",
-    "@wagmi/core": "^2.16.5",
-    "axios": "^1.7.3",
-    "chart.js": "^4.4.3",
-    "chartjs-adapter-date-fns": "^3.0.0",
-    "framer-motion": "^11.3.24",
-    "ic-use-actor": "^0.1.0",
-    "ic-use-siwe-identity": "^0.1.2",
-    "lightweight-charts": "^4.2.2",
-    "lucide-react": "^0.477.0",
-    "node-fetch": "^3.3.2",
-    "react-chartjs-2": "^5.2.0",
-    "react-icons": "^5.2.1",
-    "react-just-parallax": "^3.1.16",
-    "react-scroll-parallax": "^3.4.5",
-    "scroll-lock": "^2.1.5",
-    "viem": "^2.23.6",
-    "wagmi": "^2.14.12"
-  }
+  ]
 }

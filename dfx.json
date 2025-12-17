@@ -5,22 +5,18 @@
       "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
     },
-   
     "BondingCurve": {
       "main": "src/AstroApe_backend/src/BondingCurve/BondingCurve.mo",
       "type": "motoko"
     },
-
     "TokenFactory": {
       "main": "src/AstroApe_backend/src/TokenFactory/TokenFactory.mo",
       "type": "motoko"
     },
-    
     "Comments": {
       "main": "src/AstroApe_backend/src/comments/comment.mo",
       "type": "motoko"
     },
-
     "Profile": {
       "main": "src/AstroApe_backend/src/Profile/Profile.mo",
       "type": "motoko"
@@ -33,27 +29,27 @@
       "main": "src/AstroApe_backend/src/Referral/Referral.mo",
       "type": "motoko"
     },
-
     "Vault": {
       "main": "src/AstroApe_backend/src/Vault/vault.mo",
       "type": "motoko"
     },
-
     "Faucet": {
       "main": "src/AstroApe_backend/src/Faucet/Ckfaucet.mo",
       "type": "motoko"
     },
-
-  
     "ic_siwe_provider": {
       "type": "custom",
       "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.did",
       "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.1.1/ic_siwe_provider.wasm.gz"
     },
-  
+    "ckbtc_ledger": {
+      "type": "custom",
+      "candid": "src/AstroApe_backend/src/TokenFactory/icrc1_ledger.did",
+      "wasm": "wasm/icrc1_ledger.wasm.gz"
+    },
     "AstroApe_frontend": {
       "dependencies": [
-        
+        "ckbtc_ledger"
       ],
       "source": [
         "src/AstroApe_frontend/dist"
@@ -65,7 +61,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": "mops sources"
+      "packtool": "node_modules/.bin/mops sources"
     }
   },
   "networks": {

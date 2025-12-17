@@ -8,10 +8,11 @@ global.fetch = fetch;
 
 // --- CONFIGURATION ---
 // The canister ID of your TokenFactory canister
-const canisterId = 'umunu-kh777-77774-qaaca-cai'; 
+const canisterId = 'uzt4z-lp777-77774-qaabq-cai';
 
 // The local path to your Wasm file
-const wasmFilePath = '/mnt/c/Users/user/AstroApeDapp_ICP/wasm/icrc1_ledger.wasm.gz';
+const wasmFilePath = '/home/antony/AstroApeDapp_ICP/wasm/icrc1_ledger.wasm.gz';
+
 // The URL for the local replica or mainnet
 const localUrl = 'http://127.0.0.1:4943/';
 // --------------------
@@ -22,7 +23,7 @@ const idlFactory = ({ IDL }) => {
   const Result = IDL.Variant({ 'ok': IDL.Text, 'err': IDL.Text });
   const ResultPrincipal = IDL.Variant({ 'ok': IDL.Principal, 'err': IDL.Text });
   const ResultNat = IDL.Variant({ 'ok': IDL.Nat, 'err': IDL.Text });
-  
+
   // Define Account type
   const Account = IDL.Record({
     'owner': IDL.Principal,
@@ -217,30 +218,21 @@ const idlFactory = ({ IDL }) => {
 
 const agent = new HttpAgent({ host: localUrl });
 
-// In a local development environment, we need to fetch the root key.
-// In a production environment, this is not necessary.
-agent.fetchRootKey().catch(err => {
-  console.warn("Unable to fetch root key. Check to ensure that your local replica is running");
-  console.error(err);
-});
-
-const tokenFactory = Actor.createActor(idlFactory, {
-  agent,
-  canisterId,
-});
+// We will initialize the actor after fetching the root key.
+let tokenFactory;
 
 const uploadWasm = async () => {
   try {
     console.log(`Reading Wasm file from: ${wasmFilePath}`);
-    
+
     // Check if file exists
     if (!readFileSync || !path.resolve(wasmFilePath)) {
       throw new Error(`File not found: ${wasmFilePath}`);
     }
-    
+
     // Read the file from your local filesystem.
     const wasmBuffer = readFileSync(path.resolve(wasmFilePath));
-    
+
     // The buffer needs to be converted to a Uint8Array, which is then
     // automatically converted to a Candid blob (Vec(Nat8)).
     const wasmBlob = new Uint8Array(wasmBuffer);
@@ -269,7 +261,7 @@ const uploadWasm = async () => {
 
   } catch (error) {
     console.error("Failed to upload Wasm:", error);
-    
+
     // Additional debugging information
     if (error.message && error.message.includes('Cannot find field hash')) {
       console.error("\n🔍 Debug Info:");
@@ -286,10 +278,10 @@ const uploadWasm = async () => {
 const testConnection = async () => {
   try {
     console.log("Testing connection to enhanced TokenFactory canister...");
-    
+
     const isWasmAvailable = await tokenFactory.isWasmAvailable();
     console.log("✅ Connection successful. WASM available:", isWasmAvailable);
-    
+
     const stats = await tokenFactory.getStats();
     console.log("📊 Enhanced Canister Stats:");
     console.log("  - Total Tokens:", stats.totalTokens.toString());
@@ -300,14 +292,14 @@ const testConnection = async () => {
     console.log("  - Ethereum Supply:", stats.ethereumSupply.toString());
     console.log("  - Default Decimals:", stats.defaultDecimals.toString());
     console.log("  - Default Fee:", stats.defaultFee.toString());
-    
+
     // Test chain type supplies
     const bitcoinSupply = await tokenFactory.getBitcoinSupply();
     const ethereumSupply = await tokenFactory.getEthereumSupply();
     console.log("🔗 Chain Type Supplies:");
     console.log("  - Bitcoin Supply:", bitcoinSupply.toString(), "(21M)");
     console.log("  - Ethereum Supply:", ethereumSupply.toString(), "(1B)");
-    
+
     return true;
   } catch (error) {
     console.error("❌ Connection test failed:", error);
@@ -319,7 +311,7 @@ const testConnection = async () => {
 const testTokenCreation = async () => {
   try {
     console.log("\n🧪 Testing token creation functions...");
-    
+
     // Test creating a Bitcoin token
     console.log("Creating a test Bitcoin token...");
     const bitcoinResult = await tokenFactory.createBitcoinToken(
@@ -331,10 +323,10 @@ const testTokenCreation = async () => {
       ["@testbitcoin"],
       ["@testbitcoin"]
     );
-    
+
     if ('ok' in bitcoinResult) {
       console.log("✅ Bitcoin token created:", bitcoinResult.ok.toString());
-      
+
       // Check TokenFactory balance
       const balance = await tokenFactory.getFactoryTokenBalance(bitcoinResult.ok);
       if ('ok' in balance) {
@@ -343,7 +335,7 @@ const testTokenCreation = async () => {
     } else {
       console.log("❌ Bitcoin token creation failed:", bitcoinResult.err);
     }
-    
+
   } catch (error) {
     console.log("⚠️ Token creation test failed (this is expected if WASM not uploaded):", error.message);
   }
@@ -352,17 +344,33 @@ const testTokenCreation = async () => {
 // Main execution with enhanced testing
 const main = async () => {
   console.log("🚀 Starting Enhanced TokenFactory WASM upload process...");
-  
+
+  // In a local development environment, we must fetch the root key.
+  try {
+    console.log("Fetching root key for local development network...");
+    await agent.fetchRootKey();
+    console.log("Root key fetched successfully.");
+  } catch (err) {
+    console.error("❌ Unable to fetch root key. Please ensure the local replica is running.", err);
+    return; // Abort if we can't fetch the root key.
+  }
+
+  // Now that the agent is configured, create the actor.
+  tokenFactory = Actor.createActor(idlFactory, {
+    agent,
+    canisterId,
+  });
+
   // Test connection first
   const connected = await testConnection();
   if (!connected) {
     console.error("❌ Cannot connect to canister. Aborting upload.");
     return;
   }
-  
+
   // Proceed with upload
   await uploadWasm();
-  
+
   // Test token creation after upload (optional)
   console.log("\n🔄 Testing enhanced features after WASM upload...");
   await testConnection(); // Check stats again
