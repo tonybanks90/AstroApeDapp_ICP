@@ -1,0 +1,49 @@
+type BasePair = variant { ckBTC; ckETH };
+
+type InitParams = record {
+  curve_id : nat;
+  curve_type : variant { quadratic; logarithmic; linear; exponential };
+  base_pair : BasePair;
+  token_canister : principal;
+  initial_price : nat;
+  price_at_80_percent : nat;
+  fee_percent : nat;
+  min_trade_amount : nat;
+  vault_canister : principal
+};
+
+type TradeInfo = record {
+  user : principal;
+  amount_in : nat;
+  amount_out : nat;
+  price : float64;
+  timestamp : int;
+  trade_type : variant { buy; sell }
+};
+
+type CurveStats = record {
+  tokens_minted : nat;
+  total_base_raised : nat;
+  current_price : float64;
+  market_cap : float64;
+  progress_to_graduation : float64;
+  is_graduated : bool;
+  base_pair : BasePair;
+  max_supply : nat;
+  graduation_threshold : nat
+};
+
+type Result = variant { Ok : text; Err : text };
+type Result_Nat = variant { Ok : nat; Err : text };
+type Result_Stats = variant { Ok : CurveStats; Err : text };
+
+service : {
+  add_curve : (InitParams) -> (Result);
+
+  buy : (principal, nat) -> (Result_Nat);
+  sell : (principal, nat) -> (Result_Nat);
+
+  get_curve_stats : (principal) -> (Result_Stats) query;
+  get_recent_trades : (principal) -> (vec TradeInfo) query;
+  get_holders : (principal) -> (vec record { principal; nat }) query
+}

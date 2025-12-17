@@ -18,7 +18,6 @@ import Array "mo:base/Array";
 import Char "mo:base/Char";
 import Int "mo:base/Int"
 
-
 persistent actor TokenFactory {
   // ICRC-2 Standard Types
   public type Account = {
@@ -168,17 +167,19 @@ persistent actor TokenFactory {
   private transient let DEFAULT_FEE : Nat = 10_000;
 
   // Stable storage
-  private stable var tokens : List.List<Principal> = List.nil();
-  private stable var createdCanisters : List.List<Principal> = List.nil();
-  private stable var wasm_module : ?Blob = null;
-  private stable var tokenMetadataEntries : [(Principal, TokenMetadata)] = [];
-  
+  private var tokens : List.List<Principal> = List.nil();
+  private var createdCanisters : List.List<Principal> = List.nil();
+  private var wasm_module : ?Blob = null;
+  private var tokenMetadataEntries : [(Principal, TokenMetadata)] = [];
+
   // Runtime storage - explicitly marked as transient
   private transient var tokenMetadata = HashMap.HashMap<Principal, TokenMetadata>(0, Principal.equal, Principal.hash);
 
   // Management canister interface - explicitly marked as transient
   private transient let mgmt = actor "aaaaa-aa" : actor {
-    create_canister : shared { settings : ?{ controllers : [Principal] } } -> async { canister_id : Principal };
+    create_canister : shared { settings : ?{ controllers : [Principal] } } -> async {
+      canister_id : Principal;
+    };
     install_code : shared {
       canister_id : Principal;
       wasm_module : Blob;
@@ -196,7 +197,17 @@ persistent actor TokenFactory {
       body : ?[Nat8];
       method : { #get; #post; #head };
       transform : ?{
-        function : shared ({ response : { body: Blob; headers: [{ name : Text; value : Text }]; status_code : Nat16 } }) -> async { body: Blob; headers: [{ name : Text; value : Text }]; status_code : Nat16 };
+        function : shared ({
+          response : {
+            body : Blob;
+            headers : [{ name : Text; value : Text }];
+            status_code : Nat16;
+          };
+        }) -> async {
+          body : Blob;
+          headers : [{ name : Text; value : Text }];
+          status_code : Nat16;
+        };
         context : Blob;
       };
     } -> async {
@@ -215,10 +226,10 @@ persistent actor TokenFactory {
 
   system func postupgrade() {
     tokenMetadata := HashMap.fromIter<Principal, TokenMetadata>(
-      tokenMetadataEntries.vals(), 
-      tokenMetadataEntries.size(), 
-      Principal.equal, 
-      Principal.hash
+      tokenMetadataEntries.vals(),
+      tokenMetadataEntries.size(),
+      Principal.equal,
+      Principal.hash,
     );
     tokenMetadataEntries := [];
   };
@@ -228,7 +239,7 @@ persistent actor TokenFactory {
     switch (chainType) {
       case (#Bitcoin) BITCOIN_SUPPLY;
       case (#Ethereum) ETHEREUM_SUPPLY;
-    }
+    };
   };
 
   // Helper function to convert ChainType to text for metadata
@@ -236,7 +247,7 @@ persistent actor TokenFactory {
     switch (chainType) {
       case (#Bitcoin) "Bitcoin";
       case (#Ethereum) "Ethereum";
-    }
+    };
   };
 
   // Helper function to create ICRC-2 compliant metadata with chain type
@@ -248,7 +259,7 @@ persistent actor TokenFactory {
     website : ?Text,
     telegram : ?Text,
     twitter : ?Text,
-    chainType : ChainType
+    chainType : ChainType,
   ) : [(Text, MetadataValue)] {
     var metadata : [(Text, MetadataValue)] = [
       ("icrc1:description", #Text(description)),
@@ -288,7 +299,7 @@ persistent actor TokenFactory {
       case null {};
     };
 
-    metadata
+    metadata;
   };
 
   func fetch_wasm(url : Text) : async Result.Result<Blob, Text> {
@@ -304,16 +315,16 @@ persistent actor TokenFactory {
       });
       if (response.status_code == 200) {
         Debug.print("Successfully fetched WASM from " # url);
-        #ok(response.body)
+        #ok(response.body);
       } else {
         Debug.print("HTTP error: " # Nat16.toText(response.status_code));
-        #err("HTTP error: " # Nat16.toText(response.status_code))
-      }
+        #err("HTTP error: " # Nat16.toText(response.status_code));
+      };
     } catch (e) {
       let errMsg = "Failed to fetch WASM: " # Error.message(e);
       Debug.print(errMsg);
-      #err(errMsg)
-    }
+      #err(errMsg);
+    };
   };
 
   public shared func uploadWasm(wasm_blob : Blob) : async Result.Result<Text, Text> {
@@ -335,8 +346,8 @@ persistent actor TokenFactory {
         wasm_module := ?icrc1_wasm;
         Debug.print("WASM fetched and saved successfully in stable memory.");
         return #ok("WASM fetched and saved successfully in stable memory.");
-      }
-    }
+      };
+    };
   };
 
   public shared func checkAndSaveWasm() : async Result.Result<Text, Text> {
@@ -344,11 +355,18 @@ persistent actor TokenFactory {
       return #ok("WASM is already saved in stable memory.");
     } else {
       return await save_wasm();
-    }
+    };
   };
 
   // Enhanced token creation with chain type selector
-  public shared({ caller }) func createTokenWithChain(
+  private var bondingCurvePrincipal : ?Principal = null;
+
+  public shared (msg) func setBondingCurve(p : Principal) : async Result.Result<(), Text> {
+    bondingCurvePrincipal := ?p;
+    #ok(());
+  };
+
+  public shared ({ caller }) func createTokenWithChain(
     name : Text,
     symbol : Text,
     logo : LogoData,
@@ -356,7 +374,7 @@ persistent actor TokenFactory {
     website : ?Text,
     telegram : ?Text,
     twitter : ?Text,
-    chainType : ChainType
+    chainType : ChainType,
   ) : async Result.Result<Principal, Text> {
     try {
       // Validate required fields
@@ -374,13 +392,18 @@ persistent actor TokenFactory {
         return #err("WASM module not available. Please upload or fetch it first using uploadWasm() or save_wasm().");
       };
 
+      // Determine minter
+      let minter = switch (bondingCurvePrincipal) {
+        case (?p) p;
+        case (null) Principal.fromActor(TokenFactory);
+      };
+
       let self = Principal.fromActor(TokenFactory);
-      let factoryAccount : Account = { owner = self; subaccount = null };
 
       Debug.print("Creating new " # chainTypeToText(chainType) # " token canister...");
-      
+
       let createResult = await (with cycles = 1_500_000_000_000) mgmt.create_canister<system>({
-        settings = null
+        settings = null;
       });
       let newCanister = createResult.canister_id;
       Debug.print("New token canister created: " # Principal.toText(newCanister));
@@ -390,26 +413,38 @@ persistent actor TokenFactory {
       switch (wasm_module) {
         case (?icrc1_wasm) {
           let metadata = createIcrc2MetadataWithChain(
-            logo, 
-            description, 
-            website, 
-            telegram, 
+            logo,
+            description,
+            website,
+            telegram,
             twitter,
-            chainType
+            chainType,
           );
-          
+
           let totalSupply = getSupplyByChainType(chainType);
           let totalSupplyWithDecimals = totalSupply * (10 ** Nat8.toNat(DEFAULT_DECIMALS));
-          
+
+          // If minter is bonding curve, we mint initial supply to IT.
+          // If minter is self, we mint to self.
+          let initialHolders = if (minter == self) {
+            [({ owner = self; subaccount = null }, totalSupplyWithDecimals)];
+          } else {
+            // If bonding curve is minter, it can mint on demand, so maybe 0 initial supply?
+            // OR we mint the "max supply" to the bonding curve so it can sell it?
+            // BondingCurve logic assumes IT holds the tokens to sell.
+            // So we must mint the supply to the BondingCurve account.
+            [({ owner = minter; subaccount = null }, totalSupplyWithDecimals)];
+          };
+
           let initArgs : InitArgs = {
             token_symbol = symbol;
             token_name = name;
             decimals = ?DEFAULT_DECIMALS;
-            minting_account = factoryAccount; // TokenFactory as minting account
+            minting_account = { owner = minter; subaccount = null };
             transfer_fee = DEFAULT_FEE;
             metadata = metadata;
             feature_flags = ?{ icrc2 = true };
-            initial_balances = [(factoryAccount, totalSupplyWithDecimals)]; // Mint to TokenFactory
+            initial_balances = initialHolders;
             archive_options = {
               num_blocks_to_archive = Nat64.fromNat(1000);
               trigger_threshold = Nat64.fromNat(2000);
@@ -419,10 +454,10 @@ persistent actor TokenFactory {
           };
 
           let ledgerArgs : LedgerArgs = #Init(initArgs);
-          let encodedArgs = to_candid(ledgerArgs);
+          let encodedArgs = to_candid (ledgerArgs);
 
           Debug.print("Installing the ICRC-2 ledger code...");
-          
+
           await mgmt.install_code<system>({
             canister_id = newCanister;
             wasm_module = icrc1_wasm;
@@ -444,69 +479,69 @@ persistent actor TokenFactory {
             created_at = Time.now();
             total_supply = totalSupply;
             chain_type = chainType;
-            minting_account = factoryAccount;
+            minting_account = { owner = minter; subaccount = null };
           };
-          
+
           tokenMetadata.put(newCanister, tokenMeta);
           tokens := List.push(newCanister, tokens);
-          
-          Debug.print(chainTypeToText(chainType) # " token canister successfully created with supply of " # Nat.toText(totalSupply) # " tokens minted to TokenFactory.");
-          #ok(newCanister)
+
+          Debug.print(chainTypeToText(chainType) # " token canister successfully created with supply of " # Nat.toText(totalSupply) # " tokens minted to " # Principal.toText(minter));
+          #ok(newCanister);
         };
         case null {
-          return #err("WASM module not available in stable memory. Please fetch or upload it first.");
+          return #err("WASM module not available."); // Should be caught above
         };
-      }
-    } catch(e) {
+      };
+    } catch (e) {
       let errorMessage = "Failed to create " # chainTypeToText(chainType) # " token: " # Error.message(e);
       Debug.print(errorMessage);
-      #err(errorMessage)
-    }
+      #err(errorMessage);
+    };
   };
 
   // Convenience functions for specific chain types
-  public shared({ caller }) func createBitcoinToken(
+  public shared ({ caller }) func createBitcoinToken(
     name : Text,
     symbol : Text,
     logo : LogoData,
     description : Text,
     website : ?Text,
     telegram : ?Text,
-    twitter : ?Text
+    twitter : ?Text,
   ) : async Result.Result<Principal, Text> {
-    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Bitcoin)
+    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Bitcoin);
   };
 
-  public shared({ caller }) func createEthereumToken(
+  public shared ({ caller }) func createEthereumToken(
     name : Text,
     symbol : Text,
     logo : LogoData,
     description : Text,
     website : ?Text,
     telegram : ?Text,
-    twitter : ?Text
+    twitter : ?Text,
   ) : async Result.Result<Principal, Text> {
-    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Ethereum)
-  };
-
-  // Legacy method for backward compatibility (defaults to Ethereum)
-  public shared({ caller }) func createIcrc2Token(
-    name : Text,
-    symbol : Text,
-    logo : LogoData,
-    description : Text,
-    website : ?Text,
-    telegram : ?Text,
-    twitter : ?Text
-  ) : async Result.Result<Principal, Text> {
-    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Ethereum)
+    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Ethereum);
   };
 
   // Legacy method for backward compatibility (defaults to Ethereum)
-  public shared({ caller }) func createToken(
+  public shared ({ caller }) func createIcrc2Token(
     name : Text,
     symbol : Text,
-    description : Text
+    logo : LogoData,
+    description : Text,
+    website : ?Text,
+    telegram : ?Text,
+    twitter : ?Text,
+  ) : async Result.Result<Principal, Text> {
+    await createTokenWithChain(name, symbol, logo, description, website, telegram, twitter, #Ethereum);
+  };
+
+  // Legacy method for backward compatibility (defaults to Ethereum)
+  public shared ({ caller }) func createToken(
+    name : Text,
+    symbol : Text,
+    description : Text,
   ) : async Result.Result<Principal, Text> {
     await createTokenWithChain(
       name,
@@ -516,543 +551,651 @@ persistent actor TokenFactory {
       null, // no website
       null, // no telegram
       null, // no twitter
-      #Ethereum
-    )
+      #Ethereum,
+    );
   };
 
   // Check TokenFactory balance for a specific token
   public shared func getFactoryTokenBalance(tokenId : Principal) : async Result.Result<Nat, Text> {
     try {
-      let token : TokenInterface = actor(Principal.toText(tokenId));
+      let token : TokenInterface = actor (Principal.toText(tokenId));
       let self = Principal.fromActor(TokenFactory);
       let factoryAccount : Account = { owner = self; subaccount = null };
       let balance = await token.icrc1_balance_of(factoryAccount);
-      #ok(balance)
+      #ok(balance);
     } catch (e) {
-      #err("Failed to get TokenFactory balance: " # Error.message(e))
-    }
+      #err("Failed to get TokenFactory balance: " # Error.message(e));
+    };
   };
 
   // Get all TokenFactory balances for tokens it created
   public shared func getAllFactoryBalances() : async [(Principal, Result.Result<Nat, Text>)] {
     let tokenList = List.toArray(tokens);
     var results : [(Principal, Result.Result<Nat, Text>)] = [];
-    
+
     for (tokenId in tokenList.vals()) {
       let balanceResult = await getFactoryTokenBalance(tokenId);
       results := Array.append(results, [(tokenId, balanceResult)]);
     };
-    
-    results
+
+    results;
   };
 
-// ===============================================
-// COMPLETE TOKENFACTORY QUERY FUNCTIONS
-// ===============================================
+  // ===============================================
+  // COMPLETE TOKENFACTORY QUERY FUNCTIONS
+  // ===============================================
 
-// Basic Token Listing Queries
-public query func listTokens() : async [Principal] {
-  List.toArray(tokens)
-};
+  // Basic Token Listing Queries
+  public query func listTokens() : async [Principal] {
+    List.toArray(tokens);
+  };
 
-public query func listAllCreatedCanisters() : async [Principal] {
-  List.toArray(createdCanisters)
-};
+  public query func listAllCreatedCanisters() : async [Principal] {
+    List.toArray(createdCanisters);
+  };
 
-// Token Metadata Queries
-public query func getTokenMetadata(tokenId : Principal) : async ?TokenMetadata {
-  tokenMetadata.get(tokenId)
-};
+  // Token Metadata Queries
+  public query func getTokenMetadata(tokenId : Principal) : async ?TokenMetadata {
+    tokenMetadata.get(tokenId);
+  };
 
-public query func getAllTokensMetadata() : async [(Principal, TokenMetadata)] {
-  Iter.toArray(tokenMetadata.entries())
-};
+  public query func getAllTokensMetadata() : async [(Principal, TokenMetadata)] {
+    Iter.toArray(tokenMetadata.entries());
+  };
 
-// Chain Type Filtering Queries
-public query func getTokensByChainType(chainType : ChainType) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type, chainType) {
-      case (#Bitcoin, #Bitcoin) true;
-      case (#Ethereum, #Ethereum) true;
-      case (_, _) false;
-    }
-  })
-};
+  // Chain Type Filtering Queries
+  public query func getTokensByChainType(chainType : ChainType) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type, chainType) {
+          case (#Bitcoin, #Bitcoin) true;
+          case (#Ethereum, #Ethereum) true;
+          case (_, _) false;
+        };
+      },
+    );
+  };
 
-public query func getBitcoinTokens() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Bitcoin) true;
-      case (_) false;
-    }
-  })
-};
+  public query func getBitcoinTokens() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Bitcoin) true;
+          case (_) false;
+        };
+      },
+    );
+  };
 
-public query func getEthereumTokens() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Ethereum) true;
-      case (_) false;
-    }
-  })
-};
+  public query func getEthereumTokens() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Ethereum) true;
+          case (_) false;
+        };
+      },
+    );
+  };
 
-// Token Search Queries
-public query func findTokenBySymbol(symbol : Text) : async ?[(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let matchingTokens = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    Text.equal(metadata.symbol, symbol)
-  });
-  if (matchingTokens.size() > 0) {
-    ?matchingTokens
-  } else {
-    null
-  }
-};
-
-public query func findTokenByName(name : Text) : async ?[(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let matchingTokens = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    Text.contains(metadata.name, #text name)
-  });
-  if (matchingTokens.size() > 0) {
-    ?matchingTokens
-  } else {
-    null
-  }
-};
-
-public query func searchTokens(searchTerm : Text) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let lowerSearchTerm = Text.map(searchTerm, func(c : Char) : Char { 
-    if (c >= 'A' and c <= 'Z') {
-      Char.fromNat32(Char.toNat32(c) + 32)
+  // Token Search Queries
+  public query func findTokenBySymbol(symbol : Text) : async ?[(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let matchingTokens = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        Text.equal(metadata.symbol, symbol);
+      },
+    );
+    if (matchingTokens.size() > 0) {
+      ?matchingTokens;
     } else {
-      c
-    }
-  });
-  
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    let lowerName = Text.map(metadata.name, func(c : Char) : Char { 
-      if (c >= 'A' and c <= 'Z') {
-        Char.fromNat32(Char.toNat32(c) + 32)
-      } else {
-        c
-      }
-    });
-    let lowerSymbol = Text.map(metadata.symbol, func(c : Char) : Char { 
-      if (c >= 'A' and c <= 'Z') {
-        Char.fromNat32(Char.toNat32(c) + 32)
-      } else {
-        c
-      }
-    });
-    let lowerDescription = Text.map(metadata.description, func(c : Char) : Char { 
-      if (c >= 'A' and c <= 'Z') {
-        Char.fromNat32(Char.toNat32(c) + 32)
-      } else {
-        c
-      }
-    });
-    
-    Text.contains(lowerName, #text lowerSearchTerm) or
-    Text.contains(lowerSymbol, #text lowerSearchTerm) or
-    Text.contains(lowerDescription, #text lowerSearchTerm)
-  })
-};
+      null;
+    };
+  };
 
-// Time-based Queries
-public query func getTokensCreatedAfter(timestamp : Int) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.created_at > timestamp
-  })
-};
+  public query func findTokenByName(name : Text) : async ?[(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let matchingTokens = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        Text.contains(metadata.name, #text name);
+      },
+    );
+    if (matchingTokens.size() > 0) {
+      ?matchingTokens;
+    } else {
+      null;
+    };
+  };
 
-public query func getTokensCreatedBefore(timestamp : Int) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.created_at < timestamp
-  })
-};
+  public query func searchTokens(searchTerm : Text) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let lowerSearchTerm = Text.map(
+      searchTerm,
+      func(c : Char) : Char {
+        if (c >= 'A' and c <= 'Z') {
+          Char.fromNat32(Char.toNat32(c) + 32);
+        } else {
+          c;
+        };
+      },
+    );
 
-public query func getRecentTokens(limit : Nat) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let sortedTokens = Array.sort<(Principal, TokenMetadata)>(allTokens, func(a, b) {
-    Int.compare(b.1.created_at, a.1.created_at) // Sort by creation time, newest first
-  });
-  
-  if (sortedTokens.size() <= limit) {
-    sortedTokens
-  } else {
-    Array.tabulate<(Principal, TokenMetadata)>(limit, func(i) = sortedTokens[i])
-  }
-};
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        let lowerName = Text.map(
+          metadata.name,
+          func(c : Char) : Char {
+            if (c >= 'A' and c <= 'Z') {
+              Char.fromNat32(Char.toNat32(c) + 32);
+            } else {
+              c;
+            };
+          },
+        );
+        let lowerSymbol = Text.map(
+          metadata.symbol,
+          func(c : Char) : Char {
+            if (c >= 'A' and c <= 'Z') {
+              Char.fromNat32(Char.toNat32(c) + 32);
+            } else {
+              c;
+            };
+          },
+        );
+        let lowerDescription = Text.map(
+          metadata.description,
+          func(c : Char) : Char {
+            if (c >= 'A' and c <= 'Z') {
+              Char.fromNat32(Char.toNat32(c) + 32);
+            } else {
+              c;
+            };
+          },
+        );
 
-public query func getOldestTokens(limit : Nat) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let sortedTokens = Array.sort<(Principal, TokenMetadata)>(allTokens, func(a, b) {
-    Int.compare(a.1.created_at, b.1.created_at) // Sort by creation time, oldest first
-  });
-  
-  if (sortedTokens.size() <= limit) {
-    sortedTokens
-  } else {
-    Array.tabulate<(Principal, TokenMetadata)>(limit, func(i) = sortedTokens[i])
-  }
-};
+        Text.contains(lowerName, #text lowerSearchTerm) or Text.contains(lowerSymbol, #text lowerSearchTerm) or Text.contains(lowerDescription, #text lowerSearchTerm);
+      },
+    );
+  };
 
-// Supply-based Queries
-public query func getTokensBySupplyRange(minSupply : Nat, maxSupply : Nat) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.total_supply >= minSupply and metadata.total_supply <= maxSupply
-  })
-};
+  // Time-based Queries
+  public query func getTokensCreatedAfter(timestamp : Int) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.created_at > timestamp;
+      },
+    );
+  };
 
-public query func getHighSupplyTokens() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.total_supply >= ETHEREUM_SUPPLY // 1B or more
-  })
-};
+  public query func getTokensCreatedBefore(timestamp : Int) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.created_at < timestamp;
+      },
+    );
+  };
 
-public query func getLowSupplyTokens() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.total_supply <= BITCOIN_SUPPLY // 21M or less
-  })
-};
+  public query func getRecentTokens(limit : Nat) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let sortedTokens = Array.sort<(Principal, TokenMetadata)>(
+      allTokens,
+      func(a, b) {
+        Int.compare(b.1.created_at, a.1.created_at) // Sort by creation time, newest first
+      },
+    );
 
-// Social Media Queries
-public query func getTokensWithWebsite() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.website != null
-  })
-};
+    if (sortedTokens.size() <= limit) {
+      sortedTokens;
+    } else {
+      Array.tabulate<(Principal, TokenMetadata)>(limit, func(i) = sortedTokens[i]);
+    };
+  };
 
-public query func getTokensWithTelegram() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.telegram != null
-  })
-};
+  public query func getOldestTokens(limit : Nat) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let sortedTokens = Array.sort<(Principal, TokenMetadata)>(
+      allTokens,
+      func(a, b) {
+        Int.compare(a.1.created_at, b.1.created_at) // Sort by creation time, oldest first
+      },
+    );
 
-public query func getTokensWithTwitter() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.twitter != null
-  })
-};
+    if (sortedTokens.size() <= limit) {
+      sortedTokens;
+    } else {
+      Array.tabulate<(Principal, TokenMetadata)>(limit, func(i) = sortedTokens[i]);
+    };
+  };
 
-public query func getTokensWithAllSocials() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.website != null and metadata.telegram != null and metadata.twitter != null
-  })
-};
+  // Supply-based Queries
+  public query func getTokensBySupplyRange(minSupply : Nat, maxSupply : Nat) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.total_supply >= minSupply and metadata.total_supply <= maxSupply
+      },
+    );
+  };
 
-// Fee and Decimals Queries
-public query func getTokensByFeeRange(minFee : Nat, maxFee : Nat) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.fee >= minFee and metadata.fee <= maxFee
-  })
-};
+  public query func getHighSupplyTokens() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.total_supply >= ETHEREUM_SUPPLY // 1B or more
+      },
+    );
+  };
 
-public query func getTokensByDecimals(decimals : Nat8) : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.decimals == decimals
-  })
-};
+  public query func getLowSupplyTokens() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.total_supply <= BITCOIN_SUPPLY // 21M or less
+      },
+    );
+  };
 
-// Logo Type Queries
-public query func getTokensWithImageUrl() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.logo) {
-      case (#ImageUrl(_)) true;
-      case (_) false;
-    }
-  })
-};
+  // Social Media Queries
+  public query func getTokensWithWebsite() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.website != null;
+      },
+    );
+  };
 
-public query func getTokensWithImageBlob() : async [(Principal, TokenMetadata)] {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.logo) {
-      case (#ImageBlob(_)) true;
-      case (_) false;
-    }
-  })
-};
+  public query func getTokensWithTelegram() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.telegram != null;
+      },
+    );
+  };
 
-// System State Queries
-public query func isWasmAvailable() : async Bool {
-  wasm_module != null
-};
+  public query func getTokensWithTwitter() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.twitter != null;
+      },
+    );
+  };
 
-public query func getWasmSize() : async ?Nat {
-  switch (wasm_module) {
-    case (?wasm) ?wasm.size();
-    case null null;
-  }
-};
+  public query func getTokensWithAllSocials() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.website != null and metadata.telegram != null and metadata.twitter != null
+      },
+    );
+  };
 
-// Constants Queries
-public query func getBitcoinSupply() : async Nat {
-  BITCOIN_SUPPLY
-};
+  // Fee and Decimals Queries
+  public query func getTokensByFeeRange(minFee : Nat, maxFee : Nat) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.fee >= minFee and metadata.fee <= maxFee
+      },
+    );
+  };
 
-public query func getEthereumSupply() : async Nat {
-  ETHEREUM_SUPPLY
-};
+  public query func getTokensByDecimals(decimals : Nat8) : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.decimals == decimals;
+      },
+    );
+  };
 
-public query func getDefaultDecimals() : async Nat8 {
-  DEFAULT_DECIMALS
-};
+  // Logo Type Queries
+  public query func getTokensWithImageUrl() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.logo) {
+          case (#ImageUrl(_)) true;
+          case (_) false;
+        };
+      },
+    );
+  };
 
-public query func getDefaultFee() : async Nat {
-  DEFAULT_FEE
-};
+  public query func getTokensWithImageBlob() : async [(Principal, TokenMetadata)] {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.logo) {
+          case (#ImageBlob(_)) true;
+          case (_) false;
+        };
+      },
+    );
+  };
 
-public query func getChainTypeSupply(chainType : ChainType) : async Nat {
-  getSupplyByChainType(chainType)
-};
+  // System State Queries
+  public query func isWasmAvailable() : async Bool {
+    wasm_module != null;
+  };
 
-// Comprehensive Statistics Query
-public query func getStats() : async { 
-  totalTokens: Nat; 
-  bitcoinTokens: Nat;
-  ethereumTokens: Nat;
-  totalCreatedCanisters: Nat; 
-  wasmAvailable: Bool;
-  wasmSize: ?Nat;
-  bitcoinSupply: Nat;
-  ethereumSupply: Nat;
-  defaultDecimals: Nat8;
-  defaultFee: Nat;
-} {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Bitcoin) true;
-      case (_) false;
-    }
-  }).size();
-  let ethereumCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Ethereum) true;
-      case (_) false;
-    }
-  }).size();
-
-  {
-    totalTokens = List.size(tokens);
-    bitcoinTokens = bitcoinCount;
-    ethereumTokens = ethereumCount;
-    totalCreatedCanisters = List.size(createdCanisters);
-    wasmAvailable = wasm_module != null;
-    wasmSize = switch (wasm_module) {
+  public query func getWasmSize() : async ?Nat {
+    switch (wasm_module) {
       case (?wasm) ?wasm.size();
       case null null;
     };
-    bitcoinSupply = BITCOIN_SUPPLY;
-    ethereumSupply = ETHEREUM_SUPPLY;
-    defaultDecimals = DEFAULT_DECIMALS;
-    defaultFee = DEFAULT_FEE;
-  }
-};
+  };
 
-// Detailed Statistics Query
-public query func getDetailedStats() : async {
-  totalTokens: Nat;
-  bitcoinTokens: Nat;
-  ethereumTokens: Nat;
-  totalCreatedCanisters: Nat;
-  wasmAvailable: Bool;
-  wasmSize: ?Nat;
-  tokensWithWebsite: Nat;
-  tokensWithTelegram: Nat;
-  tokensWithTwitter: Nat;
-  tokensWithAllSocials: Nat;
-  averageSupply: ?Nat;
-  totalSupplyAllTokens: Nat;
-  uniqueDecimals: [Nat8];
-  uniqueFees: [Nat];
-  oldestToken: ?(Principal, Int);
-  newestToken: ?(Principal, Int);
-} {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  
-  let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Bitcoin) true;
-      case (_) false;
-    }
-  }).size();
-  
-  let ethereumCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Ethereum) true;
-      case (_) false;
-    }
-  }).size();
-  
-  let websiteCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.website != null
-  }).size();
-  
-  let telegramCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.telegram != null
-  }).size();
-  
-  let twitterCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.twitter != null
-  }).size();
-  
-  let allSocialsCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    metadata.website != null and metadata.telegram != null and metadata.twitter != null
-  }).size();
-  
-  let totalSupply = Array.foldLeft<(Principal, TokenMetadata), Nat>(allTokens, 0, func(acc, (_, metadata)) {
-    acc + metadata.total_supply
-  });
-  
-  let averageSupply = if (allTokens.size() > 0) {
-    ?(totalSupply / allTokens.size())
-  } else {
-    null
+  // Constants Queries
+  public query func getBitcoinSupply() : async Nat {
+    BITCOIN_SUPPLY;
   };
-  
-  let decimalsArray = Array.map<(Principal, TokenMetadata), Nat8>(allTokens, func((_, metadata)) = metadata.decimals);
-  let uniqueDecimalsSet = HashMap.HashMap<Nat8, Bool>(0, Nat8.equal, func(x) = Nat32.fromNat(Nat8.toNat(x)));
-  for (decimal in decimalsArray.vals()) {
-    uniqueDecimalsSet.put(decimal, true);
+
+  public query func getEthereumSupply() : async Nat {
+    ETHEREUM_SUPPLY;
   };
-  let uniqueDecimals = Iter.toArray(uniqueDecimalsSet.keys());
-  
-  let feesArray = Array.map<(Principal, TokenMetadata), Nat>(allTokens, func((_, metadata)) = metadata.fee);
-  let uniqueFeesSet = HashMap.HashMap<Nat, Bool>(0, Nat.equal, func(x) = Nat32.fromNat(x));
-  for (fee in feesArray.vals()) {
-    uniqueFeesSet.put(fee, true);
+
+  public query func getDefaultDecimals() : async Nat8 {
+    DEFAULT_DECIMALS;
   };
-  let uniqueFees = Iter.toArray(uniqueFeesSet.keys());
-  
-  let sortedByTime = Array.sort<(Principal, TokenMetadata)>(allTokens, func(a, b) {
-    Int.compare(a.1.created_at, b.1.created_at)
-  });
-  
-  let oldestToken = if (sortedByTime.size() > 0) {
-    ?(sortedByTime[0].0, sortedByTime[0].1.created_at)
-  } else {
-    null
+
+  public query func getDefaultFee() : async Nat {
+    DEFAULT_FEE;
   };
-  
-  let newestToken = if (sortedByTime.size() > 0) {
-    let last = sortedByTime[sortedByTime.size() - 1];
-    ?(last.0, last.1.created_at)
-  } else {
-    null
+
+  public query func getChainTypeSupply(chainType : ChainType) : async Nat {
+    getSupplyByChainType(chainType);
   };
-  
-  {
-    totalTokens = List.size(tokens);
-    bitcoinTokens = bitcoinCount;
-    ethereumTokens = ethereumCount;
-    totalCreatedCanisters = List.size(createdCanisters);
-    wasmAvailable = wasm_module != null;
-    wasmSize = switch (wasm_module) {
-      case (?wasm) ?wasm.size();
-      case null null;
+
+  // Comprehensive Statistics Query
+  public query func getStats() : async {
+    totalTokens : Nat;
+    bitcoinTokens : Nat;
+    ethereumTokens : Nat;
+    totalCreatedCanisters : Nat;
+    wasmAvailable : Bool;
+    wasmSize : ?Nat;
+    bitcoinSupply : Nat;
+    ethereumSupply : Nat;
+    defaultDecimals : Nat8;
+    defaultFee : Nat;
+  } {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Bitcoin) true;
+          case (_) false;
+        };
+      },
+    ).size();
+    let ethereumCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Ethereum) true;
+          case (_) false;
+        };
+      },
+    ).size();
+
+    {
+      totalTokens = List.size(tokens);
+      bitcoinTokens = bitcoinCount;
+      ethereumTokens = ethereumCount;
+      totalCreatedCanisters = List.size(createdCanisters);
+      wasmAvailable = wasm_module != null;
+      wasmSize = switch (wasm_module) {
+        case (?wasm) ?wasm.size();
+        case null null;
+      };
+      bitcoinSupply = BITCOIN_SUPPLY;
+      ethereumSupply = ETHEREUM_SUPPLY;
+      defaultDecimals = DEFAULT_DECIMALS;
+      defaultFee = DEFAULT_FEE;
     };
-    tokensWithWebsite = websiteCount;
-    tokensWithTelegram = telegramCount;
-    tokensWithTwitter = twitterCount;
-    tokensWithAllSocials = allSocialsCount;
-    averageSupply = averageSupply;
-    totalSupplyAllTokens = totalSupply;
-    uniqueDecimals = uniqueDecimals;
-    uniqueFees = uniqueFees;
-    oldestToken = oldestToken;
-    newestToken = newestToken;
-  }
-};
-
-// Pagination Query with safe division
-public query func getTokensPaginated(page : Nat, pageSize : Nat) : async {
-  tokens: [(Principal, TokenMetadata)];
-  totalPages: Nat;
-  currentPage: Nat;
-  totalTokens: Nat;
-} {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let totalTokens = allTokens.size();
-  let totalPages = if (totalTokens == 0 or pageSize == 0) {
-    0
-  } else {
-    (totalTokens + pageSize - 1) / pageSize  // Safe division with ceiling
   };
-  
-  let startIndex = page * pageSize;
-  let endIndex = if (startIndex + pageSize > totalTokens) {
-    totalTokens
-  } else {
-    startIndex + pageSize
-  };
-  
-  let pageTokens = if (startIndex < totalTokens and startIndex < endIndex) {
-    Array.tabulate<(Principal, TokenMetadata)>(
-      endIndex - startIndex,
-      func(i) = allTokens[startIndex + i]
-    )
-  } else {
-    []
-  };
-  
-  {
-    tokens = pageTokens;
-    totalPages = totalPages;
-    currentPage = page;
-    totalTokens = totalTokens;
-  }
-};
 
-// Token Existence Check
-public query func tokenExists(tokenId : Principal) : async Bool {
-  switch (tokenMetadata.get(tokenId)) {
-    case (?_) true;
-    case null false;
-  }
-};
+  // Detailed Statistics Query
+  public query func getDetailedStats() : async {
+    totalTokens : Nat;
+    bitcoinTokens : Nat;
+    ethereumTokens : Nat;
+    totalCreatedCanisters : Nat;
+    wasmAvailable : Bool;
+    wasmSize : ?Nat;
+    tokensWithWebsite : Nat;
+    tokensWithTelegram : Nat;
+    tokensWithTwitter : Nat;
+    tokensWithAllSocials : Nat;
+    averageSupply : ?Nat;
+    totalSupplyAllTokens : Nat;
+    uniqueDecimals : [Nat8];
+    uniqueFees : [Nat];
+    oldestToken : ?(Principal, Int);
+    newestToken : ?(Principal, Int);
+  } {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
 
-// Get Token Count by Chain Type
-public query func getTokenCountByChainType() : async {
-  bitcoin: Nat;
-  ethereum: Nat;
-} {
-  let allTokens = Iter.toArray(tokenMetadata.entries());
-  let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Bitcoin) true;
-      case (_) false;
-    }
-  }).size();
-  let ethereumCount = Array.filter<(Principal, TokenMetadata)>(allTokens, func((_, metadata)) {
-    switch (metadata.chain_type) {
-      case (#Ethereum) true;
-      case (_) false;
-    }
-  }).size();
-  
-  {
-    bitcoin = bitcoinCount;
-    ethereum = ethereumCount;
-  }
+    let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Bitcoin) true;
+          case (_) false;
+        };
+      },
+    ).size();
+
+    let ethereumCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Ethereum) true;
+          case (_) false;
+        };
+      },
+    ).size();
+
+    let websiteCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.website != null;
+      },
+    ).size();
+
+    let telegramCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.telegram != null;
+      },
+    ).size();
+
+    let twitterCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.twitter != null;
+      },
+    ).size();
+
+    let allSocialsCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        metadata.website != null and metadata.telegram != null and metadata.twitter != null
+      },
+    ).size();
+
+    let totalSupply = Array.foldLeft<(Principal, TokenMetadata), Nat>(
+      allTokens,
+      0,
+      func(acc, (_, metadata)) {
+        acc + metadata.total_supply;
+      },
+    );
+
+    let averageSupply = if (allTokens.size() > 0) {
+      ?(totalSupply / allTokens.size());
+    } else {
+      null;
+    };
+
+    let decimalsArray = Array.map<(Principal, TokenMetadata), Nat8>(allTokens, func((_, metadata)) = metadata.decimals);
+    let uniqueDecimalsSet = HashMap.HashMap<Nat8, Bool>(0, Nat8.equal, func(x) = Nat32.fromNat(Nat8.toNat(x)));
+    for (decimal in decimalsArray.vals()) {
+      uniqueDecimalsSet.put(decimal, true);
+    };
+    let uniqueDecimals = Iter.toArray(uniqueDecimalsSet.keys());
+
+    let feesArray = Array.map<(Principal, TokenMetadata), Nat>(allTokens, func((_, metadata)) = metadata.fee);
+    let uniqueFeesSet = HashMap.HashMap<Nat, Bool>(0, Nat.equal, func(x) = Nat32.fromNat(x));
+    for (fee in feesArray.vals()) {
+      uniqueFeesSet.put(fee, true);
+    };
+    let uniqueFees = Iter.toArray(uniqueFeesSet.keys());
+
+    let sortedByTime = Array.sort<(Principal, TokenMetadata)>(
+      allTokens,
+      func(a, b) {
+        Int.compare(a.1.created_at, b.1.created_at);
+      },
+    );
+
+    let oldestToken = if (sortedByTime.size() > 0) {
+      ?(sortedByTime[0].0, sortedByTime[0].1.created_at);
+    } else {
+      null;
+    };
+
+    let newestToken = if (sortedByTime.size() > 0) {
+      let last = sortedByTime[sortedByTime.size() - 1];
+      ?(last.0, last.1.created_at);
+    } else {
+      null;
+    };
+
+    {
+      totalTokens = List.size(tokens);
+      bitcoinTokens = bitcoinCount;
+      ethereumTokens = ethereumCount;
+      totalCreatedCanisters = List.size(createdCanisters);
+      wasmAvailable = wasm_module != null;
+      wasmSize = switch (wasm_module) {
+        case (?wasm) ?wasm.size();
+        case null null;
+      };
+      tokensWithWebsite = websiteCount;
+      tokensWithTelegram = telegramCount;
+      tokensWithTwitter = twitterCount;
+      tokensWithAllSocials = allSocialsCount;
+      averageSupply = averageSupply;
+      totalSupplyAllTokens = totalSupply;
+      uniqueDecimals = uniqueDecimals;
+      uniqueFees = uniqueFees;
+      oldestToken = oldestToken;
+      newestToken = newestToken;
+    };
+  };
+
+  // Pagination Query with safe division
+  public query func getTokensPaginated(page : Nat, pageSize : Nat) : async {
+    tokens : [(Principal, TokenMetadata)];
+    totalPages : Nat;
+    currentPage : Nat;
+    totalTokens : Nat;
+  } {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let totalTokens = allTokens.size();
+    let totalPages = if (totalTokens == 0 or pageSize == 0) {
+      0;
+    } else {
+      (totalTokens + pageSize - 1) / pageSize; // Safe division with ceiling
+    };
+
+    let startIndex = page * pageSize;
+    let endIndex = if (startIndex + pageSize > totalTokens) {
+      totalTokens;
+    } else {
+      startIndex + pageSize;
+    };
+
+    let pageTokens = if (startIndex < totalTokens and startIndex < endIndex) {
+      Array.tabulate<(Principal, TokenMetadata)>(
+        endIndex - startIndex,
+        func(i) = allTokens[startIndex + i],
+      );
+    } else { [] };
+
+    {
+      tokens = pageTokens;
+      totalPages = totalPages;
+      currentPage = page;
+      totalTokens = totalTokens;
+    };
+  };
+
+  // Token Existence Check
+  public query func tokenExists(tokenId : Principal) : async Bool {
+    switch (tokenMetadata.get(tokenId)) {
+      case (?_) true;
+      case null false;
+    };
+  };
+
+  // Get Token Count by Chain Type
+  public query func getTokenCountByChainType() : async {
+    bitcoin : Nat;
+    ethereum : Nat;
+  } {
+    let allTokens = Iter.toArray(tokenMetadata.entries());
+    let bitcoinCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Bitcoin) true;
+          case (_) false;
+        };
+      },
+    ).size();
+    let ethereumCount = Array.filter<(Principal, TokenMetadata)>(
+      allTokens,
+      func((_, metadata)) {
+        switch (metadata.chain_type) {
+          case (#Ethereum) true;
+          case (_) false;
+        };
+      },
+    ).size();
+
+    {
+      bitcoin = bitcoinCount;
+      ethereum = ethereumCount;
+    };
+  };
 };
-}
